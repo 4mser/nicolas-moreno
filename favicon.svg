@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <radialGradient id="core" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fff6d9" stop-opacity="1"/>
+      <stop offset="30%" stop-color="#fde68a" stop-opacity="1"/>
+      <stop offset="60%" stop-color="#fbbf24" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#d97706" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="rayV" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24" stop-opacity="0"/>
+      <stop offset="45%" stop-color="#fde68a" stop-opacity="1"/>
+      <stop offset="55%" stop-color="#fde68a" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#fbbf24" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="rayH" x1="0%" y1="50%" x2="100%" y2="50%">
+      <stop offset="0%" stop-color="#fbbf24" stop-opacity="0"/>
+      <stop offset="45%" stop-color="#fde68a" stop-opacity="1"/>
+      <stop offset="55%" stop-color="#fde68a" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#fbbf24" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="1.2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <!-- Background glow -->
+  <circle cx="32" cy="32" r="28" fill="url(#core)" opacity="0.45"/>
+  <!-- Vertical ray -->
+  <rect x="31" y="2" width="2" height="60" fill="url(#rayV)" filter="url(#glow)"/>
+  <!-- Horizontal ray -->
+  <rect x="2" y="31" width="60" height="2" fill="url(#rayH)" filter="url(#glow)"/>
+  <!-- Diagonal ray 1 -->
+  <rect x="31" y="8" width="2" height="48" fill="url(#rayV)" opacity="0.5" transform="rotate(45 32 32)"/>
+  <!-- Diagonal ray 2 -->
+  <rect x="31" y="8" width="2" height="48" fill="url(#rayV)" opacity="0.5" transform="rotate(-45 32 32)"/>
+  <!-- Core -->
+  <circle cx="32" cy="32" r="6" fill="url(#core)" filter="url(#glow)"/>
+  <circle cx="32" cy="32" r="2.5" fill="#fff6d9"/>
+</svg>
