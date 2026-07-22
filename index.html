@@ -1346,94 +1346,168 @@
     @media(prefers-reduced-motion:reduce){
       #globeStage{transition:none;}
     }
-    /* ═══ ORBE DE CONTACTO — pill flotante con satélites en órbita ═══
-       WhatsApp, correo y CV se despliegan alrededor del botón como un menú
-       radial de videojuego: arco hacia arriba-izquierda porque el botón vive
-       en la esquina inferior derecha. En escritorio abre por hover (con
-       intención: cierra con retardo para tolerar el viaje del cursor); en
-       táctil abre por tap. */
+    /* ═══ ORBE DE CONTACTO v2 — pill flotante con satélites en órbita ═══
+       WhatsApp, correo y CV en menú radial estilo videojuego. Jerarquía de
+       capas explícita y por encima de TODO el sitio (z 999): anillos al fondo,
+       satélites encima, el pill sobre ellos y los tooltips coronando — antes
+       la etiqueta del satélite quedaba bajo el pill por el orden implícito. */
+    @property --orbAng{syntax:'<angle>';initial-value:0deg;inherits:false;}
     .contact-orb{
-      position:fixed;z-index:90;
+      position:fixed;z-index:999;
       right:clamp(1rem,3vw,2rem);bottom:clamp(1rem,3vw,2rem);
       opacity:0;transform:translateY(14px);
       animation:cvIn .7s cubic-bezier(.16,1,.3,1) 1.1s forwards;
     }
     .orb-main{
-      position:relative;z-index:2;
+      position:relative;z-index:4;
       display:inline-flex;align-items:center;gap:0.6rem;
-      padding:0.85rem 1.35rem;cursor:pointer;
+      padding:0.9rem 1.45rem;cursor:pointer;
       font-family:'IBM Plex Sans',sans-serif;font-size:0.9rem;font-weight:700;letter-spacing:0.01em;
       color:var(--on-accent);white-space:nowrap;
       background:linear-gradient(135deg,var(--amber),var(--amber-warm));
-      border:1px solid rgb(var(--accent-rgb)/0.35);
+      border:1px solid rgb(var(--accent-rgb)/0.45);
       border-radius:100px;
-      box-shadow:0 10px 30px -8px rgb(var(--accent-rgb)/0.55),0 0 0 1px rgb(var(--accent-rgb)/0.12) inset;
+      box-shadow:
+        0 1px 0 rgb(255 255 255/0.35) inset,
+        0 -8px 16px -8px rgb(0 0 0/0.35) inset,
+        0 10px 30px -8px rgb(var(--accent-rgb)/0.55);
       transition:transform .28s cubic-bezier(.16,1,.3,1),box-shadow .28s ease,filter .28s ease;
     }
+    /* Halo cónico: una chispa de luz recorre el contorno del pill en bucle.
+       Se dibuja en un hijo con máscara de anillo para no deformar la forma. */
+    .orb-halo{
+      position:absolute;inset:-3px;border-radius:inherit;pointer-events:none;
+      padding:2px;opacity:.55;transition:opacity .3s ease;
+      background:conic-gradient(from var(--orbAng),
+        transparent 0deg,transparent 250deg,
+        rgb(var(--accent-rgb)/0.9) 305deg,#fff7e8 330deg,
+        rgb(var(--accent-rgb)/0.9) 348deg,transparent 360deg);
+      -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+      -webkit-mask-composite:xor;mask-composite:exclude;
+      animation:orbAng 3.6s linear infinite;
+    }
+    .orb-main:hover .orb-halo,.contact-orb.open .orb-halo{opacity:1;animation-duration:1.6s;}
+    @keyframes orbAng{to{--orbAng:360deg;}}
+    /* Brillo barrido: pasa una vez con cada hover, como metal pulido. */
+    .orb-main::after{
+      content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+      background:linear-gradient(115deg,transparent 32%,rgb(255 255 255/0.42) 47%,rgb(255 253 245/0.55) 50%,transparent 66%);
+      background-size:250% 100%;background-position:120% 0;opacity:0;
+    }
+    .orb-main:hover::after,.contact-orb.open .orb-main::after{
+      opacity:1;animation:orbSheen .9s cubic-bezier(.4,0,.2,1) forwards;
+    }
+    @keyframes orbSheen{from{background-position:120% 0;}to{background-position:-60% 0;}}
     .orb-main:hover,.contact-orb.open .orb-main{
-      transform:translateY(-3px) scale(1.035);
-      box-shadow:0 16px 42px -8px rgb(var(--accent-rgb)/0.7),0 0 0 1px rgb(var(--accent-rgb)/0.2) inset;
-      filter:saturate(1.08);
+      transform:translateY(-3px) scale(1.04);
+      box-shadow:
+        0 1px 0 rgb(255 255 255/0.4) inset,
+        0 -8px 16px -8px rgb(0 0 0/0.3) inset,
+        0 18px 48px -10px rgb(var(--accent-rgb)/0.8),
+        0 0 26px -4px rgb(var(--accent-rgb)/0.4);
+      filter:saturate(1.1);
     }
     .orb-main:active{transform:translateY(-1px) scale(.99);}
-    .orb-main svg{width:17px;height:17px;flex-shrink:0;}
+    .orb-main svg{width:17px;height:17px;flex-shrink:0;position:relative;z-index:1;}
+    .orb-main span{position:relative;z-index:1;}
+    /* En hover las ondas del icono "transmiten": pulsan de adentro hacia
+       afuera, en secuencia. */
+    .orb-main svg path{transition:opacity .2s ease;}
+    .orb-main:hover svg path:nth-of-type(1),.contact-orb.open .orb-main svg path:nth-of-type(1){animation:orbWave 1.1s ease-in-out infinite .1s;}
+    .orb-main:hover svg path:nth-of-type(2),.contact-orb.open .orb-main svg path:nth-of-type(2){animation:orbWave 1.1s ease-in-out infinite .1s;}
+    .orb-main:hover svg path:nth-of-type(3),.contact-orb.open .orb-main svg path:nth-of-type(3){animation:orbWave 1.1s ease-in-out infinite .32s;}
+    .orb-main:hover svg path:nth-of-type(4),.contact-orb.open .orb-main svg path:nth-of-type(4){animation:orbWave 1.1s ease-in-out infinite .32s;}
+    @keyframes orbWave{0%,100%{opacity:1;}50%{opacity:.25;}}
 
-    /* Anillo orbital: aparece al abrir y gira lento — el guiño de videojuego.
-       La rotación va en la propiedad rotate para no pelear con el scale. */
+    /* Anillos: el punteado gira lento; el barrido de radar pasa UNA vez cada
+       vez que la órbita se abre. */
     .orb-ring{
-      position:absolute;left:50%;top:50%;z-index:0;
-      width:152px;height:152px;margin:-76px 0 0 -76px;
-      border:1px dashed rgb(var(--accent-rgb)/0.5);border-radius:50%;
+      position:absolute;left:50%;top:50%;z-index:1;
+      width:158px;height:158px;margin:-79px 0 0 -79px;
+      border:1px dashed rgb(var(--accent-rgb)/0.55);border-radius:50%;
       opacity:0;transform:scale(.5);pointer-events:none;
       transition:opacity .3s ease,transform .45s cubic-bezier(.34,1.56,.64,1);
       animation:orbSpin 16s linear infinite;
     }
-    .contact-orb.open .orb-ring{opacity:.32;transform:scale(1);}
+    .contact-orb.open .orb-ring{opacity:.38;transform:scale(1);}
     @keyframes orbSpin{to{rotate:360deg;}}
+    .orb-sweep{
+      position:absolute;left:50%;top:50%;z-index:1;
+      width:158px;height:158px;margin:-79px 0 0 -79px;border-radius:50%;
+      background:conic-gradient(from 180deg,rgb(var(--accent-rgb)/0.28),transparent 70deg,transparent 360deg);
+      opacity:0;pointer-events:none;
+    }
+    .contact-orb.open .orb-sweep{animation:orbSweep 1s cubic-bezier(.3,.7,.3,1) forwards;}
+    @keyframes orbSweep{0%{opacity:.9;rotate:0deg;}80%{opacity:.5;}100%{opacity:0;rotate:360deg;}}
 
     .orb-sat{
-      position:absolute;left:50%;top:50%;z-index:1;
-      width:46px;height:46px;margin:-23px 0 0 -23px;
+      position:absolute;left:50%;top:50%;z-index:3;
+      width:48px;height:48px;margin:-24px 0 0 -24px;
       display:flex;align-items:center;justify-content:center;
       border-radius:50%;color:var(--amber);
-      background:rgb(14 11 8/0.94);
-      border:1px solid rgb(var(--accent-rgb)/0.5);
-      box-shadow:0 8px 24px -6px rgb(0 0 0/0.65),0 0 0 1px rgb(var(--accent-rgb)/0.14) inset;
+      background:radial-gradient(130% 130% at 30% 22%,rgb(34 27 18/0.96),rgb(10 8 6/0.97));
+      border:1px solid rgb(var(--accent-rgb)/0.55);
+      box-shadow:
+        0 1px 0 rgb(255 255 255/0.08) inset,
+        0 8px 24px -6px rgb(0 0 0/0.7),
+        0 0 0 1px rgb(var(--accent-rgb)/0.12) inset;
       opacity:0;visibility:hidden;pointer-events:none;
-      transform:translate(0,0) scale(.35);
+      transform:translate(0,0) scale(.3) rotate(-30deg);
       transition:transform .45s cubic-bezier(.34,1.56,.64,1),opacity .22s ease,visibility 0s linear .45s;
     }
-    .orb-sat svg{width:20px;height:20px;}
-    /* Despliegue con escalonado: cada satélite sale un pelo después del
-       anterior, como un menú radial que se arma pieza a pieza. */
+    .orb-sat svg{width:20px;height:20px;transition:transform .22s cubic-bezier(.34,1.56,.64,1);}
     .sat-left{--d:.02s;}
     .sat-diag{--d:.08s;}
     .sat-top{--d:.14s;}
     .contact-orb.open .orb-sat{
       opacity:1;visibility:visible;pointer-events:auto;
       transition:transform .5s cubic-bezier(.34,1.56,.64,1) var(--d),opacity .28s ease var(--d),
-        visibility 0s linear var(--d),background .2s ease,color .2s ease;
+        visibility 0s linear var(--d),background .22s ease,color .22s ease,box-shadow .22s ease;
     }
-    .contact-orb.open .sat-left{transform:translate(-100px,0) scale(1);}
-    .contact-orb.open .sat-diag{transform:translate(-72px,-62px) scale(1);}
-    .contact-orb.open .sat-top{transform:translate(0,-78px) scale(1);}
-    .contact-orb.open .sat-left:hover,.contact-orb.open .sat-left:focus-visible{transform:translate(-100px,0) scale(1.14);}
-    .contact-orb.open .sat-diag:hover,.contact-orb.open .sat-diag:focus-visible{transform:translate(-72px,-62px) scale(1.14);}
-    .contact-orb.open .sat-top:hover,.contact-orb.open .sat-top:focus-visible{transform:translate(0,-78px) scale(1.14);}
+    .contact-orb.open .sat-left{transform:translate(-100px,0) scale(1) rotate(0deg);}
+    .contact-orb.open .sat-diag{transform:translate(-72px,-62px) scale(1) rotate(0deg);}
+    .contact-orb.open .sat-top{transform:translate(0,-78px) scale(1) rotate(0deg);}
+    /* El satélite en hover sube de capa (z 5): su halo y su tooltip deben
+       pasar por ENCIMA del pill y de los otros satélites, no por debajo. */
     .orb-sat:hover,.orb-sat:focus-visible{
+      z-index:5;color:var(--on-accent);
       background:linear-gradient(135deg,var(--amber),var(--amber-warm));
-      color:var(--on-accent);
+      border-color:rgb(var(--accent-rgb)/0.9);
+      box-shadow:
+        0 1px 0 rgb(255 255 255/0.3) inset,
+        0 10px 30px -6px rgb(var(--accent-rgb)/0.65),
+        0 0 22px -2px rgb(var(--accent-rgb)/0.5);
     }
+    .orb-sat:hover svg,.orb-sat:focus-visible svg{transform:scale(1.12) rotate(-6deg);}
+    .contact-orb.open .sat-left:hover,.contact-orb.open .sat-left:focus-visible{transform:translate(-100px,0) scale(1.16) rotate(0deg);}
+    .contact-orb.open .sat-diag:hover,.contact-orb.open .sat-diag:focus-visible{transform:translate(-72px,-62px) scale(1.16) rotate(0deg);}
+    .contact-orb.open .sat-top:hover,.contact-orb.open .sat-top:focus-visible{transform:translate(0,-78px) scale(1.16) rotate(0deg);}
+
+    /* Tooltip HUD: mono espaciado, caret al satélite, entra subiendo. Corona
+       la pila (z 9) — es lo último que puede quedar tapado. */
     .sat-tip{
-      position:absolute;bottom:calc(100% + 0.45rem);left:50%;transform:translateX(-50%);
-      padding:0.25rem 0.55rem;border-radius:6px;white-space:nowrap;
-      font-size:0.62rem;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;
-      color:var(--text);background:rgb(14 11 8/0.95);
-      border:1px solid rgb(var(--accent-rgb)/0.3);
-      opacity:0;transition:opacity .18s ease;pointer-events:none;
+      position:absolute;bottom:calc(100% + 0.55rem);left:50%;z-index:9;
+      transform:translateX(-50%) translateY(4px);
+      padding:0.3rem 0.6rem;border-radius:7px;white-space:nowrap;
+      font-family:'IBM Plex Mono',ui-monospace,monospace;
+      font-size:0.6rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;
+      color:var(--amber);background:rgb(12 9 7/0.97);
+      border:1px solid rgb(var(--accent-rgb)/0.45);
+      box-shadow:0 6px 18px -4px rgb(0 0 0/0.7);
+      opacity:0;transition:opacity .18s ease,transform .22s cubic-bezier(.34,1.56,.64,1);
+      pointer-events:none;
     }
-    .orb-sat:hover .sat-tip,.orb-sat:focus-visible .sat-tip{opacity:1;}
+    .sat-tip::after{
+      content:'';position:absolute;top:100%;left:50%;
+      width:6px;height:6px;margin:-3px 0 0 -3px;
+      background:inherit;border:inherit;border-top:0;border-left:0;
+      transform:rotate(45deg);
+    }
+    .orb-sat:hover .sat-tip,.orb-sat:focus-visible .sat-tip{
+      opacity:1;transform:translateX(-50%) translateY(0);
+    }
     @keyframes cvIn{to{opacity:1;transform:translateY(0);}}
+
 
     @media(max-width:768px){
       /* Más compacto y respetando la barra inferior del sistema. El padding del
@@ -1486,7 +1560,9 @@
     }
     @media(prefers-reduced-motion:reduce){
       .contact-orb{animation:none;opacity:1;transform:none;}
-      .orb-ring{animation:none;}
+      .orb-ring,.orb-halo,.orb-sweep{animation:none;}
+      .orb-main::after{animation:none;}
+      .orb-main:hover svg path{animation:none;}
       /* La órbita aparece sin resorte: cambio de opacidad directo. */
       .orb-sat,.contact-orb.open .orb-sat{transition-duration:.01s;}
     }
@@ -1826,6 +1902,7 @@
      idioma del PDF siga funcionando sin tocarla. -->
 <div class="contact-orb" id="contactOrb">
   <span class="orb-ring" aria-hidden="true"></span>
+  <span class="orb-sweep" aria-hidden="true"></span>
 
   <a class="orb-sat sat-left" href="https://wa.me/56937287950" target="_blank" rel="noopener" aria-label="WhatsApp">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -1854,6 +1931,7 @@
   </a>
 
   <button class="orb-main" id="orbMain" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Contact">
+    <span class="orb-halo" aria-hidden="true"></span>
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
       <circle cx="12" cy="12" r="2"/>
       <path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5"/>
