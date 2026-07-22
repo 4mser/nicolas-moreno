@@ -1375,18 +1375,31 @@
     }
     /* Halo cónico: una chispa de luz recorre el contorno del pill en bucle.
        Se dibuja en un hijo con máscara de anillo para no deformar la forma. */
+    /* En reposo la chispa NO está siempre: cada 9s da UNA vuelta al contorno
+       y se apaga — un destello periódico, no un adorno permanente. En hover o
+       con la órbita abierta sí corre continua, como feedback. */
     .orb-halo{
       position:absolute;inset:-3px;border-radius:inherit;pointer-events:none;
-      padding:2px;opacity:.55;transition:opacity .3s ease;
+      padding:2px;opacity:0;transition:opacity .3s ease;
       background:conic-gradient(from var(--orbAng),
         transparent 0deg,transparent 250deg,
         rgb(var(--accent-rgb)/0.9) 305deg,#fff7e8 330deg,
         rgb(var(--accent-rgb)/0.9) 348deg,transparent 360deg);
       -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
       -webkit-mask-composite:xor;mask-composite:exclude;
-      animation:orbAng 3.6s linear infinite;
+      animation:orbHaloIdle 9s linear infinite;
     }
-    .orb-main:hover .orb-halo,.contact-orb.open .orb-halo{opacity:1;animation-duration:1.6s;}
+    /* La vuelta ocupa el primer 28% del ciclo (~2.5s); el resto, silencio. */
+    @keyframes orbHaloIdle{
+      0%{--orbAng:0deg;opacity:0;}
+      4%{opacity:.85;}
+      22%{opacity:.85;}
+      28%{--orbAng:360deg;opacity:0;}
+      100%{--orbAng:360deg;opacity:0;}
+    }
+    .orb-main:hover .orb-halo,.contact-orb.open .orb-halo{
+      opacity:1;animation:orbAng 1.6s linear infinite;
+    }
     @keyframes orbAng{to{--orbAng:360deg;}}
     /* Brillo barrido: pasa una vez con cada hover, como metal pulido. */
     .orb-main::after{
