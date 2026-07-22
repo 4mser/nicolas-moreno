@@ -312,7 +312,7 @@
       transition:color 0.3s,background 0.3s;
       border-radius:2px;
     }
-    nav a:hover{color:var(--amber);background:rgba(56,189,248,0.08);}
+    nav a:hover{color:var(--amber);background:rgb(var(--accent-rgb)/0.08);}
     nav a.dot{
       width:6px;height:6px;border-radius:50%;
       background:var(--amber);
@@ -1070,14 +1070,14 @@
     .trans-btn.primary:hover{
       background:var(--amber-warm);
       border-color:var(--amber-warm);
-      box-shadow:0 0 32px rgba(56,189,248,0.5);
+      box-shadow:0 0 32px rgb(var(--accent-rgb)/0.5);
     }
     .trans-btn.ghost{
       background:transparent;
       color:var(--amber);
       border:1px solid var(--border-2);
     }
-    .trans-btn.ghost:hover{border-color:var(--amber);background:rgba(56,189,248,0.08);}
+    .trans-btn.ghost:hover{border-color:var(--amber);background:rgb(var(--accent-rgb)/0.08);}
 
     /* ═══ FOOTER ═══ */
     footer{
