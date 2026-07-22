@@ -1063,13 +1063,14 @@
       transition:all 0.3s;
     }
     .trans-btn.primary{
-      background:var(--amber);
+      background:var(--accent-grad);
       color:var(--bg);
       border:1px solid var(--amber);
     }
     .trans-btn.primary:hover{
-      background:var(--amber-warm);
+      background:var(--accent-grad);
       border-color:var(--amber-warm);
+      filter:saturate(1.12) brightness(1.06);
       box-shadow:0 0 32px rgb(var(--accent-rgb)/0.5);
     }
     .trans-btn.ghost{
@@ -1364,7 +1365,7 @@
       padding:0.9rem 1.45rem;cursor:pointer;
       font-family:'IBM Plex Sans',sans-serif;font-size:0.9rem;font-weight:700;letter-spacing:0.01em;
       color:var(--on-accent);white-space:nowrap;
-      background:linear-gradient(135deg,var(--amber),var(--amber-warm));
+      background:var(--accent-grad);
       border:1px solid rgb(var(--accent-rgb)/0.45);
       border-radius:100px;
       box-shadow:
@@ -1488,7 +1489,7 @@
        pasar por ENCIMA del pill y de los otros satélites, no por debajo. */
     .orb-sat:hover,.orb-sat:focus-visible{
       z-index:5;color:var(--on-accent);
-      background:linear-gradient(135deg,var(--amber),var(--amber-warm));
+      background:var(--accent-grad);
       border-color:rgb(var(--accent-rgb)/0.9);
       box-shadow:
         0 1px 0 rgb(255 255 255/0.3) inset,
@@ -1575,6 +1576,21 @@
         display:inline-flex;align-items:center;}
       .origin-sticky button{min-width:44px;min-height:44px;}
     }
+    /* ═══ TINTA DEGRADADA ═══
+       --accent-grad existía pero sólo lo usaba la bolita del selector de temas:
+       en aurora y nova todo salía con el primer color plano. Los textos de
+       acento de tamaño display pasan a tinta degradada — en los temas planos el
+       fallback acento→cálido da un dos-tonos sutil, idéntico al del pill, así
+       que ningún tema pierde. El color queda de reserva por si el clip de
+       fondo no existe. Las etiquetas chicas se quedan planas: un degradado en
+       10px no se lee, ensucia. */
+    .hero-title em,.section-title em,.trans-title em,.notes-body p em{
+      background:var(--accent-grad);
+      -webkit-background-clip:text;background-clip:text;
+      -webkit-text-fill-color:transparent;
+      color:var(--amber);
+    }
+
     @media(prefers-reduced-motion:reduce){
       .contact-orb{animation:none;opacity:1;transform:none;}
       .orb-ring,.orb-halo,.orb-sweep{animation:none;}
