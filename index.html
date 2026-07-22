@@ -1421,9 +1421,13 @@
 
     /* Anillos: el punteado gira lento; el barrido de radar pasa UNA vez cada
        vez que la órbita se abre. */
+    /* La órbita se ancla al CASQUETE izquierdo del pill (su extremo redondo),
+       no a su centro: el pill es ancho y variable (Contacto/Contact, ES/EN), y
+       orbitar el centro dejaba al satélite izquierdo encima de la punta del
+       botón. Desde el casquete, el abanico florece limpio y nunca lo pisa. */
     .orb-ring{
-      position:absolute;left:50%;top:50%;z-index:1;
-      width:158px;height:158px;margin:-79px 0 0 -79px;
+      position:absolute;left:23px;top:50%;z-index:1;
+      width:156px;height:156px;margin:-78px 0 0 -78px;
       border:1px dashed rgb(var(--accent-rgb)/0.55);border-radius:50%;
       opacity:0;transform:scale(.5);pointer-events:none;
       transition:opacity .3s ease,transform .45s cubic-bezier(.34,1.56,.64,1);
@@ -1432,8 +1436,8 @@
     .contact-orb.open .orb-ring{opacity:.38;transform:scale(1);}
     @keyframes orbSpin{to{rotate:360deg;}}
     .orb-sweep{
-      position:absolute;left:50%;top:50%;z-index:1;
-      width:158px;height:158px;margin:-79px 0 0 -79px;border-radius:50%;
+      position:absolute;left:23px;top:50%;z-index:1;
+      width:156px;height:156px;margin:-78px 0 0 -78px;border-radius:50%;
       background:conic-gradient(from 180deg,rgb(var(--accent-rgb)/0.28),transparent 70deg,transparent 360deg);
       opacity:0;pointer-events:none;
     }
@@ -1441,7 +1445,7 @@
     @keyframes orbSweep{0%{opacity:.9;rotate:0deg;}80%{opacity:.5;}100%{opacity:0;rotate:360deg;}}
 
     .orb-sat{
-      position:absolute;left:50%;top:50%;z-index:3;
+      position:absolute;left:23px;top:50%;z-index:3;
       width:48px;height:48px;margin:-24px 0 0 -24px;
       display:flex;align-items:center;justify-content:center;
       border-radius:50%;color:var(--amber);
@@ -1464,8 +1468,8 @@
       transition:transform .5s cubic-bezier(.34,1.56,.64,1) var(--d),opacity .28s ease var(--d),
         visibility 0s linear var(--d),background .22s ease,color .22s ease,box-shadow .22s ease;
     }
-    .contact-orb.open .sat-left{transform:translate(-100px,0) scale(1) rotate(0deg);}
-    .contact-orb.open .sat-diag{transform:translate(-72px,-62px) scale(1) rotate(0deg);}
+    .contact-orb.open .sat-left{transform:translate(-78px,0) scale(1) rotate(0deg);}
+    .contact-orb.open .sat-diag{transform:translate(-55px,-55px) scale(1) rotate(0deg);}
     .contact-orb.open .sat-top{transform:translate(0,-78px) scale(1) rotate(0deg);}
     /* El satélite en hover sube de capa (z 5): su halo y su tooltip deben
        pasar por ENCIMA del pill y de los otros satélites, no por debajo. */
@@ -1479,8 +1483,8 @@
         0 0 22px -2px rgb(var(--accent-rgb)/0.5);
     }
     .orb-sat:hover svg,.orb-sat:focus-visible svg{transform:scale(1.12) rotate(-6deg);}
-    .contact-orb.open .sat-left:hover,.contact-orb.open .sat-left:focus-visible{transform:translate(-100px,0) scale(1.16) rotate(0deg);}
-    .contact-orb.open .sat-diag:hover,.contact-orb.open .sat-diag:focus-visible{transform:translate(-72px,-62px) scale(1.16) rotate(0deg);}
+    .contact-orb.open .sat-left:hover,.contact-orb.open .sat-left:focus-visible{transform:translate(-78px,0) scale(1.16) rotate(0deg);}
+    .contact-orb.open .sat-diag:hover,.contact-orb.open .sat-diag:focus-visible{transform:translate(-55px,-55px) scale(1.16) rotate(0deg);}
     .contact-orb.open .sat-top:hover,.contact-orb.open .sat-top:focus-visible{transform:translate(0,-78px) scale(1.16) rotate(0deg);}
 
     /* Tooltip HUD: mono espaciado, caret al satélite, entra subiendo. Corona
@@ -1517,11 +1521,11 @@
       .orb-main svg{width:15px;height:15px;}
       /* La órbita se aprieta un poco: mismo arco (izquierda, diagonal,
          arriba) a menor radio. Sin hover no hay tooltips. */
-      .orb-sat{width:44px;height:44px;margin:-22px 0 0 -22px;}
-      .contact-orb.open .sat-left{transform:translate(-86px,0) scale(1);}
-      .contact-orb.open .sat-diag{transform:translate(-62px,-56px) scale(1);}
+      .orb-sat{left:19px;width:44px;height:44px;margin:-22px 0 0 -22px;}
+      .contact-orb.open .sat-left{transform:translate(-68px,0) scale(1);}
+      .contact-orb.open .sat-diag{transform:translate(-48px,-48px) scale(1);}
       .contact-orb.open .sat-top{transform:translate(0,-68px) scale(1);}
-      .orb-ring{width:134px;height:134px;margin:-67px 0 0 -67px;}
+      .orb-ring,.orb-sweep{left:19px;width:136px;height:136px;margin:-68px 0 0 -68px;}
       .sat-tip{display:none;}
       body{padding-bottom:4.5rem;}
 
