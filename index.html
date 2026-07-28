@@ -17,13 +17,13 @@
   <meta property="og:description" content="Building software at the intersection of science, code, and the physical world. CEO & CTO of FIDELYA. Based in Santiago, Chile.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://nicolas-moreno.vercel.app/">
-  <meta property="og:image" content="https://nicolas-moreno.vercel.app/og-nicolas.png">
+  <meta property="og:image" content="https://nicolas-moreno.vercel.app/og-nicolas.png?v=5">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Nicolás Moreno — Builder">
   <meta name="twitter:description" content="Building software at the intersection of science, code, and the physical world.">
-  <meta name="twitter:image" content="https://nicolas-moreno.vercel.app/og-nicolas.png">
+  <meta name="twitter:image" content="https://nicolas-moreno.vercel.app/og-nicolas.png?v=5">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,800;1,9..144,300;1,9..144,400;1,9..144,500;1,9..144,600&family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -1095,6 +1095,85 @@
     footer p{margin-bottom:0.35rem;}
     footer .coords{color:var(--text-3);}
 
+    /* ═══ SIGNAL — GitHub contributions ═══
+       Panel de instrumento: los colores salen de --accent-rgb, así que la
+       trama de commits se recolorea sola con el tema (sin JS). */
+    #signal .gh-panel{
+      position:relative; margin-top:2.6rem; width:100%;
+      border:1px solid var(--border-2); background:rgb(var(--accent-rgb)/0.015);
+      padding:1.5rem 1.6rem 1.35rem;
+    }
+    #signal .gh-panel::before,#signal .gh-panel::after{
+      content:''; position:absolute; width:13px; height:13px; pointer-events:none;
+      border:1px solid rgb(var(--accent-rgb)/0.6);
+    }
+    #signal .gh-panel::before{top:-1px;left:-1px;border-right:0;border-bottom:0;}
+    #signal .gh-panel::after{bottom:-1px;right:-1px;border-left:0;border-top:0;}
+    .gh-link{color:var(--accent);text-decoration:none;white-space:nowrap;transition:opacity .2s ease;}
+    .gh-link:hover{opacity:0.82;}
+    /* Avatar grande a la izquierda del contador. */
+    .gh-av{flex:none;display:block;line-height:0;}
+    .gh-av img{width:52px;height:52px;border-radius:50%;object-fit:cover;display:block;
+      border:1px solid rgb(var(--accent-rgb)/0.45);box-shadow:0 0 0 3px rgb(var(--accent-rgb)/0.10);
+      transition:transform .2s ease, box-shadow .2s ease;}
+    .gh-av:hover img{transform:scale(1.06);box-shadow:0 0 0 3px rgb(var(--accent-rgb)/0.2),0 0 16px 2px rgb(var(--accent-rgb)/0.35);}
+    .gh-head{display:flex;align-items:center;gap:0.9rem;margin-bottom:1.15rem;flex-wrap:wrap;}
+    .gh-headtext{display:flex;align-items:baseline;gap:0.6rem;flex-wrap:wrap;}
+    .gh-total{font-family:'Fraunces',serif;font-weight:500;font-size:2.1rem;line-height:1;color:var(--accent);}
+    .gh-cap{font-family:'IBM Plex Mono',monospace;font-size:0.66rem;letter-spacing:0.16em;
+      text-transform:uppercase;color:var(--text-3);}
+    /* La trama ocupa TODO el ancho del panel: --gh-cell y --gh-gap los calcula
+       el JS a partir del ancho disponible y el número de semanas. */
+    .gh-scroll{overflow:visible;}
+    .gh-plot{position:relative;width:100%;--gh-cell:13px;--gh-gap:3px;}
+    .gh-months{display:grid;grid-auto-flow:column;grid-auto-columns:var(--gh-cell);
+      gap:var(--gh-gap);margin-bottom:5px;}
+    .gh-months span{font-family:'IBM Plex Mono',monospace;font-size:0.56rem;letter-spacing:0.08em;
+      color:var(--text-3);white-space:nowrap;}
+    .gh-grid{display:grid;grid-template-rows:repeat(7,var(--gh-cell));grid-auto-flow:column;
+      grid-auto-columns:var(--gh-cell);gap:var(--gh-gap);}
+    .gh-cell{width:var(--gh-cell);height:var(--gh-cell);border-radius:2px;
+      background:rgb(var(--accent-rgb)/0.05);outline:1px solid rgb(var(--accent-rgb)/0.05);outline-offset:-1px;
+      transition:transform .13s ease, box-shadow .13s ease, outline-color .13s ease;}
+    .gh-cell.blank{background:transparent;outline:0;}
+    .gh-cell[data-lvl="1"]{background:rgb(var(--accent-rgb)/0.26);}
+    .gh-cell[data-lvl="2"]{background:rgb(var(--accent-rgb)/0.48);}
+    .gh-cell[data-lvl="3"]{background:rgb(var(--accent-rgb)/0.72);}
+    .gh-cell[data-lvl="4"]{background:rgb(var(--accent-rgb)/1);box-shadow:0 0 5px rgb(var(--accent-rgb)/0.45);}
+    /* Reveal escalonado: antes de reproducirse las celdas están ocultas; al
+       entrar en vista aparecen en cascada (--gd = retardo por columna/fila).
+       fill 'backwards' mantiene el estado inicial durante el retardo y al
+       terminar devuelve el control al estilo normal, así el hover sigue vivo. */
+    .gh-panel:not(.gh-play) .gh-cell{opacity:0;transform:scale(.4);}
+    .gh-panel.gh-play .gh-cell{animation:ghCellIn .5s cubic-bezier(.2,.75,.3,1) backwards;
+      animation-delay:var(--gd,0ms);}
+    @keyframes ghCellIn{from{opacity:0;transform:scale(.35);}to{opacity:1;transform:scale(1);}}
+    @media(prefers-reduced-motion:reduce){
+      .gh-panel .gh-cell{animation:none!important;}
+      .gh-panel:not(.gh-play) .gh-cell{opacity:1;transform:none;}
+    }
+    /* Hover: la celda salta al frente, crece y se enciende con un halo. */
+    .gh-cell:not(.blank):hover{transform:scale(1.9);border-radius:3px;position:relative;z-index:3;
+      outline:1px solid rgb(var(--accent-rgb)/0.95);
+      box-shadow:0 0 0 2px rgb(var(--accent-rgb)/0.25),0 0 12px 2px rgb(var(--accent-rgb)/0.6);}
+    /* Tooltip flotante con el día y el conteo. */
+    .gh-tip{position:absolute;z-index:5;pointer-events:none;transform:translate(-50%,-100%);
+      background:var(--surface-2);border:1px solid var(--border-2);border-radius:5px;
+      padding:5px 9px;white-space:nowrap;font-family:'IBM Plex Mono',monospace;font-size:0.62rem;
+      letter-spacing:0.04em;color:var(--text);box-shadow:0 6px 22px rgba(0,0,0,.5);
+      opacity:0;transition:opacity .12s ease;margin-top:-8px;}
+    .gh-tip.show{opacity:1;}
+    .gh-tip b{color:var(--accent);font-weight:600;}
+    .gh-legend{display:flex;align-items:center;gap:5px;margin-top:0.95rem;
+      font-family:'IBM Plex Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;
+      text-transform:uppercase;color:var(--text-3);}
+    .gh-legend i{width:11px;height:11px;border-radius:2px;background:rgb(var(--accent-rgb)/0.05);
+      outline:1px solid rgb(var(--accent-rgb)/0.06);outline-offset:-1px;}
+    .gh-legend i[data-lvl="1"]{background:rgb(var(--accent-rgb)/0.26);}
+    .gh-legend i[data-lvl="2"]{background:rgb(var(--accent-rgb)/0.48);}
+    .gh-legend i[data-lvl="3"]{background:rgb(var(--accent-rgb)/0.72);}
+    .gh-legend i[data-lvl="4"]{background:rgb(var(--accent-rgb)/1);}
+
     /* Reveal */
     .reveal{opacity:0;transform:translateY(30px);}
 
@@ -1110,11 +1189,10 @@
     @media(max-width:768px){
       .container{padding:0 1.25rem;}
       section{padding:5rem 1.25rem;}
-      #hero{padding:6rem 1.25rem 3rem;min-height:92vh;}
+      #hero{padding:6rem 1.25rem 3rem;min-height:auto;}
       #transmission{padding:7rem 1.25rem 5rem;}
-      .log-header{gap:1.25rem;margin-bottom:2.5rem;}
-      .log-header .log-item{font-size:0.55rem;}
-      .hero-footer{gap:1.5rem;}
+      /* En móvil el log-header y el footer del hero comen demasiado espacio: se ocultan. */
+      .log-header,.hero-footer{display:none;}
       .observation{grid-template-columns:1fr;gap:0.85rem;}
       .obs-id{padding-top:0;}
       .obs-meta{padding-top:0;text-align:left;}
@@ -1318,18 +1396,14 @@
       .hud-live i{animation:none;}
       #hudCard,#hudLine,#hudNode{transition:none;}
     }
-    .origin-copy{
-      position:absolute;z-index:3;top:0;left:0;right:0;
-      max-width:1180px;margin:0 auto;
-      padding:6.5rem 2rem 0;
-      text-align:center;
+    /* El encabezado va en FLUJO NORMAL arriba del globo sticky (no absoluto ni
+       centrado): así se alinea a la izquierda como el resto de las secciones y
+       se va hacia arriba, desapareciendo cuando el globo 3D se fija en pantalla. */
+    .origin-head{
+      position:relative;z-index:3;
+      padding-top:6rem;padding-bottom:2.5rem;
     }
-    .origin-copy .section-num{justify-content:center;}
-    .origin-sub{
-      font-size:1.02rem;line-height:1.65;color:var(--text-2);
-      max-width:480px;margin-top:0.25rem;
-    }
-    .origin-sub em{font-style:normal;color:var(--amber);}
+    .origin-head .section-sub{max-width:520px;}
     .origin-readout{
       display:flex;flex-wrap:wrap;gap:1.75rem;margin-top:2rem;
       font-family:'IBM Plex Mono',monospace;
@@ -1342,7 +1416,7 @@
     .origin-readout .ro-value .live{color:var(--amber);}
     @media(max-width:768px){
       #origin{height:220vh;}
-      .origin-copy{padding:5.5rem 1.25rem 0;}
+      .origin-head{padding-top:4.5rem;padding-bottom:2rem;}
     }
     @media(prefers-reduced-motion:reduce){
       #globeStage{transition:none;}
@@ -1667,7 +1741,7 @@
         </h1>
 
         <p class="hero-sub">
-          <span data-en="Software engineer, founder of FIDELYA. " data-es="Ingeniero de software, fundador de FIDELYA. ">Software engineer, founder of FIDELYA. </span><span class="highlight" data-en="I studied physics to understand the world. I write code to get inside it." data-es="Estudié física para entender el mundo. Escribo código para meterme en él.">I studied physics to understand the world. I write code to get inside it.</span>
+          <span data-en="Software engineer and cofounder of FIDELYA and B&amp;N. " data-es="Ingeniero de software y cofundador de FIDELYA y B&amp;N. ">Software engineer and cofounder of FIDELYA and B&amp;N. </span><span class="highlight" data-en="I studied Physics to get closer to the fundamental questions. Today I bring that same way of thinking to code and design, turning ideas into reality." data-es="Estudié Física para acercarme a las preguntas fundamentales. Hoy llevo esa misma forma de pensar al código y al diseño para convertir ideas en realidad.">I studied Physics to get closer to the fundamental questions. Today I bring that same way of thinking to code and design, turning ideas into reality.</span>
         </p>
 
         <div class="hero-footer">
@@ -1677,11 +1751,11 @@
           </div>
           <div class="hero-footer-item">
             <span class="lbl" data-en="Day job" data-es="Trabajo diario">Day job</span>
-            <span class="val" data-en="Tech Lead · GoAuto (Dropout Capital)" data-es="Tech Lead · GoAuto (Dropout Capital)">Tech Lead · GoAuto (Dropout Capital)</span>
+            <span class="val" data-en="B&amp;N Solutions · Co-founder &amp; CTO" data-es="B&amp;N Solutions · Cofundador y CTO">B&amp;N Solutions · Co-founder &amp; CTO</span>
           </div>
           <div class="hero-footer-item">
             <span class="lbl" data-en="Home base" data-es="Base">Home base</span>
-            <span class="val" data-en="Entropía Technologies · Cofounder" data-es="Entropía Technologies · Cofundador">Entropía Technologies · Cofounder</span>
+            <span class="val" data-en="Santiago, Chile" data-es="Santiago, Chile">Santiago, Chile</span>
           </div>
         </div>
       </div>
@@ -1689,12 +1763,10 @@
       <figure class="hero-plate" id="heroPlate">
         <div class="plate-frame">
           <canvas id="portraitCanvas"></canvas>
-          <img id="portraitSrc" src="nico.jpg" alt="Nicolás Moreno" fetchpriority="high">
+          <img id="portraitSrc" src="nico.jpg?v=2" alt="Nicolás Moreno" fetchpriority="high">
         </div>
         <figcaption class="plate-cap">
-          <span data-en="PLATE 001 · SANTIAGO" data-es="PLACA 001 · SANTIAGO">PLATE 001 · SANTIAGO</span>
-          <span class="plate-hint hint-fine" data-en="move to resolve" data-es="muévete para resolver">move to resolve</span>
-          <span class="plate-hint hint-coarse" data-en="scroll to tear it" data-es="muévete y se rompe">scroll to tear it</span>
+          <span data-en="CASUAL PIC LOL" data-es="FOTO CASUAL JEJE">CASUAL PIC LOL</span>
         </figcaption>
       </figure>
     </div>
@@ -1709,11 +1781,23 @@
 
     <div class="observations">
 
-      <a href="https://fidelya.cl" target="_blank" rel="noopener" class="observation reveal">
+      <a href="https://bnsolutions.cl" target="_blank" rel="noopener" class="observation reveal">
         <div class="obs-id">OBS-001</div>
         <div class="obs-body">
-          <h3 class="obs-title" data-en="FIDELYA — The Customer Intelligence OS for the physical world" data-es="FIDELYA — El Customer Intelligence OS para el mundo físico">FIDELYA &mdash; The Customer Intelligence OS for the physical world</h3>
-          <p class="obs-desc" data-en="Multi-tenant SaaS that captures the real behavior of in-person consumers and turns it into predictive retention through AURA, a proprietary AI engine I built from scratch. Sixty+ modules in production. Real paying customers. Currently raising a seed round. CEO & CTO." data-es="SaaS multi-tenant que captura el comportamiento real de los consumidores presenciales y lo convierte en retención predictiva a través de AURA, un engine de IA propietario que construí desde cero. Sesenta+ módulos en producción. Clientes reales pagando. Actualmente levantando ronda seed. CEO y CTO.">Multi-tenant SaaS that captures the real behavior of in-person consumers and turns it into predictive retention through AURA, a proprietary AI engine I built from scratch. Sixty+ modules in production. Real paying customers. Currently raising a seed round. CEO &amp; CTO.</p>
+          <h3 class="obs-title" data-en="B&amp;N Solutions — High-level technology operations" data-es="B&amp;N Solutions — Operaciones tecnológicas de alto nivel">B&amp;N Solutions — High-level technology operations</h3>
+          <p class="obs-desc" data-en="The company I'm building with my partner and friend Benjamín Campos. Automation, neural networks, custom software and mathematical modeling for real operations. A four-person team based in Santiago, working on-site and remote. Cofounder." data-es="La empresa que estoy construyendo con mi socio y amigo Benjamín Campos. Automatización, redes neuronales, software a medida y modelamiento matemático para operaciones reales. Equipo de cuatro personas con base en Santiago, trabajando presencial y remoto. Cofundador.">The company I'm building with my partner and friend Benjamín Campos. Automation, neural networks, custom software and mathematical modeling for real operations. A four-person team based in Santiago, working on-site and remote. Cofounder.</p>
+        </div>
+        <div class="obs-meta">
+          <div data-en="Since Jul 2026" data-es="Desde Jul 2026">Since Jul 2026</div>
+          <div class="status" data-en="● Active" data-es="● Activo">● Active</div>
+        </div>
+      </a>
+
+      <a href="https://fidelya.cl" target="_blank" rel="noopener" class="observation reveal">
+        <div class="obs-id">OBS-002</div>
+        <div class="obs-body">
+          <h3 class="obs-title" data-en="FIDELYA — The Customer Intelligence OS for the physical world" data-es="FIDELYA — El Customer Intelligence OS para el mundo físico">FIDELYA — The Customer Intelligence OS for the physical world</h3>
+          <p class="obs-desc" data-en="Multi-tenant SaaS that captures the real behavior of in-person consumers and turns it into predictive retention through AURA, a proprietary AI engine I built from scratch. Sixty+ modules in production. Real paying customers. Currently raising a seed round. CEO & CTO." data-es="SaaS multi-tenant que captura el comportamiento real de los consumidores presenciales y lo convierte en retención predictiva a través de AURA, un engine de IA propietario que construí desde cero. Sesenta+ módulos en producción. Clientes reales pagando. Actualmente levantando ronda seed. CEO y CTO.">Multi-tenant SaaS that captures the real behavior of in-person consumers and turns it into predictive retention through AURA, a proprietary AI engine I built from scratch. Sixty+ modules in production. Real paying customers. Currently raising a seed round. CEO & CTO.</p>
         </div>
         <div class="obs-meta">
           <div data-en="Since Jan 2025" data-es="Desde Ene 2025">Since Jan 2025</div>
@@ -1722,25 +1806,13 @@
       </a>
 
       <a href="https://www.goauto.cl/" target="_blank" rel="noopener" class="observation reveal">
-        <div class="obs-id">OBS-002</div>
-        <div class="obs-body">
-          <h3 class="obs-title" data-en="GoAuto — Dealership software, rebuilt from first principles" data-es="GoAuto — Software para automotoras, reconstruido desde cero">GoAuto &mdash; Dealership software, rebuilt from first principles</h3>
-          <p class="obs-desc" data-en="Tech Lead at a Dropout Capital company building the best software ever made for auto dealerships. International team spanning LATAM and the US. Full-stack engineering, architecture decisions, and product leadership." data-es="Tech Lead en una empresa de Dropout Capital construyendo el mejor software jamás hecho para automotoras. Equipo internacional entre LATAM y EE.UU. Ingeniería full-stack, decisiones de arquitectura y liderazgo de producto.">Tech Lead at a Dropout Capital company building the best software ever made for auto dealerships. International team spanning LATAM and the US. Full-stack engineering, architecture decisions, and product leadership.</p>
-        </div>
-        <div class="obs-meta">
-          <div data-en="Since Oct 2025" data-es="Desde Oct 2025">Since Oct 2025</div>
-          <div class="status" data-en="● Active" data-es="● Activo">● Active</div>
-        </div>
-      </a>
-
-      <a href="https://entropia-landpage.vercel.app/" target="_blank" rel="noopener" class="observation reveal">
         <div class="obs-id">OBS-003</div>
         <div class="obs-body">
-          <h3 class="obs-title" data-en="Entropía Technologies — My research lab and home base" data-es="Entropía Technologies — Mi laboratorio de investigación y base">Entropía Technologies &mdash; My research lab and home base</h3>
-          <p class="obs-desc" data-en="The Chilean SpA I co-founded in 2023. A small team building software products and running a research lab focused on analytical models and neural networks. It's where experimental work lives before it earns its way into a real product." data-es="La SpA chilena que cofundé en 2023. Un equipo pequeño construyendo productos de software y corriendo un laboratorio de investigación enfocado en modelos analíticos y redes neuronales. Es donde vive el trabajo experimental antes de ganarse el paso a un producto real.">The Chilean SpA I co-founded in 2023. A small team building software products and running a research lab focused on analytical models and neural networks. It's where experimental work lives before it earns its way into a real product.</p>
+          <h3 class="obs-title" data-en="GoAuto — Dealership software, rebuilt from first principles" data-es="GoAuto — Software para automotoras, reconstruido desde cero">GoAuto — Dealership software, rebuilt from first principles</h3>
+          <p class="obs-desc" data-en="Dealership management platform running 50+ dealerships in Chile. Full-stack across all three faces of the system: the admin panel dealers operate on, the buyer-facing portal, and the public site." data-es="Plataforma de gestión automotriz sobre la que operan +50 automotoras en Chile. Full stack en las tres caras del sistema: el panel con el que opera la automotora, el portal del comprador y el sitio público.">Dealership management platform running 50+ dealerships in Chile. Full-stack across all three faces of the system: the admin panel dealers operate on, the buyer-facing portal, and the public site.</p>
         </div>
         <div class="obs-meta">
-          <div data-en="Since Jan 2023" data-es="Desde Ene 2023">Since Jan 2023</div>
+          <div data-en="Oct 2025 — Jul 2026" data-es="Oct 2025 — Jul 2026">Oct 2025 — Jul 2026</div>
           <div class="status" data-en="● Active" data-es="● Activo">● Active</div>
         </div>
       </a>
@@ -1769,15 +1841,17 @@
       <div class="section-num reveal" data-en="// 02 — Field notes" data-es="// 02 — Notas de campo">// 02 — Field notes</div>
       <h2 class="section-title reveal"><span data-en="How I ended up " data-es="Cómo terminé ">How I ended up </span><em data-en="here." data-es="aquí.">here.</em></h2>
 
-      <p class="reveal" data-en="I grew up in Santiago. I started Physics Engineering at Universidad Andrés Bello in 2019 because I wanted to understand what everything is made of." data-es="Crecí en Santiago. Entré a Ingeniería Física en la Universidad Andrés Bello el 2019 porque quería entender de qué está hecho todo.">I grew up in Santiago. I started Physics Engineering at Universidad Andr&eacute;s Bello in 2019 because I wanted to understand what everything is made of.</p>
+      <p class="reveal" data-en="I grew up in Santiago. In 2019 I started Physics Engineering at Universidad Andrés Bello because I wanted to understand everything: what we are, where we're headed, and why things are the way they are. Physics was the only thing I felt could give some shape to all those questions spinning around in my head." data-es="Crecí en Santiago. En 2019 entré a Ingeniería Física en la Universidad Andrés Bello porque quería entenderlo todo: qué somos, hacia dónde vamos y por qué las cosas son como son. La física era lo único que sentía capaz de darle cierta forma a todas esas preguntas que daban vueltas en mi cabeza.">I grew up in Santiago. In 2019 I started Physics Engineering at Universidad Andrés Bello because I wanted to understand everything: what we are, where we're headed, and why things are the way they are. Physics was the only thing I felt could give some shape to all those questions spinning around in my head.</p>
 
-      <p class="reveal" data-en="The pandemic came and I went to Valdivia. I was there six years doing software and design, learning by building things and breaking them. Since 2022 I work on this full-time: systems, data analysis, AI, automation. My favourite part is still the moment something that only existed in my head starts running on its own." data-es="Llegó la pandemia y me fui a Valdivia. Estuve seis años ahí haciendo software y diseño, aprendiendo a punta de construir cosas y romperlas. Desde 2022 trabajo en esto a tiempo completo: sistemas, análisis de datos, IA, automatizaciones. Lo que más me gusta sigue siendo el momento en que algo que estaba solo en mi cabeza empieza a funcionar solo.">The pandemic came and I went to <strong>Valdivia</strong>. I was there six years doing software and design, learning by building things and breaking them. Since 2022 I work on this full-time: systems, data analysis, AI, automation. My favourite part is still the moment something that only existed in my head starts running on its own.</p>
+      <p class="reveal" data-en="When the pandemic hit, I moved to Valdivia. I spent six years there doing software and design, learning by building things, breaking them, and trying again. Since 2022 I've worked on this full-time: systems, data analysis, artificial intelligence, and automation." data-es="Con la pandemia me fui a Valdivia. Pasé seis años allá haciendo software y diseño, aprendiendo a punta de construir cosas, romperlas y volver a intentarlo. Desde 2022 trabajo en esto a tiempo completo: sistemas, análisis de datos, inteligencia artificial y automatización.">When the pandemic hit, I moved to Valdivia. I spent six years there doing software and design, learning by building things, breaking them, and trying again. Since 2022 I've worked on this full-time: systems, data analysis, artificial intelligence, and automation.</p>
+
+      <p class="reveal" data-en="What I still love most is that moment when an idea that existed only in my head starts running on its own." data-es="Lo que más me sigue gustando es ese momento en que una idea que existía solo en mi cabeza empieza a funcionar por sí sola.">What I still love most is that moment when an idea that existed only in my head starts running on its own.</p>
+
+      <p class="reveal" data-en="Outside of work, I watch a lot of films and series, listen to music, and read a lot. I also try to spend as much time as I can in nature and with the people I love. I'm still amazed by how strange, how chaotic, and above all how beautiful and full of life this incredible rock floating in space is — and by the luck of being here, conscious, to see it." data-es="Fuera del trabajo, veo muchas películas y series, escucho música y leo bastante. También intento pasar todo el tiempo que puedo en la naturaleza y con mis seres queridos. Me sigue impresionando lo extraña, caótica y, sobre todo, bella y llena de vida que es esta increíble roca flotando en el espacio. Y la suerte de estar acá, consciente, para verlo.">Outside of work, I watch a lot of films and series, listen to music, and read a lot. I also try to spend as much time as I can in nature and with the people I love. I'm still amazed by how strange, how chaotic, and above all how beautiful and full of life this incredible rock floating in space is — and by the luck of being here, conscious, to see it.</p>
+
+      <p class="reveal" data-en="In 2026 I came back to Santiago. I came back with more experience, more ideas, and more hunger than ever… in every sense." data-es="En 2026 volví a Santiago. Volví con más experiencia, más ideas y más hambre que nunca… en todos los sentidos.">In 2026 I came back to Santiago. I came back with more experience, more ideas, and more hunger than ever… in every sense.</p>
 
       <div class="scribble reveal" data-en="&ldquo;Life is only a dream, and we are the imagination of ourselves.&rdquo;&lt;cite&gt;Bill Hicks&lt;/cite&gt;" data-es="&ldquo;La vida es solo un sueño, y somos la imaginación de nosotros mismos.&rdquo;&lt;cite&gt;Bill Hicks&lt;/cite&gt;">&ldquo;Life is only a dream, and we are the imagination of ourselves.&rdquo;<cite>Bill Hicks</cite></div>
-
-      <p class="reveal" data-en="I read physics and philosophy. I listen to music all day. I watch films. I go up the hill. All of it ends up in what I build, even when I don't plan it." data-es="Leo física y filosofía. Escucho música todo el día. Veo cine. Salgo al cerro. Todo eso se me mete en lo que construyo, aunque no lo planee.">I read physics and philosophy. I listen to music all day. I watch films. I go up the hill. All of it ends up in what I build, even when I don't plan it.</p>
-
-      <p class="reveal" data-en="I came back to Santiago in 2025." data-es="Volví a Santiago el 2025.">I came back to Santiago in 2025.</p>
 
     </div>
   </div>
@@ -1805,35 +1879,35 @@
   <div class="container">
     <div class="section-num reveal" data-en="// 04 — Trajectory" data-es="// 04 — Trayectoria">// 04 — Trajectory</div>
     <h2 class="section-title reveal"><span data-en="The path that brought me " data-es="El camino que me trajo ">The path that brought me </span><em data-en="here." data-es="aquí.">here.</em></h2>
-    <p class="section-sub reveal" data-en="Four years full-time writing software. Three companies. Three years of physics I still use." data-es="Cuatro años escribiendo software a tiempo completo. Tres empresas. Tres años de física que todavía uso.">Four years full-time writing software. Three companies. Three years of physics I still use.</p>
+    <p class="section-sub reveal" data-en="Four years full-time writing software. Four companies. Three years of physics I still use." data-es="Cuatro años escribiendo software a tiempo completo. Cuatro empresas. Tres años de física que todavía uso.">Four years full-time writing software. Four companies. Three years of physics I still use.</p>
 
     <div class="trajectory">
       <span class="tr-rail" aria-hidden="true"><span class="tr-rail-fill" id="trRail"></span></span>
 
       <div class="tr-item reveal">
-        <div class="tr-cell"><span class="tr-node" aria-hidden="true"></span><div class="tr-date" data-en="Oct 2025 → Now" data-es="Oct 2025 → Hoy">Oct 2025 → Now</div></div>
+        <div class="tr-cell"><span class="tr-node" aria-hidden="true"></span><div class="tr-date" data-en="Jul 2026 → Now" data-es="Jul 2026 → Hoy">Jul 2026 → Now</div></div>
+        <div>
+          <h3 class="tr-title" data-en="Co-founder &amp; CTO" data-es="Cofundador y CTO">Co-founder &amp; CTO</h3>
+          <div class="tr-company">B&amp;N Solutions · bnsolutions.cl</div>
+          <p class="tr-desc" data-en="The new company I'm building with my partner and friend Benjamín Campos. High-level technology operations: automation, neural networks, custom software and mathematical modeling for businesses that need engineering." data-es="La nueva empresa que estoy construyendo con mi socio y amigo Benjamín Campos. Operaciones tecnológicas de alto nivel: automatización, redes neuronales, software a medida y modelamiento matemático para negocios que necesitan ingeniería.">The new company I'm building with my partner and friend Benjamín Campos. High-level technology operations: automation, neural networks, custom software and mathematical modeling for businesses that need engineering.</p>
+        </div>
+      </div>
+
+      <div class="tr-item reveal historical">
+        <div class="tr-cell"><span class="tr-node" aria-hidden="true"></span><div class="tr-date" data-en="Oct 2025 → Jul 2026" data-es="Oct 2025 → Jul 2026">Oct 2025 → Jul 2026</div></div>
         <div>
           <h3 class="tr-title" data-en="Tech Lead · Full-Stack Developer" data-es="Tech Lead · Full-Stack Developer">Tech Lead · Full-Stack Developer</h3>
           <div class="tr-company">GoAuto · Dropout Capital</div>
-          <p class="tr-desc" data-en="Leading product and architecture on a new category of auto dealership software. International team, fast iteration, real users from day one." data-es="Liderando producto y arquitectura en una nueva categoría de software para automotoras. Equipo internacional, iteración rápida, usuarios reales desde el día uno.">Leading product and architecture on a new category of auto dealership software. International team, fast iteration, real users from day one.</p>
+          <p class="tr-desc" data-en="Full-stack development of a dealership management platform running 50+ dealerships in Chile: architecture, backend, admin panel, customer portal and deployment infrastructure." data-es="Desarrollo full stack de una plataforma de gestión automotriz sobre la que operan +50 automotoras en Chile: arquitectura, backend, panel de administración, portal del cliente e infraestructura de despliegue.">Full-stack development of a dealership management platform running 50+ dealerships in Chile: architecture, backend, admin panel, customer portal and deployment infrastructure.</p>
         </div>
       </div>
 
       <div class="tr-item reveal">
         <div class="tr-cell"><span class="tr-node" aria-hidden="true"></span><div class="tr-date" data-en="Jan 2025 → Now" data-es="Ene 2025 → Hoy">Jan 2025 → Now</div></div>
         <div>
-          <h3 class="tr-title" data-en="CEO & CTO · Cofounder" data-es="CEO y CTO · Cofundador">CEO &amp; CTO · Cofounder</h3>
+          <h3 class="tr-title" data-en="CEO & CTO · Cofounder" data-es="CEO y CTO · Cofundador">CEO & CTO · Cofounder</h3>
           <div class="tr-company">FIDELYA</div>
           <p class="tr-desc" data-en="Customer Intelligence OS for brick-and-mortar retail. Multi-tenant SaaS, 60+ modules, proprietary AI engine. Currently raising seed." data-es="Customer Intelligence OS para el retail físico. SaaS multi-tenant, 60+ módulos, engine de IA propietario. Actualmente levantando ronda seed.">Customer Intelligence OS for brick-and-mortar retail. Multi-tenant SaaS, 60+ modules, proprietary AI engine. Currently raising seed.</p>
-        </div>
-      </div>
-
-      <div class="tr-item reveal">
-        <div class="tr-cell"><span class="tr-node" aria-hidden="true"></span><div class="tr-date" data-en="Jan 2023 → Now" data-es="Ene 2023 → Hoy">Jan 2023 → Now</div></div>
-        <div>
-          <h3 class="tr-title" data-en="CEO & Cofounder" data-es="CEO y Cofundador">CEO &amp; Cofounder</h3>
-          <div class="tr-company">Entropía Technologies</div>
-          <p class="tr-desc" data-en="Chilean SpA building software products and running a research lab. The umbrella company where all my experimental work lives." data-es="SpA chilena que construye productos de software y corre un laboratorio de investigación. La empresa paraguas donde vive todo mi trabajo experimental.">Chilean SpA building software products and running a research lab. The umbrella company where all my experimental work lives.</p>
         </div>
       </div>
 
@@ -1841,8 +1915,8 @@
         <div class="tr-cell"><span class="tr-node" aria-hidden="true"></span><div class="tr-date" data-en="Mar 2024 → Sep 2024" data-es="Mar 2024 → Sep 2024">Mar 2024 → Sep 2024</div></div>
         <div>
           <h3 class="tr-title" data-en="Full-Stack Developer" data-es="Full-Stack Developer">Full-Stack Developer</h3>
-          <div class="tr-company">VASCO · Pittsburgh, PA (Remote)</div>
-          <p class="tr-desc" data-en="Seven months as full-stack engineer on a US-based contract. First international client engagement and a lot of lessons about writing production code for someone else." data-es="Siete meses como full-stack engineer en un contrato basado en EE.UU. Primer contrato internacional y muchas lecciones sobre escribir código productivo para otra persona.">Seven months as full-stack engineer on a US-based contract. First international client engagement and a lot of lessons about writing production code for someone else.</p>
+          <div class="tr-company">VASCO · Santiago, Chile (Remote)</div>
+          <p class="tr-desc" data-en="Full-stack engineer on applied research platforms for robotic inspection: computer vision over power line imagery, and defect detection with quadruped robots." data-es="Full-stack en plataformas de investigación aplicada para inspección robótica: visión computacional sobre imágenes de tendido eléctrico y detección de defectos con robots cuadrúpedos.">Full-stack engineer on applied research platforms for robotic inspection: computer vision over power line imagery, and defect detection with quadruped robots.</p>
         </div>
       </div>
 
@@ -1850,17 +1924,17 @@
         <div class="tr-cell"><span class="tr-node" aria-hidden="true"></span><div class="tr-date">2020 → 2022</div></div>
         <div>
           <h3 class="tr-title" data-en="UX/UI Designer" data-es="Diseñador UX/UI">UX/UI Designer</h3>
-          <div class="tr-company" data-en="Independent · First projects" data-es="Independiente · Primeros proyectos">Independent &middot; First projects</div>
-          <p class="tr-desc" data-en="Before writing a single line of production code, I spent two years designing interfaces. I taught myself Figma, shipped my first client work, and learned something that still defines how I work: the hardest part of good software isn't the code — it's understanding what people actually need." data-es="Antes de escribir una sola línea de código productivo, pasé dos años diseñando interfaces. Aprendí Figma por mi cuenta, entregué mis primeros trabajos a clientes, y descubrí algo que todavía define cómo trabajo: lo más difícil del buen software no es el código — es entender qué necesita realmente la gente.">Before writing a single line of production code, I spent two years designing interfaces. I taught myself Figma, shipped my first client work, and learned something that still defines how I work: the hardest part of good software isn't the code &mdash; it's understanding what people actually need.</p>
+          <div class="tr-company" data-en="Independent · First projects" data-es="Independiente · Primeros proyectos">Independent · First projects</div>
+          <p class="tr-desc" data-en="Before writing a single line of production code, I spent two years designing interfaces. I taught myself Figma, shipped my first client work, and learned something that still defines how I work: the hardest part of good software isn't the code — it's understanding what people actually need." data-es="Antes de escribir una sola línea de código productivo, pasé dos años diseñando interfaces. Aprendí Figma por mi cuenta, entregué mis primeros trabajos a clientes, y descubrí algo que todavía define cómo trabajo: lo más difícil del buen software no es el código — es entender qué necesita realmente la gente.">Before writing a single line of production code, I spent two years designing interfaces. I taught myself Figma, shipped my first client work, and learned something that still defines how I work: the hardest part of good software isn't the code — it's understanding what people actually need.</p>
         </div>
       </div>
 
       <div class="tr-item reveal historical">
         <div class="tr-cell"><span class="tr-node" aria-hidden="true"></span><div class="tr-date">2019 → 2022</div></div>
         <div>
-          <h3 class="tr-title" data-en="Physics Engineering (incomplete)" data-es="Ingeniería Física (incompleta)">Physics Engineering (incomplete)</h3>
+          <h3 class="tr-title" data-en="Physics Engineering" data-es="Ingeniería Física">Physics Engineering</h3>
           <div class="tr-company">Universidad Andrés Bello · Santiago</div>
-          <p class="tr-desc" data-en="Three years of physics engineering. Left during the pandemic, moved south to Valdivia for six years, and built software full-time. Now back in Santiago. Still read physics papers on weekends." data-es="Tres años de ingeniería física. Me salí durante la pandemia, me fui al sur a Valdivia por seis años, y construí software a tiempo completo. Ahora de vuelta en Santiago. Todavía leo papers de física los fines de semana.">Three years of physics engineering. Left during the pandemic, moved south to Valdivia for six years, and built software full-time. Now back in Santiago. Still read physics papers on weekends.</p>
+          <p class="tr-desc" data-en="I completed three years of Physics Engineering. During the pandemic I put the degree on hold and moved to Valdivia, where I spent six years building software and learning through real projects.&lt;br&gt;&lt;br&gt;I never left physics. I still read papers and study on my own, and I want to finish the degree once I have the stability to do it calmly — no rush, purely for the pleasure of learning." data-es="Cursé tres años de Ingeniería Física. Durante la pandemia puse la carrera en pausa y me fui a Valdivia, donde pasé seis años construyendo software y aprendiendo a través de proyectos reales.&lt;br&gt;&lt;br&gt;Nunca dejé la física. Sigo leyendo papers y estudiando por mi cuenta, y quiero retomar la carrera cuando tenga la estabilidad necesaria para hacerlo con calma, sin urgencias y por el puro placer de aprender.">I completed three years of Physics Engineering. During the pandemic I put the degree on hold and moved to Valdivia, where I spent six years building software and learning through real projects.<br><br>I never left physics. I still read papers and study on my own, and I want to finish the degree once I have the stability to do it calmly &mdash; no rush, purely for the pleasure of learning.</p>
         </div>
       </div>
 
@@ -1869,7 +1943,7 @@
         <div>
           <h3 class="tr-title" data-en="Telecommunications Technician" data-es="Técnico en Telecomunicaciones">Telecommunications Technician</h3>
           <div class="tr-company">Liceo Politécnico Ciencia y Tecnología</div>
-          <p class="tr-desc" data-en="Where it started: a technical high-school degree in telecommunications. Networks, signals, hardware — the first time I understood a system by taking it apart." data-es="Donde empezó todo: un título técnico en telecomunicaciones. Redes, señales, hardware — la primera vez que entendí un sistema desarmándolo.">Where it started: a technical high-school degree in telecommunications. Networks, signals, hardware &mdash; the first time I understood a system by taking it apart.</p>
+          <p class="tr-desc" data-en="Where it started: a technical high-school degree in telecommunications. Networks, signals, hardware — the first time I understood a system by taking it apart." data-es="Donde empezó todo: un título técnico en telecomunicaciones. Redes, señales, hardware — la primera vez que entendí un sistema desarmándolo.">Where it started: a technical high-school degree in telecommunications. Networks, signals, hardware — the first time I understood a system by taking it apart.</p>
         </div>
       </div>
 
@@ -1877,8 +1951,45 @@
   </div>
 </section>
 
+<!-- ═══ SIGNAL — GitHub contributions radar ═══ -->
+<section id="signal">
+  <div class="container">
+    <div class="section-num reveal" data-en="// Signal log" data-es="// Registro de señal">// Signal log</div>
+    <h2 class="section-title reveal"><span data-en="A year of " data-es="Un año de ">A year of </span><em data-en="shipping code." data-es="empujar código.">shipping code.</em></h2>
+    <p class="section-sub reveal" data-en="Live from &lt;a class='gh-link' href='https://github.com/4mser' target='_blank' rel='noopener'&gt;@4mser&lt;/a&gt;." data-es="En vivo desde &lt;a class='gh-link' href='https://github.com/4mser' target='_blank' rel='noopener'&gt;@4mser&lt;/a&gt;.">Live from <a class="gh-link" href="https://github.com/4mser" target="_blank" rel="noopener">@4mser</a>.</p>
+
+    <div class="gh-panel reveal" id="ghPanel">
+      <div class="gh-head">
+        <a class="gh-av" href="https://github.com/4mser" target="_blank" rel="noopener" aria-label="GitHub · @4mser">
+          <img src="https://github.com/4mser.png?size=120" alt="Nicolás Moreno" loading="lazy">
+        </a>
+        <div class="gh-headtext">
+          <span class="gh-total" id="ghTotal">—</span>
+          <span class="gh-cap" data-en="contributions in the last year" data-es="contribuciones en el último año">contributions in the last year</span>
+        </div>
+      </div>
+      <div class="gh-scroll">
+        <div class="gh-plot" id="ghPlot">
+          <div class="gh-months" id="ghMonths" aria-hidden="true"></div>
+          <div class="gh-grid" id="ghGrid" role="img" aria-label="GitHub contributions in the last year"></div>
+          <div class="gh-tip" id="ghTip" aria-hidden="true"></div>
+        </div>
+      </div>
+      <div class="gh-legend">
+        <span data-en="Less" data-es="Menos">Less</span>
+        <i data-lvl="0"></i><i data-lvl="1"></i><i data-lvl="2"></i><i data-lvl="3"></i><i data-lvl="4"></i>
+        <span data-en="More" data-es="Más">More</span>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ═══ ORIGIN — return vector (Three.js globe) ═══ -->
 <section id="origin">
+  <div class="container origin-head">
+    <div class="section-num reveal" data-en="// Current position" data-es="// Posición actual">// Current position</div>
+    <h2 class="section-title reveal"><span data-en="Broadcasting from " data-es="Transmitiendo desde ">Broadcasting from </span><em data-en="Santiago." data-es="Santiago.">Santiago.</em></h2>
+  </div>
   <div class="origin-sticky">
     <canvas id="globeCanvas"></canvas>
 
@@ -1903,22 +2014,20 @@
       <a class="hud-cta" href="mailto:nicolas.fidelya@gmail.com">&rarr; nicolas.fidelya@gmail.com</a>
     </div>
 
-    <div class="origin-copy">
-      <div class="section-num" data-en="// Current position" data-es="// Posición actual">// Current position</div>
-    </div>
   </div>
 </section>
 
 <!-- ═══ TRANSMISSION ═══ -->
 <section id="transmission">
   <div class="trans-label"><span class="pulse"></span> <span data-en="Transmit / Incoming signal" data-es="Transmitir / Señal entrante">Transmit / Incoming signal</span></div>
-  <h2 class="trans-title"><span data-en="If you're building something strange and real, " data-es="Si estás construyendo algo raro y real, ">If you're building something strange and real, </span><em data-en="let's talk." data-es="conversemos.">let's talk.</em></h2>
-  <p class="trans-sub" data-en="I'm always open to conversations with people working on hard problems at the intersection of science, software, and the physical world. The weirder the better." data-es="Siempre estoy abierto a conversar con gente trabajando en problemas difíciles en la intersección entre ciencia, software y el mundo físico. Mientras más raro, mejor.">I'm always open to conversations with people working on hard problems at the intersection of science, software, and the physical world. The weirder the better.</p>
+  <h2 class="trans-title"><span data-en="I'm looking for " data-es="Estoy buscando ">I'm looking for </span><em data-en="the next thing that keeps me up at night." data-es="la próxima cosa que me quite el sueño.">the next thing that keeps me up at night.</em></h2>
+  <p class="trans-sub" data-en="If you have an idea that's hard to explain, a problem that won't leave you alone, or something you still don't know how to make work, let's talk. Maybe something good comes out of it." data-es="Si tienes una idea difícil de explicar, un problema que no te deja tranquilo o algo que todavía no sabes cómo hacer funcionar, conversemos. Capaz sale algo bueno.">If you have an idea that's hard to explain, a problem that won't leave you alone, or something you still don't know how to make work, let's talk. Maybe something good comes out of it.</p>
   <div class="trans-links">
     <a href="mailto:nicolas.fidelya@gmail.com" class="trans-btn primary">→ nicolas.fidelya@gmail.com</a>
     <a href="https://github.com/4mser" target="_blank" rel="noopener" class="trans-btn ghost">GitHub</a>
     <a href="https://www.linkedin.com/in/nicolás-moreno" target="_blank" rel="noopener" class="trans-btn ghost">LinkedIn</a>
     <a href="https://fidelya.cl" target="_blank" rel="noopener" class="trans-btn ghost" data-en="FIDELYA" data-es="FIDELYA">FIDELYA</a>
+    <a href="https://bnsolutions.cl" target="_blank" rel="noopener" class="trans-btn ghost">B&amp;N Solutions</a>
     <a href="https://dropout-landing2-git-main-dropout-capital.vercel.app/" target="_blank" rel="noopener" class="trans-btn ghost">Dropout</a>
   </div>
 </section>
@@ -2275,7 +2384,7 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link=>{
   if(!window.LAB){ return void addEventListener('DOMContentLoaded', build, {once:true}); }
   if(track.children.length) return;
   const es=()=>document.documentElement.lang==='es';
-  const PICK=['quasar','grayscott','curvature','boids','doubleslit','chladni','neural','collatz','hawking','voronoi','radiation','attention'];
+  const PICK=['quasar','lorenz','curvature','boids','doubleslit','chladni','neural','collatz','hawking','relativity','radiation','attention'];
 
   PICK.forEach((id,i)=>{
     const def=LAB.experiments.find(e=>e.id===id);
@@ -2286,8 +2395,8 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link=>{
     a.innerHTML=
       '<div class="lab-shot"><span class="lab-idx">EXP-'+String(i+1).padStart(3,'0')+'</span>'+
       '<canvas></canvas></div>'+
-      '<div class="lab-name" data-en="'+def.name.en+'" data-es="'+def.name.es+'">'+(es()?def.name.es:def.name.en)+'</div>'+
-      '<div class="lab-note" data-en="'+def.note.en+'" data-es="'+def.note.es+'">'+(es()?def.note.es:def.note.en)+'</div>';
+      '<div class="lab-name" data-en="'+def.name.en+'" data-es="'+def.name.es+'">'+def.name.en+'</div>'+
+      '<div class="lab-note" data-en="'+def.note.en+'" data-es="'+def.note.es+'">'+def.note.en+'</div>';
     track.appendChild(a);
     LAB.mount(a.querySelector('canvas'), id);
   });
@@ -2296,10 +2405,9 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link=>{
   more.className='lab-card lab-more reveal';
   more.href='/lab';
   more.innerHTML='<div class="lab-shot"><div class="lab-more-in"><b>&rarr;</b>'+
-    '<span data-en="Open the lab" data-es="Entrar al lab">'+(es()?'Entrar al lab':'Open the lab')+'</span></div></div>'+
-    '<div class="lab-name" data-en="Full lab" data-es="Lab completo">'+(es()?'Lab completo':'Full lab')+'</div>'+
-    '<div class="lab-note" data-en="Every experiment, running at full size." data-es="Todos los experimentos, corriendo en grande.">'+
-    (es()?'Todos los experimentos, corriendo en grande.':'Every experiment, running at full size.')+'</div>';
+    '<span data-en="Open the lab" data-es="Entrar al lab">Open the lab</span></div></div>'+
+    '<div class="lab-name" data-en="Full lab" data-es="Lab completo">Full lab</div>'+
+    '<div class="lab-note" data-en="Every experiment, running at full size." data-es="Todos los experimentos, corriendo en grande.">Every experiment, running at full size.</div>';
   track.appendChild(more);
 
   // El reveal global (GSAP) ya corrió sobre el DOM inicial: estas tarjetas nacen
@@ -2575,6 +2683,102 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link=>{
   },{threshold:0.01}).observe(cv);
 })();
 
+// ── Señal — radar de contribuciones de GitHub ───────────────────────────
+// Trae la actividad del último año desde una API pública (sin token) y la
+// dibuja como una trama de celdas. El color de las celdas sale de --accent-rgb
+// vía CSS, así que sigue al tema solo. Si la API falla, la sección se oculta
+// para no dejar un hueco roto en la página.
+(function(){
+  const panel=document.getElementById('ghPanel');
+  const grid=document.getElementById('ghGrid');
+  const monthsRow=document.getElementById('ghMonths');
+  const totalEl=document.getElementById('ghTotal');
+  const plot=document.getElementById('ghPlot');
+  const tip=document.getElementById('ghTip');
+  if(!panel||!grid) return;
+  const MES={en:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+             es:['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic']};
+  let WEEKS=0;
+
+  // La trama llena TODO el ancho: se calcula el tamaño de celda a partir del
+  // ancho del panel y el número de semanas, con un gap proporcional.
+  function fit(){
+    if(!WEEKS||!plot) return;
+    const w=plot.clientWidth;
+    if(!w) return;
+    let gap=Math.max(1.5,Math.min(3,(w/WEEKS)*0.22));
+    let cell=(w-(WEEKS-1)*gap)/WEEKS;
+    plot.style.setProperty('--gh-cell',cell.toFixed(2)+'px');
+    plot.style.setProperty('--gh-gap',gap.toFixed(2)+'px');
+  }
+  addEventListener('resize', fit, {passive:true});
+
+  function build(days,total){
+    const lang=document.documentElement.lang==='es'?'es':'en';
+    totalEl.textContent=(total||0).toLocaleString('en-US');
+    const first=new Date(days[0].date+'T00:00:00');
+    const lead=first.getDay();     // alinea el primer día a su día de semana (dom = 0)
+    // --gd = retardo del reveal: cascada por columna (semana), con un pequeño
+    // desfase por fila para que cada columna no aparezca de golpe.
+    const delayFor=(idx)=>Math.floor(idx/7)*15 + (idx%7)*5;
+    for(let i=0;i<lead;i++){ const b=document.createElement('i'); b.className='gh-cell blank'; b.style.setProperty('--gd',delayFor(i)+'ms'); grid.appendChild(b); }
+    days.forEach((d,i)=>{
+      const c=document.createElement('i');
+      c.className='gh-cell'; c.dataset.lvl=d.level; c.dataset.count=d.count; c.dataset.date=d.date;
+      c.style.setProperty('--gd',delayFor(lead+i)+'ms');
+      grid.appendChild(c);
+    });
+    WEEKS=Math.ceil((lead+days.length)/7);
+    let prevMonth=-1;
+    for(let w=0;w<WEEKS;w++){
+      const span=document.createElement('span');
+      const idx=w*7-lead;
+      const day=idx>=0&&idx<days.length?days[idx]:null;
+      if(day){
+        const m=new Date(day.date+'T00:00:00').getMonth();
+        if(m!==prevMonth){ span.dataset.en=MES.en[m]; span.dataset.es=MES.es[m]; span.textContent=MES[lang][m]; prevMonth=m; }
+      }
+      monthsRow.appendChild(span);
+    }
+    fit();
+    panel.classList.add('gh-ready');
+
+    // Reveal en cascada: al entrar el panel en vista, arranca la animación de
+    // las celdas (una sola vez).
+    new IntersectionObserver((es,ob)=>{
+      es.forEach(en=>{ if(en.isIntersecting){ panel.classList.add('gh-play'); ob.disconnect(); } });
+    },{threshold:0.18}).observe(panel);
+
+    // Tooltip: sigue la celda bajo el cursor con el conteo y la fecha del día.
+    if(tip){
+      grid.addEventListener('pointerover', e=>{
+        const c=e.target.closest('.gh-cell'); if(!c||c.classList.contains('blank')) return;
+        const lg=document.documentElement.lang==='es'?'es':'en';
+        const dt=new Date(c.dataset.date+'T00:00:00');
+        const n=+c.dataset.count;
+        const word=lg==='es'?(n===1?'contribución':'contribuciones'):(n===1?'contribution':'contributions');
+        tip.innerHTML=`<b>${n}</b> ${word} · ${dt.getDate()} ${MES[lg][dt.getMonth()]} ${dt.getFullYear()}`;
+        const pr=plot.getBoundingClientRect(), cr=c.getBoundingClientRect();
+        tip.style.left=(cr.left-pr.left+cr.width/2)+'px';
+        tip.style.top=(cr.top-pr.top)+'px';
+        tip.classList.add('show');
+      });
+      grid.addEventListener('pointerout', e=>{
+        if(!e.relatedTarget||!e.relatedTarget.closest('.gh-cell')) tip.classList.remove('show');
+      });
+    }
+  }
+  fetch('https://github-contributions-api.jogruber.de/v4/4mser?y=last')
+    .then(r=>{ if(!r.ok) throw 0; return r.json(); })
+    .then(d=>{
+      const days=d.contributions||[];
+      if(!days.length) throw 0;
+      const total=(d.total&&(d.total.lastYear??Object.values(d.total)[0]))||days.reduce((s,x)=>s+x.count,0);
+      build(days,total);
+    })
+    .catch(()=>{ const s=document.getElementById('signal'); if(s) s.style.display='none'; });
+})();
+
 // ── Retrato de partículas ───────────────────────────────────────────────
 // La foto se muestrea a una rejilla y cada celda se dibuja como un punto del
 // color del tema, con tamaño según su luminancia. El cursor empuja los puntos
@@ -2591,9 +2795,10 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link=>{
   // más abajo lo consulta antes de llegar a su bloque.
   const coarse=!matchMedia('(hover:hover) and (pointer:fine)').matches;
 
-  const STEP=3;                 // separación de la rejilla en px CSS
-  const RADIUS=95;              // alcance del cursor
+  const STEP=coarse?5:3;        // rejilla más gruesa en móvil (menos partículas)
+  const RADIUS=118;             // alcance del cursor (escritorio)
   let W=0,H=0,DPR=1,cols=0,rows=0,P=null,ready=false;
+  let base=null, baseW=0, baseH=0;   // foto limpia tratada: estado en reposo
   let acc=[255,179,71];
   function readAcc(){
     const v=getComputedStyle(document.documentElement).getPropertyValue('--accent-rgb').trim();
@@ -2641,20 +2846,49 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link=>{
         if(lum<0.10) continue;                               // fondo: sin punto
         P.push({hx:i*STEP+STEP/2, hy:j*STEP+STEP/2,
                 x:i*STEP+STEP/2,  y:j*STEP+STEP/2,
-                vx:0, vy:0, l:lum, r:R, g:G, b:B, m:0});
+                vx:0, vy:0, l:lum, r:R, g:G, b:B, m:0,
+                // dispersión móvil: dirección, distancia y fase propias
+                a:Math.random()*6.2832, rf:Math.random(), ph:Math.random()*6.2832});
       }
     }
     ready=true;
+    buildBase();
   }
-  if(!coarse){ if(img.complete) build(); else img.addEventListener('load', build); }
-  addEventListener('resize', ()=>{ if(!coarse){ ready=false; build(); } }, {passive:true});
 
-  // ── Camino táctil: la placa se escanea ────────────────────────────────
-  // En un teléfono la rejilla de puntos se lee como una foto desenfocada y
-  // fea. Acá la imagen va NÍTIDA, sin trama, y el scroll pasa sobre ella un
-  // cabezal de escáner: una franja que ilumina lo que va leyendo, con su línea
-  // brillante al frente y el resto de la placa en penumbra. La sección se
-  // llama PLATE 001; esto es literalmente leerla.
+  // Foto limpia y tratada que se ve en reposo (sin cursor). Antes el reposo
+  // era la rejilla de puntos cruda y se leía como una foto pixelada fea; ahora
+  // los puntos son solo la DISTORSIÓN local que produce el cursor sobre esta
+  // base. Mismo tratamiento que el camino táctil: brillo/contraste, tinte del
+  // tema en soft-light y viñeta, para que la foto no sea un parche ajeno al
+  // resto del sitio.
+  function buildBase(){
+    if(!img.naturalWidth||!W||!H) return;
+    const [sx,sy,sw,sh]=cover();
+    const [tr,tg,tb]=acc;
+    const c=document.createElement('canvas');
+    c.width=Math.round(W*DPR); c.height=Math.round(H*DPR);
+    const x=c.getContext('2d');
+    x.setTransform(DPR,0,0,DPR,0,0);
+    x.filter='brightness(1.05) contrast(1.13) saturate(0.96)';
+    x.drawImage(img,sx,sy,sw,sh,0,0,W,H);
+    x.filter='none';
+    x.globalCompositeOperation='soft-light';
+    x.fillStyle=`rgba(${tr},${tg},${tb},0.20)`; x.fillRect(0,0,W,H);
+    x.globalCompositeOperation='source-over';
+    const vig=x.createRadialGradient(W/2,H*0.44,Math.min(W,H)*0.30,W/2,H*0.5,Math.max(W,H)*0.75);
+    vig.addColorStop(0,'rgba(4,3,2,0)');
+    vig.addColorStop(1,'rgba(4,3,2,0.55)');
+    x.fillStyle=vig; x.fillRect(0,0,W,H);
+    base=c; baseW=W; baseH=H;
+  }
+
+  // Partículas + foto base para AMBOS caminos (escritorio con cursor, móvil con scroll).
+  if(img.complete) build(); else img.addEventListener('load', build);
+  addEventListener('resize', ()=>{ ready=false; build(); }, {passive:true});
+  // El tinte de la base usa el color del tema: se rehace al cambiarlo.
+  addEventListener('themechange', ()=>{ buildBase(); });
+
+  // Encuadre "cover" con la cara alta, reutilizado por buildBase().
   function cover(){
     const ar=img.naturalWidth/img.naturalHeight, target=W/H;
     let sw=img.naturalWidth, sh=img.naturalHeight, sx=0, sy=0;
@@ -2662,114 +2896,54 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link=>{
     else { sh=img.naturalWidth/target; sy=(img.naturalHeight-sh)*0.18; }
     return [sx,sy,sw,sh];
   }
-  // ── Camino táctil: la señal se rompe ─────────────────────────────────
-  // La foto va NÍTIDA, sin trama. Quieta se ve perfecta; al hacer scroll se
-  // desgarra en tajadas horizontales que se corren y separan los canales de
-  // color, y al frenar todo encaja de vuelta. La clave para que encaje EXACTO
-  // es que las tres capas son los canales R, G y B por separado: sumadas con
-  // 'lighter' y sin desplazamiento reconstruyen la imagen original píxel a
-  // píxel, así que el estado de reposo no es una aproximación.
-  let layR=null, layG=null, layB=null, layW=0, layH=0;
-  function buildLayers(){
-    if(!img.naturalWidth||!W||!H) return;
-    const [sx,sy,sw,sh]=cover();
-    const [tr,tg,tb]=acc;
-    const mk=chan=>{
-      const c=document.createElement('canvas');
-      c.width=Math.round(W*DPR); c.height=Math.round(H*DPR);
-      const x=c.getContext('2d');
-      x.setTransform(DPR,0,0,DPR,0,0);
-      // La foto original es oscura; sin esto queda casi negra.
-      x.filter='brightness(1.06) contrast(1.16) saturate(0.94)';
-      x.drawImage(img,sx,sy,sw,sh,0,0,W,H);
-      x.filter='none';
-      // Grado en el color del tema y viñeta, para que la pared clara de la
-      // foto no quede como un parche luminoso ajeno al resto del sitio.
-      x.globalCompositeOperation='soft-light';
-      x.fillStyle=`rgba(${tr},${tg},${tb},0.30)`; x.fillRect(0,0,W,H);
-      x.globalCompositeOperation='source-over';
-      const vig=x.createRadialGradient(W/2,H*0.44,Math.min(W,H)*0.28,W/2,H*0.5,Math.max(W,H)*0.72);
-      vig.addColorStop(0,'rgba(4,3,2,0)');
-      vig.addColorStop(1,'rgba(4,3,2,0.62)');
-      x.fillStyle=vig; x.fillRect(0,0,W,H);
-      // Aísla un canal: multiplicar por rojo puro deja solo el rojo, etc.
-      x.globalCompositeOperation='multiply';
-      x.fillStyle=chan; x.fillRect(0,0,W,H);
-      x.globalCompositeOperation='source-over';
-      return c;
-    };
-    layR=mk('#ff0000'); layG=mk('#00ff00'); layB=mk('#0000ff');
-    layW=W; layH=H;
-  }
-  addEventListener('themechange', ()=>{ if(coarse) buildLayers(); });
-
   // Velocidad de scroll: se acumula con cada evento y se apaga sola por frame.
   let vel=0, lastY=(typeof scrollY==='number'?scrollY:0);
   if(coarse) addEventListener('scroll', ()=>{ vel+=scrollY-lastY; lastY=scrollY; }, {passive:true});
 
-  // Ruido estable por tajada: la misma banda se corre siempre igual, así el
-  // desgarro tiene carácter propio en vez de titilar al azar cada frame.
-  const hash=n=>{ const x=Math.sin(n*127.1)*43758.5453; return x-Math.floor(x); };
-
-  function frameScan(){
-    raf=requestAnimationFrame(frameScan);
+  // ── Móvil: descomposición en partículas ──────────────────────────────
+  // Quieta se ve la foto limpia. Al hacer scroll la foto se DESCOMPONE: cada
+  // partícula se aleja de su lugar en su propia dirección, con una turbulencia
+  // que crece con la velocidad — mientras más rápido mueves, más lejos y más
+  // desordenadas quedan. Al frenar vuelven a su sitio y la foto se rearma.
+  let spread=0;
+  function frameScatter(){
+    raf=requestAnimationFrame(frameScatter);
+    if(!ready){ build(); if(!ready) return; }
     const r=cv.getBoundingClientRect();
-    if(!r.width||!img.naturalWidth) return;
-    if(W!==r.width||H!==r.height){
-      DPR=Math.min(devicePixelRatio||1,2);
-      W=r.width; H=r.height;
-      cv.width=Math.round(W*DPR); cv.height=Math.round(H*DPR);
-      ctx.setTransform(DPR,0,0,DPR,0,0);
-    }
-    if(!layR||layW!==W||layH!==H) buildLayers();
-    if(!layR) return;
-
+    if(!r.width) return;
+    if(W!==r.width||H!==r.height){ ready=false; build(); if(!ready) return; }
+    t+=0.016;
     vel*=0.86;
-    const k=Math.min(1,Math.abs(vel)/46);      // 0 quieta, 1 a toda velocidad
+    // Umbral alto + curva ease-in: un scroll suave apenas dispersa; solo un
+    // gesto brusco/rápido llega a desordenar la foto de verdad.
+    const k=reduce?0:Math.min(1,Math.abs(vel)/95);
+    const target=k*k;
+    // sube gradual con lo brusco del scroll y baja lento, así la foto se rearma suave
+    spread += (target-spread) * (target>spread ? 0.14 : 0.05);
+
     ctx.clearRect(0,0,W,H);
+    const baseA = Math.max(0, 1 - spread*1.4);            // la foto se desvanece al dispersarse
+    if(base && baseA>0.01){ ctx.globalAlpha=baseA; ctx.drawImage(base,0,0,W,H); ctx.globalAlpha=1; }
 
-    const N=16, MAX=W*0.17, split=k*9;
-    ctx.globalCompositeOperation='lighter';
-    for(let i=0;i<N;i++){
-      const a=hash(i), b=hash(i+91);
-      const roto=b>0.30;                        // no todas las bandas se rompen
-      const dx=roto ? (a*2-1)*k*MAX*(b>0.87?2.2:1) : 0;
-      // Bordes en píxeles ENTEROS de dispositivo y sin solape. Con 'lighter'
-      // cualquier traslape se suma dos veces: la primera versión usaba bh+1
-      // "para no dejar huecos" y el resultado era la foto al doble de brillo,
-      // lavada a crema. Redondear también evita el remuestreo de bordes
-      // fraccionarios, que dejaba costuras claras entre bandas.
-      const p0=Math.round(i*H/N*DPR), p1=Math.round((i+1)*H/N*DPR);
-      const sh=p1-p0;
-      if(sh<=0) continue;
-      const y0=p0/DPR, hh=sh/DPR;
-      ctx.drawImage(layR,0,p0,layR.width,sh, dx-split,y0,W,hh);
-      ctx.drawImage(layG,0,p0,layG.width,sh, dx,       y0,W,hh);
-      ctx.drawImage(layB,0,p0,layB.width,sh, dx+split,y0,W,hh);
+    if(spread<0.004) return;                              // asentado: solo la foto limpia
+
+    const MAXD=Math.min(W,H)*0.5;
+    const wob=spread*spread*16;                           // turbulencia: más caos a más velocidad
+    for(let n=0;n<P.length;n++){
+      const p=P[n];
+      const mag=spread*(0.22+p.rf)*MAXD;
+      const ox=Math.cos(p.a)*mag + Math.sin(t*1.7+p.ph)*wob;
+      const oy=Math.sin(p.a)*mag + Math.cos(t*1.9+p.ph*1.3)*wob;
+      const a=Math.min(1,0.45+p.l*0.55)*Math.min(1,spread*1.7);
+      const sz=0.8+p.l*1.9;
+      ctx.fillStyle=`rgba(${p.r|0},${p.g|0},${p.b|0},${a.toFixed(3)})`;
+      ctx.fillRect(p.hx+ox-sz/2, p.hy+oy-sz/2, sz, sz);
     }
-    ctx.globalCompositeOperation='source-over';
   }
-
 
   let px=-1e4, py=-1e4, hovering=false;
   const plate=document.getElementById('heroPlate');
 
-  // ── Revelado por scroll (táctil) ──────────────────────────────────────
-  // En un teléfono no hay cursor que resuelva la placa, así que se quedaba
-  // permanentemente en su estado sin resolver: puntos chicos y apagados donde
-  // apenas se adivina una cara. Acá la resuelve el scroll: una banda de foco
-  // recorre el retrato de arriba abajo mientras entra en pantalla, y los
-  // puntos se apartan a su paso. Además el reposo es más brillante, porque
-  // sin cursor ese es el estado en el que se ve casi siempre.
-  let sweep=-0.4, sweepV=0;
-  function readSweep(){
-    if(!coarse) return;
-    const r=cv.getBoundingClientRect();
-    const p=(innerHeight-r.top)/(innerHeight+r.height);       // 0..1 al cruzar
-    const next=Math.min(1.4,Math.max(-0.4,p*1.8-0.4));
-    sweepV=next-sweep; sweep=next;
-  }
-  if(coarse){ addEventListener('scroll', readSweep, {passive:true}); readSweep(); }
   cv.addEventListener('pointermove', e=>{
     const r=cv.getBoundingClientRect();
     px=e.clientX-r.left; py=e.clientY-r.top; hovering=true;
@@ -2783,60 +2957,81 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link=>{
     if(plate){ plate.style.setProperty('--px','0px'); plate.style.setProperty('--py','0px'); }
   }, {passive:true});
 
-  let raf=0, t=0;
+  let raf=0, t=0, energy=0;
   function frame(){
     raf=requestAnimationFrame(frame);
     if(!ready){ build(); if(!ready) return; }
     t+=0.016;
-    sweepV*=0.88;                                // la onda se apaga al parar
     ctx.clearRect(0,0,W,H);
+
+    // Estado en reposo = la foto limpia. Es lo único que se ve sin cursor.
+    if(base) ctx.drawImage(base,0,0,W,H);
+
+    // energy sube al entrar el cursor y baja al salir; suaviza el encendido y
+    // apagado para que la distorsión no aparezca/desaparezca de golpe.
+    energy += ((hovering?1:0)-energy)*0.12;
+
+    // Física: el cursor repele los puntos (resorte con amortiguación). Corre
+    // siempre, aun sin dibujar, para que la trama vuelva a casa suave al salir.
     for(let n=0;n<P.length;n++){
       const p=P[n];
-      const dx=p.x-px, dy=p.y-py;
-      const d2=dx*dx+dy*dy;
-
-      // Cercanía al foco: empuja el punto y le devuelve su color real.
-      // Con cursor el foco es el puntero; en táctil es la banda del scroll.
       let near=0;
-      if(coarse){
-        const band=H*0.40, sy=sweep*H, dv=p.hy-sy;
-        if(Math.abs(dv)<band){
-          near=1-Math.abs(dv)/band;
-          // El empuje va atado a la VELOCIDAD del barrido. Como impulso fijo se
-          // acumulaba mientras el scroll estaba detenido y terminaba expulsando
-          // los puntos fuera del marco: quedaba una franja negra abajo.
-          const kick=Math.min(1,Math.abs(sweepV)*26);
-          if(kick>0.01) p.vy += (dv>=0?1:-1)*near*near*kick*1.1;
+      if(hovering){
+        const dx=p.x-px, dy=p.y-py, d2=dx*dx+dy*dy;
+        if(d2<RADIUS*RADIUS){
+          const d=Math.sqrt(d2)||1;
+          near=1-d/RADIUS;
+          const push=near*near*3.0;
+          p.vx += (dx/d)*push; p.vy += (dy/d)*push;
         }
-      }else if(hovering && d2 < RADIUS*RADIUS){
-        const d=Math.sqrt(d2)||1;
-        near=1-d/RADIUS;
-        const push=near*near*3.2;
-        p.vx += (dx/d)*push; p.vy += (dy/d)*push;
       }
-      p.m += (near-p.m)*0.14;                    // memoria suave del enfoque
-      const m = coarse ? Math.max(p.m,0.30) : p.m;   // piso de brillo sin cursor
-
-      // Resorte de vuelta a casa + amortiguación
-      p.vx += (p.hx-p.x)*0.055; p.vy += (p.hy-p.y)*0.055;
-      p.vx *= 0.86; p.vy *= 0.86;
+      p.m += (near-p.m)*0.16;
+      p.vx += (p.hx-p.x)*0.05; p.vy += (p.hy-p.y)*0.05;
+      p.vx *= 0.85; p.vy *= 0.85;
       if(!reduce){ p.x += p.vx; p.y += p.vy; }
+    }
 
-      // Latido lento para que nunca esté del todo quieto
-      const breathe = reduce?0:0.06*Math.sin(t*1.1 + p.hx*0.05 + p.hy*0.03);
-      const lum = Math.min(1, p.l + breathe);
+    if(energy<0.002 && !hovering) return;    // asentado: solo la foto limpia
 
-      // Color real de la foto. El cursor no cambia el tono: sube brillo y tamaño.
-      const size = 0.45 + lum*2.35 + m*1.1;
-      const a    = Math.min(1, 0.10 + lum*0.88 + m*0.25);
-      const k    = 1 + m*0.5;
-      const R = Math.min(255,p.r*k), G = Math.min(255,p.g*k), B = Math.min(255,p.b*k);
+    // Pass 1 — DESPLAZAR: se oscurece cada punto activo en su posición ORIGINAL
+    // (de donde el cursor lo sacó). Sin esto la foto quedaría intacta con puntos
+    // encima; con esto el contenido se ve CORRIDO, que es distorsionar la imagen.
+    ctx.globalCompositeOperation='source-over';
+    for(let n=0;n<P.length;n++){
+      const p=P[n];
+      if(p.m<0.02) continue;
+      ctx.fillStyle=`rgba(4,3,2,${(p.m*0.94).toFixed(3)})`;
+      ctx.fillRect(p.hx-1.8, p.hy-1.8, 3.6, 3.6);
+    }
+    // Pass 2 — REDIBUJAR: el punto reaparece con su color real y más brillo en
+    // su posición DESPLAZADA. Sumado con 'lighter' reconstruye la cara como una
+    // trama que se ondula siguiendo al cursor: la foto misma se deforma.
+    ctx.globalCompositeOperation='lighter';
+    for(let n=0;n<P.length;n++){
+      const p=P[n];
+      if(p.m<0.02) continue;
+      const size = (0.9 + p.l*2.2) * (0.5 + p.m*0.8);
+      const a    = Math.min(1, 0.25 + p.l*0.9) * Math.min(1, p.m*1.3);
+      const R = Math.min(255,p.r*1.3), G = Math.min(255,p.g*1.3), B = Math.min(255,p.b*1.3);
       ctx.fillStyle = `rgba(${R|0},${G|0},${B|0},${a.toFixed(3)})`;
       ctx.fillRect(p.x-size/2, p.y-size/2, size, size);
     }
+
+    // Núcleo — el centro del cursor se hunde a negro POR ENCIMA de los puntos,
+    // así el foco parece un agujero negro y los píxeles empujados quedan como
+    // un anillo de acreción a su alrededor. Radio ajustado para no apagar el
+    // anillo brillante que se forma más afuera.
+    ctx.globalCompositeOperation='source-over';
+    if(hovering){
+      const core=ctx.createRadialGradient(px,py,0,px,py,RADIUS*0.52);
+      core.addColorStop(0,   `rgba(0,0,0,${(0.94*energy).toFixed(3)})`);
+      core.addColorStop(0.55,`rgba(0,0,0,${(0.42*energy).toFixed(3)})`);
+      core.addColorStop(1,   'rgba(0,0,0,0)');
+      ctx.fillStyle=core; ctx.fillRect(0,0,W,H);
+    }
   }
 
-  const loop=()=>coarse?frameScan():frame();
+  const loop=()=>coarse?frameScatter():frame();
   new IntersectionObserver(es=>{
     es.forEach(en=>{
       if(en.isIntersecting){ if(!raf) loop(); }
