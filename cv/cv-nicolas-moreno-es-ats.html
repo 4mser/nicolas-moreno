@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nicolás Patricio Moreno Ávila — CV</title>
+<style>
+  /* Diseño premium, ATS-safe: columna única, fuentes web-safe (Georgia + Arial),
+     títulos estándar como texto real, sin tablas/grids/iconos, texto seleccionable, una página. */
+  :root{
+    --ink:#1b1b1b;
+    --ink-2:#3a3e45;
+    --ink-3:#666b73;
+    --muted:#8b9098;
+    --rule:#e4e1da;
+    --rule-2:#c9c4ba;
+    --accent:#b45309;
+    --accent-2:#92400e;
+    --serif:Georgia, 'Times New Roman', serif;
+    --sans:Arial, Helvetica, sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{ -webkit-text-size-adjust:100%; }
+  body{
+    font-family:var(--sans);
+    color:var(--ink-2);
+    background:#fff;
+    font-size:8.5pt;
+    line-height:1.25;
+    font-weight:400;
+  }
+
+  @media screen{
+    body{ background:#e9eaed; padding:26px 0; }
+    .page{
+      width:8.5in; min-height:11in; margin:0 auto;
+      background:#fff; padding:0.45in 0.5in;
+      box-shadow:0 10px 44px rgba(0,0,0,0.16);
+    }
+  }
+  @media print{
+    @page{ size:Letter; margin:0.26in 0.45in; }
+    body{ background:#fff; }
+    .page{ width:auto; padding:0; box-shadow:none; }
+  }
+  *{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+
+  /* ── Encabezado ── */
+  header{ margin-bottom:5px; }
+  .name{
+    font-family:var(--serif);
+    font-size:21pt;
+    font-weight:700;
+    letter-spacing:0.015em;
+    line-height:1.04;
+    color:var(--ink);
+    text-transform:uppercase;
+  }
+  .role{
+    margin-top:7px;
+    font-family:var(--sans);
+    font-size:10pt;
+    font-weight:700;
+    color:var(--accent);
+    letter-spacing:0.005em;
+  }
+  .role .thin{ color:var(--ink-3); font-weight:400; }
+  .contact{
+    margin-top:8px; padding-top:7px;
+    border-top:1px solid var(--rule);
+    font-size:8.3pt; color:var(--ink-3); line-height:1.45;
+  }
+  .contact a{ color:var(--ink-2); text-decoration:none; }
+  .contact b{ color:var(--ink); font-weight:700; }
+  .contact .sep{ color:var(--rule-2); margin:0 6px; }
+
+  /* ── Títulos de sección ── */
+  section{ margin-top:5px; }
+  h2.sec-title{
+    font-family:var(--sans);
+    font-size:9.4pt;
+    font-weight:700;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+    color:var(--ink);
+    padding-bottom:2px;
+    margin-bottom:5px;
+    border-bottom:1.5px solid var(--ink);
+  }
+  h2.sec-title::before{
+    content:"";
+    display:inline-block;
+    width:7px; height:7px;
+    margin-right:8px;
+    background:var(--accent);
+    vertical-align:1px;
+  }
+
+  /* ── Resumen ── */
+  p.summary{ color:var(--ink-2); line-height:1.34; }
+  p.summary strong{ color:var(--ink); font-weight:700; }
+
+  /* ── Experiencia ── */
+  .job{ margin-bottom:5px; padding-left:11px; border-left:2px solid var(--rule); }
+  .job:last-child{ margin-bottom:0; }
+  .job-role{ font-family:var(--serif); font-size:10.1pt; font-weight:700; color:var(--ink); line-height:1.2; }
+  .job-role .org{ color:var(--accent); }
+  .job-meta{ font-size:8.2pt; color:var(--ink-3); margin:1px 0 3px; }
+  .job-meta .date{ font-weight:700; color:var(--ink-2); }
+  ul.bullets{ list-style:none; }
+  ul.bullets li{
+    position:relative; padding-left:13px; margin-bottom:1px;
+    color:var(--ink-2); line-height:1.30;
+  }
+  ul.bullets li::before{
+    content:""; position:absolute; left:0; top:0.6em;
+    width:6px; height:1.5px; background:var(--accent);
+  }
+  li strong{ color:var(--ink); font-weight:700; }
+
+  /* ── Habilidades ── */
+  .skill-row{ margin-bottom:0px; line-height:1.33; color:var(--ink-2); padding-left:11px; }
+  .skill-row .k{
+    color:var(--ink); font-weight:700;
+    font-size:8.5pt; letter-spacing:0.04em; text-transform:uppercase;
+  }
+
+  /* ── Educación / Idiomas ── */
+  .entry{ margin-bottom:4px; padding-left:11px; }
+  .entry:last-child{ margin-bottom:0; }
+  .entry-title{ font-family:var(--serif); font-weight:700; color:var(--ink); font-size:9.4pt; }
+  .entry-sub{ font-size:8.4pt; color:var(--ink-3); margin-top:1px; }
+  .entry-sub .date{ font-weight:700; color:var(--ink-2); }
+  .line{ margin-bottom:3px; color:var(--ink-2); padding-left:11px; }
+  .line b{ color:var(--ink); font-weight:700; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ═══ ENCABEZADO ═══ -->
+  <header>
+    <div class="name">Nicolás Patricio Moreno Ávila</div>
+    <div class="role">Ingeniero Fundador <span class="thin">·</span> Full-Stack &amp; IA/ML <span class="thin">·</span> 3D Interactivo &amp; UX</div>
+    <div class="contact">
+      Santiago, Chile · remoto o presencial
+      <span class="sep">|</span> <b>Teléfono:</b> +56 9 3728 7950
+      <span class="sep">|</span> <b>Email:</b> <a href="mailto:nicolaspatriciomorenoavila@gmail.com">nicolaspatriciomorenoavila@gmail.com</a><br>
+      <b>GitHub:</b> <a href="https://github.com/4mser">github.com/4mser</a>
+      <span class="sep">|</span> <b>LinkedIn:</b> <a href="https://www.linkedin.com/in/nicolás-moreno">linkedin.com/in/nicolás-moreno</a>
+      <span class="sep">|</span> <b>Portafolio:</b> <a href="https://nicolas-moreno.vercel.app">nicolas-moreno.vercel.app</a>
+    </div>
+  </header>
+
+  <!-- ═══ RESUMEN ═══ -->
+  <section>
+    <h2 class="sec-title">Resumen</h2>
+    <p class="summary">
+      Ingeniero fundador autodidacta con formación en ingeniería física (3 años). Construyo productos de punta a punta — desde backend y machine learning (ML) aplicado hasta interfaces web interactivas y 3D de alto nivel. Construí <strong>FIDELYA</strong>, una plataforma SaaS multi-tenant de inteligencia de clientes (<strong>60+ módulos, 8+ empresas, 3.500+ usuarios</strong>), en solitario desde cero, y hoy lidero su equipo de 6; llevé <strong>GoAuto</strong> a <strong>51 automotoras</strong> como Tech Lead. Core: full-stack (TypeScript, NestJS, Next.js), ML aplicado y diseño de interacción/3D.
+    </p>
+  </section>
+
+  <!-- ═══ EXPERIENCIA ═══ -->
+  <section>
+    <h2 class="sec-title">Experiencia</h2>
+
+    <div class="job">
+      <div class="job-role">CEO &amp; CTO, Cofundador, <span class="org">FIDELYA</span></div>
+      <div class="job-meta"><span class="date">Ene 2025 – Presente</span> · Santiago, Chile</div>
+      <ul class="bullets">
+        <li><strong>60+ módulos en producción</strong> sobre una plataforma SaaS multi-tenant (NestJS, MongoDB por tenant, Next.js, WebSockets en tiempo real); operando con <strong>8+ empresas</strong> y <strong>3.500+ usuarios registrados</strong>.</li>
+        <li>Construí la plataforma en solitario desde cero — backend, frontend, infraestructura y todo el UX/UI y design system; hoy lidero un <strong>equipo de 6</strong>.</li>
+        <li>Construí <strong>AURA</strong>, el motor de IA de FIDELYA para predicción de abandono y retención automatizada desde comportamiento de consumo real; usa modelos de grafos/tensores y Redes Neuronales de Grafos (GNN) del laboratorio de investigación interno (antes Entropía Technologies).</li>
+      </ul>
+    </div>
+
+    <div class="job">
+      <div class="job-role">Cofundador &amp; CTO, <span class="org">B&amp;N Solutions</span></div>
+      <div class="job-meta"><span class="date">Jul 2026 – Presente</span> · Santiago, Chile · estudio tecnológico</div>
+      <ul class="bullets">
+        <li>Entrego software a medida, automatización con IA y <strong>experiencias web interactivas y 3D de alto nivel</strong> para clientes — motores de render Canvas/WebGL propios, motion con GSAP y UX de punta a punta.</li>
+      </ul>
+    </div>
+
+    <div class="job">
+      <div class="job-role">Tech Lead y Desarrollador Full-Stack, <span class="org">GoAuto (Dropout Capital)</span></div>
+      <div class="job-meta"><span class="date">Oct 2025 – Jul 2026</span> · Remoto · Equipo LATAM + EE.UU.</div>
+      <ul class="bullets">
+        <li>Responsable de la arquitectura y la entrega full-stack de GoAuto, una plataforma de gestión automotriz con IA que operó <strong>51 automotoras en Chile</strong>.</li>
+        <li>Lideré un <strong>equipo de 5+ ingenieros</strong> entre LATAM y EE.UU., definiendo arquitectura y dirección de producto.</li>
+      </ul>
+    </div>
+
+    <div class="job">
+      <div class="job-role">Desarrollador Full-Stack y de Machine Learning, <span class="org">Physical AI Lab (Chile)</span></div>
+      <div class="job-meta"><span class="date">Mar 2024 – Sep 2024</span> · Remoto · Robótica, IA y simulación (physicalailab.cl, antes Scale AI y VascoLab)</div>
+      <ul class="bullets">
+        <li>Construí un sistema de detección de anomalías con <strong>Red Neuronal Convolucional (CNN) para SAESA</strong> (distribuidora eléctrica chilena) para detectar fallas en líneas de transmisión eléctrica; también desarrollé funcionalidades full-stack en producción.</li>
+      </ul>
+    </div>
+
+    <div class="job">
+      <div class="job-role">Desarrollador Full-Stack Freelance, <span class="org">Independiente</span></div>
+      <div class="job-meta"><span class="date">2022 – 2024</span> · Remoto · Clientes independientes</div>
+      <ul class="bullets">
+        <li>Landing pages, automatizaciones web y sistemas a medida para clientes independientes, de principio a fin — desde el levantamiento de requerimientos hasta el despliegue.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ═══ HABILIDADES ═══ -->
+  <section>
+    <h2 class="sec-title">Habilidades Técnicas</h2>
+    <div class="skill-row"><span class="k">Lenguajes</span> &nbsp; TypeScript, JavaScript, Python</div>
+    <div class="skill-row"><span class="k">Frontend</span> &nbsp; Next.js, React, Tailwind CSS, Zustand, Progressive Web Apps (PWAs)</div>
+    <div class="skill-row"><span class="k">Móvil</span> &nbsp; React Native, Expo, apps white-label multiplataforma, temas nativos</div>
+    <div class="skill-row"><span class="k">Interactivo y 3D</span> &nbsp; Canvas 2D/3D, WebGL, motores de render propios, GSAP, data visualization, creative coding</div>
+    <div class="skill-row"><span class="k">Backend</span> &nbsp; NestJS, Node.js, APIs REST, WebSockets, sistemas en tiempo real</div>
+    <div class="skill-row"><span class="k">Datos y Arquitectura</span> &nbsp; MongoDB, SQL, bases de datos de grafos, modelado de datos, SaaS multi-tenant, aislamiento por tenant</div>
+    <div class="skill-row"><span class="k">IA/ML y Ciencia de Datos</span> &nbsp; ML aplicado, CNN, visión por computador, detección de anomalías, GNN, modelos de tensores/grafos, abandono/retención, LLMs y agentes de IA, modelado estadístico y matemático</div>
+    <div class="skill-row"><span class="k">Infraestructura</span> &nbsp; AWS, Fly.io, Vercel, Railway, CI/CD</div>
+    <div class="skill-row"><span class="k">Diseño</span> &nbsp; Figma, UX/UI, design systems, prototipado</div>
+  </section>
+
+  <!-- ═══ EDUCACIÓN ═══ -->
+  <section>
+    <h2 class="sec-title">Educación</h2>
+    <div class="entry">
+      <div class="entry-title">Ingeniería Física (incompleta, 3 años) — Universidad Andrés Bello, Santiago</div>
+      <div class="entry-sub"><span class="date">2019 – 2022</span> · Bases en ciencia de datos y modelado matemático/estadístico.</div>
+    </div>
+    <div class="entry">
+      <div class="entry-title">Enseñanza Media Técnico-Profesional — Telecomunicaciones</div>
+      <div class="entry-sub"><span class="date">2014 – 2017</span> · Programación, redes, ciberseguridad, fibra óptica, electrónica.</div>
+    </div>
+  </section>
+
+  <!-- ═══ IDIOMAS ═══ -->
+  <section>
+    <h2 class="sec-title">Idiomas</h2>
+    <div class="line">Español — Nativo &nbsp;·&nbsp; Inglés — Competencia profesional</div>
+    <div class="line"><b>Founder Institute Chile 2026</b> — seleccionado.</div>
+  </section>
+
+</div>
+</body>
+</html>

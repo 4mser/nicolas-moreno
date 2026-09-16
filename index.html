@@ -5,10 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#0a0806">
   <!-- Antes de pintar: si hay tema guardado se aplica ya, para que no se vea el
-       ámbar un instante y luego el cambio. -->
+       ámbar un instante y luego el cambio. El idioma va en el mismo script (como
+       en /lab): todo lo que se construye por JS lee documentElement.lang, y si
+       no está puesto desde el arranque nace en inglés aunque el sitio esté en
+       español. -->
   <script>(function(){try{var t=localStorage.getItem('nm-theme');
     if(t&&['amber','lilac','magenta','blue','jade','aurora','nova'].indexOf(t)>-1)
-      document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+      document.documentElement.setAttribute('data-theme',t);
+    var l=localStorage.getItem('nm-lang'); if(l==='es')document.documentElement.lang='es';}catch(e){}})();</script>
   <title>Nicolás Moreno — Builder</title>
   <meta name="description" content="Builder, founder, self-taught engineer. Building software at the intersection of science, code, and the physical world. Based in Santiago, Chile.">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -1863,7 +1867,7 @@
 <section id="lab">
   <div class="container">
     <div class="section-num reveal" data-en="// 03 — Experiments" data-es="// 03 — Experimentos">// 03 — Experiments</div>
-    <h2 class="section-title reveal"><span data-en="Things I build " data-es="Cosas que construyo ">Things I build </span><em data-en="to understand them." data-es="para entenderlas.">to understand them.</em></h2>
+    <h2 class="section-title reveal"><span data-en="Physics that runs " data-es="Física que corre ">Physics that runs </span><em data-en="in the browser." data-es="en el navegador.">in the browser.</em></h2>
     <p class="section-sub reveal" data-en="Small simulations, written from the equations. Drag sideways." data-es="Simulaciones chicas, escritas desde las ecuaciones. Arrastra al costado.">Small simulations, written from the equations. Drag sideways.</p>
   </div>
 
@@ -2064,7 +2068,7 @@
     <span class="sat-tip" data-en="Email" data-es="Correo">Email</span>
   </a>
 
-  <a class="orb-sat sat-top" id="cvDownload" href="/cv/cv-nicolas-moreno.pdf" download="Nicolas-Moreno-CV.pdf" aria-label="Download CV">
+  <a class="orb-sat sat-top" id="cvDownload" href="/cv/cv-nicolas-moreno.pdf?v=20260909f" download="Nicolas-Moreno-CV.pdf" aria-label="Download CV">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
       <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
       <path d="M14 2v6h6"/>
@@ -2394,11 +2398,14 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link=>{
     const a=document.createElement('a');
     a.className='lab-card reveal';
     a.href='/lab/'+id;
+    // Estas tarjetas nacen DESPUÉS de que el traductor recorrió el DOM, así que
+    // tienen que escribirse ya en el idioma activo: los data-* solo sirven para
+    // el cambio posterior.
     a.innerHTML=
       '<div class="lab-shot"><span class="lab-idx">EXP-'+String(i+1).padStart(3,'0')+'</span>'+
       '<canvas></canvas></div>'+
-      '<div class="lab-name" data-en="'+def.name.en+'" data-es="'+def.name.es+'">'+def.name.en+'</div>'+
-      '<div class="lab-note" data-en="'+def.note.en+'" data-es="'+def.note.es+'">'+def.note.en+'</div>';
+      '<div class="lab-name" data-en="'+def.name.en+'" data-es="'+def.name.es+'">'+(es()?def.name.es:def.name.en)+'</div>'+
+      '<div class="lab-note" data-en="'+def.note.en+'" data-es="'+def.note.es+'">'+(es()?def.note.es:def.note.en)+'</div>';
     track.appendChild(a);
     LAB.mount(a.querySelector('canvas'), id);
   });
@@ -2406,10 +2413,12 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link=>{
   const more=document.createElement('a');
   more.className='lab-card lab-more reveal';
   more.href='/lab';
+  const t=(en,esp)=>es()?esp:en;
   more.innerHTML='<div class="lab-shot"><div class="lab-more-in"><b>&rarr;</b>'+
-    '<span data-en="Open the lab" data-es="Entrar al lab">Open the lab</span></div></div>'+
-    '<div class="lab-name" data-en="Full lab" data-es="Lab completo">Full lab</div>'+
-    '<div class="lab-note" data-en="Every experiment, running at full size." data-es="Todos los experimentos, corriendo en grande.">Every experiment, running at full size.</div>';
+    '<span data-en="Open the lab" data-es="Entrar al lab">'+t('Open the lab','Entrar al lab')+'</span></div></div>'+
+    '<div class="lab-name" data-en="Full lab" data-es="Lab completo">'+t('Full lab','Lab completo')+'</div>'+
+    '<div class="lab-note" data-en="Every experiment, running at full size." data-es="Todos los experimentos, corriendo en grande.">'+
+    t('Every experiment, running at full size.','Todos los experimentos, corriendo en grande.')+'</div>';
   track.appendChild(more);
 
   // El reveal global (GSAP) ya corrió sobre el DOM inicial: estas tarjetas nacen
@@ -3058,7 +3067,10 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link=>{
 (function(){
   const cv=document.getElementById('cvDownload');
   if(!cv)return;
-  const PDF={en:'/cv/cv-nicolas-moreno.pdf', es:'/cv/cv-nicolas-moreno-es.pdf'};
+  // El ?v= viaja DENTRO del mapa: sync() reescribe el href completo, asi que un
+  // cache-buster puesto solo en el HTML se perdia en el primer sync.
+  const V='?v=20260909f';
+  const PDF={en:'/cv/cv-nicolas-moreno.pdf'+V, es:'/cv/cv-nicolas-moreno-es.pdf'+V};
   function sync(){
     const es=document.documentElement.lang==='es';
     cv.href=es?PDF.es:PDF.en;

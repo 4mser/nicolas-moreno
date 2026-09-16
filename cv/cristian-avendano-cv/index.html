@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#f5f8fc">
+<title>Cristian Avendaño — Administración y Seguridad CCTV</title>
+<meta name="description" content="Cristian Avendaño Alvarado — 11 años de experiencia en administración de empresas, contabilidad y recursos humanos. Actualmente guardia de seguridad y operador de CCTV. La Florida, Santiago, Chile.">
+<meta property="og:title" content="Cristian Avendaño — Administración y Seguridad CCTV">
+<meta property="og:description" content="11 años de experiencia en administración, contabilidad y recursos humanos. Guardia de seguridad y operador de CCTV. Santiago, Chile.">
+<meta property="og:type" content="profile">
+<meta property="og:image" content="https://cristian-avendano-cv.vercel.app/cristian.jpg">
+<meta property="og:image:width" content="512">
+<meta property="og:image:height" content="512">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cristian-avendano-cv.vercel.app/cristian.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,900&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<style>
+  *,*::before,*::after{ margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  :root{
+    --bg:#f5f8fc;
+    --bg-2:#eef3fa;
+    --surface:#ffffff;
+    --surface-2:#eef4fb;
+    --border:rgba(30,58,110,0.12);
+    --border-2:rgba(37,99,235,0.32);
+    --text:#0f1b2d;
+    --text-2:#495a72;
+    --text-3:#8492a6;
+    --accent:#2563eb;
+    --accent-2:#3b82f6;
+    --accent-deep:#1e40af;
+    --shadow:0 1px 2px rgba(16,24,40,0.05), 0 12px 26px -14px rgba(16,40,90,0.22);
+    --serif:'Fraunces', Georgia, serif;
+    --sans:'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --mono:'IBM Plex Mono', ui-monospace, monospace;
+  }
+  html{ scroll-behavior:smooth; -webkit-text-size-adjust:100%; }
+  body{
+    font-family:var(--sans);
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+    position:relative;
+  }
+  /* Fondo ambiental */
+  .amb{ position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; }
+  .glow{ position:absolute; border-radius:50%; filter:blur(70px); opacity:.5; }
+  .glow.a{ width:60vw; height:60vw; max-width:540px; max-height:540px; top:-14%; right:-20%; background:radial-gradient(circle, rgba(37,99,235,0.20), transparent 68%); }
+  .glow.b{ width:72vw; height:72vw; max-width:580px; max-height:580px; bottom:-12%; left:-26%; background:radial-gradient(circle, rgba(96,165,250,0.18), transparent 70%); }
+  .grain{ display:none; }
+
+  #progress{ position:fixed; top:0; left:0; height:2px; width:100%; background:linear-gradient(90deg,var(--accent),var(--accent-2)); transform:scaleX(0); transform-origin:left; z-index:100; }
+
+  .wrap{ position:relative; z-index:1; width:100%; max-width:680px; margin:0 auto; padding:0 22px; }
+
+  section{ padding:clamp(46px,10vw,84px) 0; }
+  .eyebrow{ font-family:var(--mono); font-size:11px; letter-spacing:0.28em; text-transform:uppercase; color:var(--accent); display:flex; align-items:center; gap:10px; margin-bottom:20px; }
+  .eyebrow::before{ content:""; width:26px; height:1px; background:var(--accent); opacity:.6; }
+  h2.title{ font-family:var(--serif); font-weight:600; font-size:clamp(26px,7vw,40px); line-height:1.08; letter-spacing:-0.01em; margin-bottom:6px; }
+
+  /* ── HERO ── */
+  .hero{ min-height:100svh; display:flex; flex-direction:column; justify-content:center; padding:96px 0 54px; }
+  .hero-photo{ width:96px; height:96px; border-radius:50%; overflow:hidden; margin-bottom:22px; border:1px solid var(--border); box-shadow:0 0 0 4px #fff, 0 14px 30px -10px rgba(16,40,90,0.32); }
+  .hero-photo img{ width:100%; height:100%; object-fit:cover; object-position:50% 32%; display:block; }
+  .hero-over{ font-family:var(--mono); font-size:11.5px; letter-spacing:0.26em; text-transform:uppercase; color:var(--text-2); display:flex; align-items:center; gap:10px; margin-bottom:22px; }
+  .hero-over .dot{ width:7px; height:7px; border-radius:50%; background:var(--accent); box-shadow:0 0 12px var(--accent); }
+  .hero-name{ font-family:var(--serif); font-weight:600; font-size:clamp(28px,10.5vw,58px); line-height:1.0; letter-spacing:-0.02em; overflow-wrap:break-word; }
+  .line-wrap{ display:block; overflow:hidden; padding-bottom:0.04em; }
+  .line{ display:block; }
+  .line em{ font-style:italic; font-weight:500; color:var(--accent); }
+  .hero-role{ margin-top:22px; font-size:clamp(13.5px,3.4vw,16.5px); color:var(--text); font-weight:500; letter-spacing:0.01em; overflow-wrap:break-word; }
+  .hero-role b{ color:var(--accent); font-weight:600; }
+  .hero-sum{ margin-top:16px; color:var(--text-2); font-size:15px; max-width:44ch; }
+
+  .stats{ display:flex; flex-wrap:wrap; gap:12px; margin-top:30px; }
+  .stat{ flex:1 1 90px; min-width:0; background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:14px 13px; box-shadow:var(--shadow); }
+  .stat .num{ font-family:var(--serif); font-weight:600; font-size:23px; line-height:1; color:var(--text); white-space:nowrap; }
+  .stat .num .u{ color:var(--accent); }
+  .stat .lbl{ font-family:var(--mono); font-size:9.5px; letter-spacing:0.14em; text-transform:uppercase; color:var(--text-3); margin-top:8px; }
+
+  .cta-row{ display:flex; flex-wrap:wrap; gap:12px; margin-top:30px; }
+  .btn{ display:inline-flex; align-items:center; gap:9px; font-weight:600; font-size:14.5px; padding:14px 20px; border-radius:999px; text-decoration:none; transition:transform .25s ease, background .25s ease, border-color .25s ease; }
+  .btn:active{ transform:scale(.97); }
+  .btn.primary{ background:var(--accent); color:#fff; box-shadow:0 8px 20px -6px rgba(37,99,235,0.5); }
+  .btn.primary:hover{ background:var(--accent-2); }
+  .btn.ghost{ border:1px solid var(--border-2); color:var(--text); }
+  .btn.ghost:hover{ background:var(--surface); }
+  .btn svg{ width:16px; height:16px; }
+
+  /* ── PERFIL ── */
+  .lead{ font-family:var(--serif); font-weight:400; font-size:clamp(19px,5vw,26px); line-height:1.42; letter-spacing:-0.01em; color:var(--text); }
+  .lead b{ color:var(--accent); font-weight:600; }
+
+  /* ── TIMELINE ── */
+  .timeline{ position:relative; margin-top:8px; padding-left:30px; }
+  .rail{ position:absolute; left:5px; top:6px; bottom:6px; width:2px; background:var(--border); border-radius:2px; overflow:hidden; }
+  .rail-fill{ position:absolute; inset:0; background:linear-gradient(180deg,var(--accent),var(--accent-deep)); transform:scaleY(0); transform-origin:top; }
+  .tl-item{ position:relative; padding:0 0 30px; }
+  .tl-item:last-child{ padding-bottom:0; }
+  .tl-dot{ position:absolute; left:-30px; top:5px; width:12px; height:12px; border-radius:50%; background:var(--bg); border:2px solid var(--accent); transform:translateX(-1px); box-shadow:0 0 0 4px var(--bg); }
+  .tl-dot::after{ content:""; position:absolute; inset:2.5px; border-radius:50%; background:var(--accent); opacity:.9; }
+  .tl-year{ font-family:var(--mono); font-size:11.5px; letter-spacing:0.12em; color:var(--accent); font-weight:500; }
+  .tl-role{ font-family:var(--serif); font-size:19px; font-weight:600; line-height:1.2; margin-top:5px; letter-spacing:-0.01em; }
+  .tl-org{ color:var(--text-2); font-size:13.5px; margin-top:3px; }
+  .tl-org .place{ color:var(--text-3); }
+  .tl-desc{ color:var(--text-2); font-size:14px; margin-top:9px; line-height:1.5; }
+  .tl-desc b{ color:var(--text); font-weight:600; }
+  ul.tl-list{ list-style:none; margin-top:10px; }
+  ul.tl-list li{ position:relative; padding-left:16px; margin-bottom:6px; color:var(--text-2); font-size:14px; line-height:1.5; }
+  ul.tl-list li:last-child{ margin-bottom:0; }
+  ul.tl-list li::before{ content:""; position:absolute; left:0; top:0.65em; width:7px; height:1px; background:var(--accent); opacity:.65; }
+  ul.tl-list li b{ color:var(--text); font-weight:600; }
+
+  /* ── SKILLS ── */
+  .skill-group{ margin-top:22px; }
+  .skill-group:first-child{ margin-top:4px; }
+  .sg-head{ font-family:var(--mono); font-size:11px; letter-spacing:0.16em; text-transform:uppercase; color:var(--text-3); margin-bottom:12px; }
+  .tags{ display:flex; flex-wrap:wrap; gap:9px; }
+  .tag{ font-size:13.5px; color:var(--text); background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:9px 13px; line-height:1; }
+  .tag.hot{ border-color:var(--border-2); color:var(--accent-deep); background:rgba(37,99,235,0.06); font-weight:500; }
+
+  /* ── FORMACIÓN ── */
+  .cred{ background:linear-gradient(150deg,var(--surface-2),var(--surface)); border:1px solid var(--border-2); border-radius:18px; padding:22px; position:relative; overflow:hidden; margin-bottom:16px; box-shadow:var(--shadow); }
+  .cred::before{ content:""; position:absolute; top:-40px; right:-40px; width:140px; height:140px; border-radius:50%; background:radial-gradient(circle,rgba(37,99,235,0.18),transparent 70%); }
+  .cred .badge{ display:inline-flex; align-items:center; gap:8px; font-family:var(--mono); font-size:10.5px; letter-spacing:0.16em; text-transform:uppercase; color:var(--accent); border:1px solid var(--border-2); border-radius:999px; padding:6px 12px; }
+  .cred h3{ font-family:var(--serif); font-size:22px; font-weight:600; margin-top:15px; letter-spacing:-0.01em; }
+  .cred p{ color:var(--text-2); font-size:14px; margin-top:7px; }
+  .cred p b{ color:var(--accent-2); font-weight:600; }
+  .edu-row{ display:flex; gap:14px; align-items:baseline; padding:13px 2px; border-top:1px solid var(--border); }
+  .edu-row .yr{ font-family:var(--mono); font-size:10.5px; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-3); flex:0 0 70px; }
+  .edu-row .body b{ color:var(--text); font-weight:600; font-size:14.5px; }
+  .edu-row .body span{ color:var(--text-2); font-size:13.5px; }
+
+  /* ── CONTACTO ── */
+  .contact{ text-align:center; }
+  .contact h2{ font-family:var(--serif); font-weight:600; font-size:clamp(28px,8vw,46px); line-height:1.05; letter-spacing:-0.02em; }
+  .contact h2 em{ font-style:italic; color:var(--accent); }
+  .clist{ display:flex; flex-direction:column; gap:11px; margin-top:26px; }
+  .cItem{ display:flex; align-items:center; gap:14px; text-decoration:none; color:var(--text); background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:15px 18px; text-align:left; box-shadow:var(--shadow); transition:border-color .25s ease, transform .2s ease; }
+  .cItem:hover{ border-color:var(--border-2); }
+  .cItem:active{ transform:scale(.99); }
+  .cItem .ic{ width:38px; height:38px; flex:0 0 38px; border-radius:10px; background:var(--surface-2); display:grid; place-items:center; color:var(--accent); }
+  .cItem .ic svg{ width:18px; height:18px; }
+  .cItem>span{ display:flex; flex-direction:column; min-width:0; }
+  .cItem .k{ display:block; font-family:var(--mono); font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:var(--text-3); }
+  .cItem .val{ display:block; font-size:15px; font-weight:500; margin-top:3px; word-break:break-word; }
+  .cItem .arrow{ margin-left:auto; color:var(--text-3); }
+
+  footer{ text-align:center; padding:36px 0 46px; color:var(--text-3); font-size:12.5px; }
+  footer .name{ font-family:var(--serif); color:var(--text-2); font-size:14px; }
+  footer .avail{ font-family:var(--mono); font-size:10.5px; letter-spacing:0.12em; text-transform:uppercase; color:var(--accent); margin-top:8px; }
+
+  /* ── WhatsApp / QR ── */
+  .wa{ padding-top:6px; }
+  .wa-card{ background:var(--surface); border:1px solid var(--border); border-radius:22px; padding:30px 22px; box-shadow:var(--shadow); text-align:center; display:flex; flex-direction:column; align-items:center; }
+  .wa-eyebrow{ font-family:var(--mono); font-size:11px; letter-spacing:0.22em; text-transform:uppercase; color:#128C7E; display:flex; align-items:center; gap:9px; margin-bottom:18px; }
+  .wa-eyebrow svg{ width:15px; height:15px; }
+  .wa-qr{ width:194px; height:194px; padding:14px; background:#fff; border:1px solid var(--border); border-radius:18px; box-shadow:var(--shadow); }
+  .wa-qr img{ width:100%; height:100%; display:block; }
+  .wa-card h3{ font-family:var(--serif); font-weight:600; font-size:23px; letter-spacing:-0.01em; margin-top:22px; color:var(--text); }
+  .wa-card p{ color:var(--text-2); font-size:14.5px; margin-top:8px; max-width:32ch; }
+  .wa-btn{ margin-top:20px; background:#25D366; color:#fff; box-shadow:0 8px 20px -6px rgba(37,211,102,0.5); }
+  .wa-btn:hover{ background:#20bd5b; }
+  .wa-btn svg{ width:18px; height:18px; }
+
+  @media (min-width:560px){
+    .stat .num{ font-size:30px; }
+    .tl-role{ font-size:21px; }
+  }
+  @media (prefers-reduced-motion:reduce){
+    html{ scroll-behavior:auto; }
+  }
+</style>
+</head>
+<body>
+
+<div class="amb">
+  <div class="glow a" id="glowA"></div>
+  <div class="glow b" id="glowB"></div>
+  <div class="grain"></div>
+</div>
+<div id="progress"></div>
+
+<!-- ══ HERO ══ -->
+<header class="hero">
+  <div class="wrap">
+    <div class="hero-photo"><img src="cristian.jpg" alt="Cristian Avendaño Alvarado" width="96" height="96"></div>
+    <div class="hero-over"><span class="dot"></span> Currículum · Santiago, Chile</div>
+    <h1 class="hero-name">
+      <span class="line-wrap"><span class="line">Cristian</span></span>
+      <span class="line-wrap"><span class="line"><em>Avendaño</em></span></span>
+      <span class="line-wrap"><span class="line"><em>Alvarado</em></span></span>
+    </h1>
+    <p class="hero-role"><b>Guardia de Seguridad · Operador CCTV</b> · Administración y Contabilidad</p>
+    <p class="hero-sum">11 años de experiencia en administración de empresas, contabilidad y recursos humanos. Proactivo, ordenado y con manejo de Excel y sistema Softland.</p>
+
+    <div class="stats">
+      <div class="stat"><div class="num"><span data-count="11">11</span><span class="u">+</span></div><div class="lbl">Años de experiencia</div></div>
+      <div class="stat"><div class="num"><span data-count="11">11</span></div><div class="lbl">Cursos y certificaciones</div></div>
+      <div class="stat"><div class="num">OS<span class="u">-10</span></div><div class="lbl">Formación ISEG 2025</div></div>
+    </div>
+
+    <div class="cta-row">
+      <a class="btn primary hero-cta" href="cv-cristian-avendano.pdf" download>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Descargar CV (PDF)
+      </a>
+      <a class="btn ghost hero-cta" href="#contacto">Contacto</a>
+    </div>
+  </div>
+</header>
+
+<!-- ══ PERFIL ══ -->
+<section id="perfil">
+  <div class="wrap">
+    <div class="eyebrow reveal">Perfil</div>
+    <p class="lead reveal">Trabajador con <b>11 años de experiencia en administración de empresas</b>, en contabilidad y recursos humanos, y actualmente <b>guardia de seguridad y operador de CCTV</b>. Manejo de Excel, sistema Softland y plataformas SII, Previred y Tesorería General.</p>
+  </div>
+</section>
+
+<!-- ══ EXPERIENCIA ══ -->
+<section id="experiencia">
+  <div class="wrap">
+    <div class="eyebrow reveal">Experiencia</div>
+    <h2 class="title reveal">Trayectoria laboral</h2>
+
+    <div class="timeline">
+      <div class="rail"><div class="rail-fill"></div></div>
+
+      <article class="tl-item">
+        <span class="tl-dot"></span>
+        <div class="tl-year">2024 — ACTUALIDAD</div>
+        <div class="tl-role">Guardia de Seguridad — Operador de CCTV</div>
+        <div class="tl-org">Instituto ISEG Chile SpA · <span class="place">Santiago</span></div>
+        <ul class="tl-list">
+          <li><b>Monitoreo de cámaras de seguridad (CCTV)</b> para prevenir robos, hurtos y situaciones de riesgo dentro de la tienda.</li>
+          <li>Control de accesos de clientes, proveedores y personal interno.</li>
+          <li>Apoyo en la implementación de <b>protocolos de prevención de pérdidas</b> y seguridad en sala de ventas.</li>
+          <li>Supervisión y verificación de salidas de mercadería para evitar pérdidas desconocidas.</li>
+          <li>Coordinación con jefatura de seguridad y personal de apoyo en casos de incidentes.</li>
+          <li>Registro y elaboración de <b>informes de novedades</b> y eventos diarios.</li>
+        </ul>
+      </article>
+
+      <article class="tl-item">
+        <span class="tl-dot"></span>
+        <div class="tl-year">2014 — 2023</div>
+        <div class="tl-role">Contabilidad y Administración</div>
+        <div class="tl-org">Farmacéutica Quellón Ltda. · <span class="place">Santiago</span></div>
+        <ul class="tl-list">
+          <li><b>Facturación electrónica</b> y manejo del <b>sistema Softland</b>.</li>
+          <li>Elaboración de <b>contratos de trabajo</b> y gestión en plataformas <b>SII, Previred y Tesorería General de la República</b>.</li>
+          <li>Revisión de balances de ingresos y egresos de dinero.</li>
+          <li>Atención al cliente y soporte administrativo transversal.</li>
+        </ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ══ HABILIDADES ══ -->
+<section id="habilidades">
+  <div class="wrap">
+    <div class="eyebrow reveal">Habilidades</div>
+    <h2 class="title reveal">Competencias</h2>
+
+    <div class="skill-group">
+      <div class="sg-head reveal">Seguridad</div>
+      <div class="tags">
+        <span class="tag hot">Monitoreo CCTV</span>
+        <span class="tag hot">Control de accesos</span>
+        <span class="tag hot">Prevención de pérdidas</span>
+        <span class="tag hot">Informes de novedades</span>
+      </div>
+    </div>
+    <div class="skill-group">
+      <div class="sg-head reveal">Administración y contabilidad</div>
+      <div class="tags">
+        <span class="tag">Sistema Softland</span>
+        <span class="tag">Excel</span>
+        <span class="tag">Facturación electrónica</span>
+        <span class="tag">SII</span>
+        <span class="tag">Previred</span>
+        <span class="tag">Tesorería General</span>
+        <span class="tag">Contratos de trabajo</span>
+        <span class="tag">Balances de ingresos y egresos</span>
+      </div>
+    </div>
+    <div class="skill-group">
+      <div class="sg-head reveal">Competencias personales</div>
+      <div class="tags">
+        <span class="tag">Seguimiento preciso de instrucciones</span>
+        <span class="tag">Proactivo y ordenado</span>
+        <span class="tag">Responsable</span>
+        <span class="tag">Resolución de problemas</span>
+        <span class="tag">Atención al cliente</span>
+        <span class="tag">Trabajo en equipo</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FORMACIÓN ══ -->
+<section id="formacion">
+  <div class="wrap">
+    <div class="eyebrow reveal">Formación y certificaciones</div>
+
+    <div class="cred reveal">
+      <span class="badge">● Acreditación</span>
+      <h3>OS-10 · Formación de guardias de seguridad</h3>
+      <p>Instituto ISEG · <b>2025</b> — Complementada con el curso de <b>CCTV, televisión de circuito cerrado</b>.</p>
+    </div>
+
+    <div class="reveal">
+      <div class="edu-row"><div class="yr">2025</div><div class="body"><b>CCTV — Televisión de circuito cerrado</b> — <span>Instituto ISEG.</span></div></div>
+      <div class="edu-row"><div class="yr">2024</div><div class="body"><b>Asistencia administrativa profesional</b> — <span>Microsoft y LinkedIn · Certificado por SENCE.</span></div></div>
+      <div class="edu-row"><div class="yr">2024</div><div class="body"><b>LinkedIn Learning</b> — <span>Microsoft 365 (colaboración y productividad) · Etiqueta empresarial · Toma de notas · Gestión de proyectos: equipos · Comunicación · Gestión del tiempo · Liderazgo con inteligencia emocional.</span></div></div>
+      <div class="edu-row"><div class="yr">2010 — 2012</div><div class="body"><b>Técnico en Administración de Empresas</b> — <span>Liceo Técnico Profesional San José.</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CONTACTO ══ -->
+<section id="contacto" class="contact">
+  <div class="wrap">
+    <div class="eyebrow reveal" style="justify-content:center">Contacto</div>
+    <h2 class="reveal">Conversemos y <em>trabajemos</em> juntos.</h2>
+
+    <div class="clist">
+      <a class="cItem reveal" href="tel:+56944607035">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>
+        <span><span class="k">Teléfono</span><span class="val">+56 9 4460 7035</span></span>
+        <span class="arrow">→</span>
+      </a>
+      <a class="cItem reveal" href="mailto:cristianavendanoalvarado@gmail.com">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg></span>
+        <span><span class="k">Email</span><span class="val">cristianavendanoalvarado@gmail.com</span></span>
+        <span class="arrow">→</span>
+      </a>
+      <a class="cItem reveal" href="cv-cristian-avendano.pdf" download>
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
+        <span><span class="k">Currículum</span><span class="val">Descargar CV en PDF</span></span>
+        <span class="arrow">↓</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ══ WHATSAPP ══ -->
+<section id="whatsapp" class="wa">
+  <div class="wrap">
+    <div class="wa-card reveal">
+      <div class="wa-eyebrow">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.71.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347M12.05 21.785h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.002-5.45 4.437-9.884 9.889-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884M20.463 3.488A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        WhatsApp
+      </div>
+      <div class="wa-qr"><img src="wa-qr.svg" alt="Código QR para escribir a Cristian por WhatsApp" width="194" height="194"></div>
+      <h3>Escríbeme al instante</h3>
+      <p>Escanea el código o toca el botón para enviarme un mensaje directo por WhatsApp.</p>
+      <a class="btn wa-btn" href="https://wa.me/56944607035?text=Hola%20Cristian%2C%20vi%20tu%20CV%20y%20me%20gustaria%20conversar%20sobre%20una%20oportunidad%20laboral." target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.71.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347M12.05 21.785h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.002-5.45 4.437-9.884 9.889-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884M20.463 3.488A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Escríbeme por WhatsApp
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="name">Cristian Avendaño Alvarado</div>
+    <div class="avail">Disponibilidad inmediata · jornada completa y turnos</div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  // Siempre abrir desde arriba (evita que Safari restaure el scroll al final)
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  window.scrollTo(0, 0);
+  window.addEventListener('load', function(){ window.scrollTo(0, 0); });
+  window.addEventListener('pageshow', function(e){ if (e.persisted) window.scrollTo(0, 0); });
+
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(typeof gsap === 'undefined'){ return; } // sin GSAP, todo visible por defecto
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Barra de progreso
+  gsap.to('#progress', { scaleX:1, ease:'none', scrollTrigger:{ trigger:document.documentElement, start:'top top', end:'bottom bottom', scrub:0.3 } });
+
+  if(reduce){ return; }
+
+  // Glows con leve deriva
+  gsap.to('#glowA', { yPercent:12, xPercent:-8, duration:11, ease:'sine.inOut', repeat:-1, yoyo:true });
+  gsap.to('#glowB', { yPercent:-10, xPercent:8, duration:13, ease:'sine.inOut', repeat:-1, yoyo:true });
+
+  // Intro del hero
+  var tl = gsap.timeline({ defaults:{ ease:'power3.out' } });
+  tl.from('.hero-photo', { scale:.82, opacity:0, duration:.6, ease:'back.out(1.6)' })
+    .from('.hero-over', { y:16, opacity:0, duration:.6 }, '-=.3')
+    .from('.hero-name .line', { yPercent:115, duration:.95, stagger:.1 }, '-=.25')
+    .from('.hero-role', { y:18, opacity:0, duration:.7 }, '-=.45')
+    .from('.hero-sum', { y:18, opacity:0, duration:.7 }, '-=.55')
+    .from('.stat', { y:22, opacity:0, duration:.6, stagger:.09 }, '-=.4')
+    .from('.hero-cta', { y:16, opacity:0, duration:.55, stagger:.08 }, '-=.35');
+
+  // Contadores
+  gsap.utils.toArray('[data-count]').forEach(function(el){
+    var end = parseFloat(el.getAttribute('data-count'));
+    var suf = el.getAttribute('data-suffix') || '';
+    var o = { v:0 };
+    ScrollTrigger.create({ trigger:el, start:'top 92%', once:true, onEnter:function(){
+      gsap.to(o, { v:end, duration:1.5, ease:'power2.out', onUpdate:function(){ el.textContent = Math.round(o.v) + suf; } });
+    }});
+  });
+
+  // Reveals genéricos
+  gsap.utils.toArray('.reveal').forEach(function(el){
+    gsap.from(el, { y:26, opacity:0, duration:.8, ease:'power3.out', scrollTrigger:{ trigger:el, start:'top 88%' } });
+  });
+
+  // Relleno de la línea de tiempo
+  gsap.to('.rail-fill', { scaleY:1, ease:'none', scrollTrigger:{ trigger:'.timeline', start:'top 72%', end:'bottom 62%', scrub:0.4 } });
+
+  // Ítems de la timeline
+  gsap.utils.toArray('.tl-item').forEach(function(item){
+    gsap.from(item, { x:-14, opacity:0, duration:.7, ease:'power3.out', scrollTrigger:{ trigger:item, start:'top 84%' } });
+    gsap.from(item.querySelector('.tl-dot'), { scale:0, duration:.5, ease:'back.out(2.2)', scrollTrigger:{ trigger:item, start:'top 84%' } });
+  });
+
+  // Tags de habilidades
+  gsap.utils.toArray('.skill-group').forEach(function(g){
+    gsap.from(g.querySelectorAll('.tag'), { y:12, opacity:0, duration:.5, stagger:.05, ease:'power2.out', scrollTrigger:{ trigger:g, start:'top 88%' } });
+  });
+})();
+</script>
+</body>
+</html>

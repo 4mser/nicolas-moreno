@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carlos Porfirio Moreno Torres — CV</title>
+<style>
+  /* CV monocromo, formato "línea de tiempo" (columna de fechas a la izquierda),
+     ATS-safe: columna única de lectura, texto real, fuentes web-safe, sin tablas/imágenes. */
+  :root{
+    --ink:#161616;
+    --body:#34373c;
+    --muted:#6b7075;
+    --faint:#979ca1;
+    --rule:#d9dbde;
+    --rule-strong:#161616;
+    --sans:"Helvetica Neue", Helvetica, Arial, sans-serif;
+    --rail:78px;
+    --gap:26px;
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html{ -webkit-text-size-adjust:100%; }
+  body{
+    font-family:var(--sans);
+    color:var(--body);
+    background:#fff;
+    font-size:9.5pt;
+    line-height:1.4;
+    font-weight:400;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  @media screen{
+    body{ background:#ececee; padding:28px 0; }
+    .page{
+      width:8.5in; min-height:11in; margin:0 auto;
+      background:#fff; padding:0.55in 0.6in;
+      box-shadow:0 8px 40px rgba(0,0,0,0.14);
+    }
+  }
+  @media print{
+    @page{ size:Letter; margin:0.36in 0.45in; }
+    body{ background:#fff; }
+    .page{ width:auto; padding:0; box-shadow:none; }
+  }
+  *{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+
+  /* ── Encabezado ── */
+  .name{
+    font-size:25pt; font-weight:700;
+    letter-spacing:-0.015em; line-height:1.04; color:var(--ink);
+  }
+  .tagline{
+    margin-top:7px; font-size:8.7pt; font-weight:600;
+    letter-spacing:0.2em; text-transform:uppercase; color:var(--muted);
+  }
+  .contact{
+    margin-top:10px; padding-top:9px;
+    border-top:1px solid var(--rule);
+    font-size:9pt; color:var(--muted); line-height:1.65;
+  }
+  .contact a{ color:var(--body); text-decoration:none; }
+  .contact .v{ color:var(--body); }
+  .contact .sep{ color:var(--faint); margin:0 7px; }
+
+  /* ── Secciones ── */
+  section{ margin-top:13px; }
+  h2.sec{
+    font-size:8.8pt; font-weight:700;
+    letter-spacing:0.2em; text-transform:uppercase; color:var(--ink);
+    padding-bottom:4px; margin-bottom:9px;
+    border-bottom:1.3px solid var(--rule-strong);
+  }
+
+  /* ── Resumen ── */
+  p.summary{ color:var(--body); line-height:1.5; }
+  p.summary strong{ color:var(--ink); font-weight:600; }
+
+  /* ── Filas en grilla (fecha/etiqueta a la izquierda) ── */
+  .row{ display:grid; grid-template-columns:var(--rail) 1fr; column-gap:var(--gap); }
+
+  /* ── Experiencia (línea de tiempo) ── */
+  .timeline{ position:relative; }
+  .timeline::before{
+    content:""; position:absolute; left:91px; top:9px; bottom:9px;
+    width:1px; background:#c7cace;
+  }
+  .job{ position:relative; margin-bottom:10px; }
+  .job:last-child{ margin-bottom:0; }
+  .job::before{
+    content:""; position:absolute; left:88.5px; top:5px;
+    width:6px; height:6px; border-radius:50%;
+    background:var(--ink); box-shadow:0 0 0 2.5px #fff;
+  }
+  .job .when{
+    font-size:8.9pt; font-weight:600; color:var(--muted); text-align:right;
+    white-space:nowrap; letter-spacing:0.01em; padding-top:1.5px;
+  }
+  .job .role{ font-size:10.5pt; font-weight:700; color:var(--ink); line-height:1.2; }
+  .job .role .org{ font-weight:400; color:var(--muted); }
+  .job .loc{ font-size:8.6pt; color:var(--muted); margin-top:2px; }
+  ul.bullets{ list-style:none; margin-top:3.5px; }
+  ul.bullets li{
+    position:relative; padding-left:15px; margin-bottom:2px;
+    color:var(--body); line-height:1.42;
+  }
+  ul.bullets li::before{
+    content:""; position:absolute; left:0; top:0.62em;
+    width:7px; height:1px; background:var(--muted);
+  }
+  li strong{ color:var(--ink); font-weight:600; }
+
+  /* ── Habilidades ── */
+  .skill{ margin-bottom:6px; align-items:baseline; }
+  .skill:last-child{ margin-bottom:0; }
+  .skill .k{
+    color:var(--ink); font-weight:700; text-align:right;
+    font-size:8.4pt; letter-spacing:0.08em; text-transform:uppercase; line-height:1.42;
+  }
+  .skill .v{ color:var(--body); line-height:1.42; }
+
+  /* ── Formación / Certificaciones ── */
+  .edu{ margin-bottom:6px; align-items:baseline; }
+  .edu:last-child{ margin-bottom:0; }
+  .edu .tag{
+    color:var(--ink); font-weight:700; text-align:right;
+    font-size:8.2pt; letter-spacing:0.06em; text-transform:uppercase; line-height:1.42;
+  }
+  .edu .det{ color:var(--body); line-height:1.42; }
+  .edu .det b{ color:var(--ink); font-weight:600; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ═══ ENCABEZADO ═══ -->
+  <header>
+    <div class="name">Carlos Porfirio Moreno Torres</div>
+    <div class="tagline">Guardia de Seguridad OS-10 &nbsp;·&nbsp; Conserje &nbsp;·&nbsp; Ventas y Supervisión</div>
+    <div class="contact">
+      Puente Alto, Santiago
+      <span class="sep">·</span> <span class="v">+56 9 8774 4085</span>
+      <span class="sep">·</span> <a href="mailto:carlos.moreno.torres71@gmail.com">carlos.moreno.torres71@gmail.com</a><br>
+      RUT 11.876.383-1
+      <span class="sep">·</span> Chileno
+      <span class="sep">·</span> Divorciado
+      <span class="sep">·</span> Disponibilidad inmediata (jornada completa y turnos)
+    </div>
+  </header>
+
+  <!-- ═══ PERFIL ═══ -->
+  <section>
+    <h2 class="sec">Perfil Profesional</h2>
+    <p class="summary">
+      Guardia de seguridad con <strong>credencial OS-10</strong> y <strong>más de 30 años de trayectoria laboral</strong>. He resguardado tiendas de retail, centros de bodegaje, recintos universitarios y edificios, sumando además años en conserjería, ventas y supervisión de equipos. Me distingo por mi <strong>responsabilidad, puntualidad y buen trato con el público</strong>.
+    </p>
+  </section>
+
+  <!-- ═══ EXPERIENCIA ═══ -->
+  <section>
+    <h2 class="sec">Experiencia Laboral</h2>
+
+    <div class="timeline">
+    <div class="job row">
+      <div class="when">2025 – 2026</div>
+      <div class="what">
+        <div class="role">Guardia de Seguridad, <span class="org">Empresa ISES</span></div>
+        <div class="loc">Mall Plaza Tobalaba, tienda H&amp;M · Santiago</div>
+        <ul class="bullets">
+          <li>Resguardo de tienda retail (H&amp;M): <strong>prevención de pérdidas</strong> y control de salida de mercadería.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="job row">
+      <div class="when">2022 – 2024</div>
+      <div class="what">
+        <div class="role">Maestro Carpintero — Terminaciones, <span class="org">Trabajo Independiente</span></div>
+        <div class="loc">Santiago</div>
+        <ul class="bullets">
+          <li>Carpintería y terminaciones en obras particulares: presupuesto, ejecución y entrega al cliente.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="job row">
+      <div class="when">2018 – 2021</div>
+      <div class="what">
+        <div class="role">Guardia de Seguridad, <span class="org">Empresa ASPER</span></div>
+        <div class="loc">Bodegas San Francisco, Pudahuel · Santiago</div>
+        <ul class="bullets">
+          <li>Seguridad en bodegaje: control de <strong>camiones y carga</strong>, rondas perimetrales y registro de personal.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="job row">
+      <div class="when">2015 – 2017</div>
+      <div class="what">
+        <div class="role">Guardia de Seguridad, <span class="org">Empresa Lyssa S.A.</span></div>
+        <div class="loc">Universidad Diego Portales · Santiago</div>
+        <ul class="bullets">
+          <li>Seguridad en campus universitario: control de acceso de estudiantes, funcionarios y visitas.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="job row">
+      <div class="when">2011 – 2014</div>
+      <div class="what">
+        <div class="role">Conserje, <span class="org">Edificio Botticelli</span></div>
+        <div class="loc">Av. Kennedy, Las Condes · Santiago</div>
+        <ul class="bullets">
+          <li>Conserjería en edificio residencial: recepción, correspondencia y atención a residentes.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="job row">
+      <div class="when">2006 – 2011</div>
+      <div class="what">
+        <div class="role">Vendedor y Supervisor, <span class="org">Luis Viewa S.A. y Representaciones Industriales S.A.</span></div>
+        <div class="loc">Santiago</div>
+        <ul class="bullets">
+          <li><strong>Supervisión de equipo de ventas</strong> y atención comercial en piso, con cumplimiento de metas.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="job row">
+      <div class="when">1992 – 2005</div>
+      <div class="what">
+        <div class="role">Vendedor y Supervisor, <span class="org">Homecenter Sodimac</span></div>
+        <div class="loc">Santiago</div>
+        <ul class="bullets">
+          <li>Venta y asesoría de productos para el hogar y la construcción; supervisión de equipo de ventas.</li>
+        </ul>
+      </div>
+    </div>
+    </div>
+  </section>
+
+  <!-- ═══ HABILIDADES ═══ -->
+  <section>
+    <h2 class="sec">Habilidades y Competencias</h2>
+    <div class="skill row"><div class="k">Seguridad</div><div class="v">Control de accesos · Vigilancia y rondas · Prevención de pérdidas · Manejo de situaciones de riesgo</div></div>
+    <div class="skill row"><div class="k">Atención</div><div class="v">Conserjería y recepción · Atención a público · Orientación y trato con clientes</div></div>
+    <div class="skill row"><div class="k">Oficios</div><div class="v">Venta retail · Supervisión de equipos · Carpintería y terminaciones</div></div>
+  </section>
+
+  <!-- ═══ FORMACIÓN Y CERTIFICACIONES ═══ -->
+  <section>
+    <h2 class="sec">Formación y Certificaciones</h2>
+    <div class="edu row"><div class="tag">OS-10</div><div class="det"><b>Credencial de Guardia de Seguridad</b> — Otorgada por Carabineros de Chile · Vigente hasta 2027.</div></div>
+    <div class="edu row"><div class="tag">Licencia</div><div class="det"><b>Licencia de conducir Clase B</b> — Conducción de vehículos motorizados particulares.</div></div>
+    <div class="edu row"><div class="tag">E. Media</div><div class="det"><b>Científico-Humanista</b> — Liceo E-532, San Ramón · P.A.A. rendida.</div></div>
+    <div class="edu row"><div class="tag">E. Básica</div><div class="det"><b>Colegio E-542</b> — La Granja.</div></div>
+  </section>
+
+</div>
+</body>
+</html>

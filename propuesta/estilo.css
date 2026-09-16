@@ -1,0 +1,615 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   Formato de propuesta — láminas de 1280×720.
+
+   Cada .slide es una lámina apaisada y una página del PDF. La estructura
+   sigue la de una propuesta de consultora —portada, confidencialidad, carta,
+   índice, divisores numerados y barra de sección persistente— con el lenguaje
+   editorial: papel hueso, serif de texto, filetes de un píxel, bronce como
+   único acento y sistemas dinámicos dibujados en vivo en lugar de fotos de
+   banco.
+
+   Todo el alfa se deriva de --ink-rgb y --bg-rgb: la lámina entera cambia de
+   temperatura con esas dos líneas.
+   ═══════════════════════════════════════════════════════════════════════ */
+*{margin:0;padding:0;box-sizing:border-box;}
+
+:root{
+  --ink-rgb:8 13 24; --bg-rgb:255 255 255;
+  --bg:#ffffff; --ink:#080d18;
+  --ink-2:rgb(23 36 61/.82); --ink-3:rgb(23 36 61/.55); --ink-dim:rgb(23 36 61/.38);
+  --edge:rgb(8 13 24/.13); --edge-2:rgb(8 13 24/.26);
+  --acc:#0a5cff; --acc-rgb:10 92 255; --acc-hover:#0b4fd8;
+  /* Fondo del marco: el gris sobre el que flota la lámina en pantalla. */
+  --marco:#eef1f6;
+  /* Tono de los lienzos. Existe aparte de --acc-rgb porque según la paleta un
+     filete de un píxel puede pedir un punto más de viveza que el color con el
+     que se compone texto de 10 px; sobre blanco, el mismo azul ya rinde.
+     sims-base.js lee esta variable: el documento entero se recolorea acá. */
+  --sim-rgb:10 92 255;
+  --texto:'Newsreader',Georgia,serif;
+  --mono:'IBM Plex Mono',monospace;
+}
+html,body{color:var(--ink);font-family:var(--texto);-webkit-font-smoothing:antialiased;}
+
+.slide{position:relative;width:1280px;height:720px;background:var(--bg);
+  overflow:hidden;margin:0 auto 22px;}
+
+/* ══ Modo PDF ═════════════════════════════════════════════════════════
+   El chasis apila las láminas y muestra una: impreso así, el documento sale
+   en UNA página y con las simulaciones en blanco, porque sólo se dibuja la
+   que está a la vista. Con `?pdf=1` el chasis pone `data-pdf`, dibuja cada
+   sistema una vez y estas reglas devuelven las láminas al flujo, una por
+   página. La misma hoja sirve para la presentación y para el impreso.
+
+   `content-visibility` tiene que volver a `visible` sí o sí: si no, el
+   subárbol no se pinta y las páginas salen vacías. */
+html[data-pdf], html[data-pdf] body{height:auto;overflow:visible;background:#fff;}
+html[data-pdf] #barra,
+html[data-pdf] #pie,
+html[data-pdf] #lectura,
+html[data-pdf] .cur-dot,
+html[data-pdf] .cur-ring{display:none!important;}
+html[data-pdf] #escena{position:static;display:block;opacity:1!important;}
+html[data-pdf] #pista{width:1280px;height:auto;margin:0 auto;transform:none!important;}
+html[data-pdf] .slide{position:relative;inset:auto;width:1280px;height:720px;margin:0;
+  display:block!important;animation:none!important;opacity:1!important;
+  transform:none!important;transition:none!important;box-shadow:none;
+  break-after:page;page-break-after:always;}
+html[data-pdf] .slide:last-child{break-after:auto;page-break-after:auto;}
+html[data-pdf] *{cursor:auto!important;}
+@page{size:1280px 720px;margin:0;}
+
+@media print{
+  html,body{background:#fff;}
+  .slide{margin:0;break-after:page;page-break-after:always;}
+  .slide:last-child{break-after:auto;page-break-after:auto;}
+}
+
+/* ── Barra de sección: dice siempre en qué parte de la propuesta estás ── */
+.nav{position:absolute;top:0;left:0;right:0;height:54px;display:flex;
+  align-items:center;padding:0 46px;border-bottom:1px solid var(--edge);
+  background:rgb(var(--bg-rgb)/.86);z-index:5;}
+.nav .marca{font-family:var(--mono);font-size:10px;letter-spacing:.26em;color:var(--ink);
+  display:flex;align-items:center;gap:8px;}
+.nav .marca i{width:5px;height:5px;border-radius:50%;background:var(--acc);display:block;}
+.nav ul{list-style:none;display:flex;gap:26px;margin-left:auto;}
+.nav li{font-family:var(--mono);font-size:8.5px;letter-spacing:.16em;color:var(--ink-dim);
+  text-transform:uppercase;padding-bottom:3px;border-bottom:1px solid transparent;}
+.nav li.on{color:var(--ink);border-bottom-color:var(--acc);}
+
+/* ── Piezas que llevan a alguna parte ─────────────────────────────────
+   La flecha del rincón: la de dentro sale por arriba-derecha y la que
+   esperaba fuera entra desde abajo-izquierda, así que el gesto se lee como
+   "esto se abre en otro lado" y no como un icono que parpadea. Se deja
+   también en el PDF a propósito: ahí los enlaces son clicables y la flecha es
+   lo único que lo anuncia. */
+a.card,a.p{text-decoration:none;color:inherit;position:relative;display:flex;
+  transition:border-color .3s ease,background .3s ease,transform .3s ease;}
+a.p{display:block;}
+/* z-index: la flecha va antes que cualquier lienzo en el DOM, y sin esto un
+   canvas absoluto se le pone encima y la tapa. */
+.salir{position:absolute;z-index:3;top:10px;right:10px;width:24px;height:24px;border-radius:50%;
+  border:1px solid var(--edge-2);color:var(--ink-3);overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .35s ease,border-color .35s ease,color .35s ease;}
+.salir svg{width:10px;height:10px;display:block;position:absolute;
+  transition:transform .42s cubic-bezier(.6,.02,.2,1);}
+.salir .sale{transform:translate(-118%,118%);}
+/* `align-self` y no sólo `inline-block`: dentro de un flex en columna los
+   hijos se estiran al ancho del contenedor, así que el subrayado del nombre
+   cruzaba la tarjeta entera en vez de ceñirse a la palabra. */
+a.card h3,a.p h3{position:relative;display:inline-block;align-self:flex-start;}
+a.card h3::after,a.p h3::after{content:'';position:absolute;left:0;right:0;bottom:-3px;height:1px;
+  background:var(--acc);transform:scaleX(0);transform-origin:left;
+  transition:transform .4s cubic-bezier(.6,.02,.2,1);}
+@media(hover:hover) and (pointer:fine){
+  a.card:hover,a.p:hover{border-color:rgb(var(--acc-rgb)/.42);transform:translateY(-3px);}
+  a.card:hover .salir,a.p:hover .salir{background:var(--acc);border-color:var(--acc);color:#fff;}
+  a.card:hover .salir .entra,a.p:hover .salir .entra{transform:translate(118%,-118%);}
+  a.card:hover .salir .sale,a.p:hover .salir .sale{transform:translate(0,0);}
+  a.card:hover h3::after,a.p:hover h3::after{transform:scaleX(1);}
+}
+/* Los datos: subrayado que aparece, sin cambiar el color ni el peso. En una
+   carta formal un enlace de color chillón desentona. */
+a.dato{color:inherit;text-decoration:none;background-image:linear-gradient(var(--acc),var(--acc));
+  background-size:0% 1px;background-repeat:no-repeat;background-position:0 100%;
+  transition:background-size .35s cubic-bezier(.6,.02,.2,1),color .3s ease;}
+@media(hover:hover) and (pointer:fine){
+  a.dato:hover{color:var(--acc);background-size:100% 1px;}
+}
+
+/* ── Lámina de dos paneles ────────────────────────────────────────────
+   Texto a un lado, simulación al otro, a sangre. Va como clase y no como
+   estilo en línea a propósito: una rejilla escrita en el atributo `style` no
+   hay forma de colapsarla en el teléfono, y ahí el panel de la simulación
+   queda de doscientos píxeles con el rótulo partido letra a letra. */
+.par{position:absolute;inset:0;display:grid;grid-template-columns:var(--par-cols,1fr 1fr);}
+.par.bajo-nav{inset:54px 0 0 0;}          /* deja sitio a la barra de sección */
+.par .panel-txt{padding:96px 54px 70px 46px;display:flex;flex-direction:column;justify-content:center;}
+.par .panel-sim{position:relative;border-left:1px solid var(--edge);}
+
+/* ── Pie de lámina ── */
+.pie{position:absolute;left:46px;right:46px;bottom:22px;display:flex;
+  justify-content:space-between;align-items:center;
+  font-family:var(--mono);font-size:8.5px;letter-spacing:.2em;color:var(--ink-dim);z-index:5;}
+
+.cuerpo{position:absolute;left:46px;right:46px;top:96px;bottom:56px;z-index:4;
+  display:flex;flex-direction:column;justify-content:center;}
+
+/* ── Tipografía de lámina ─────────────────────────────────────────────
+   El serif lleva el texto y los titulares; el mono, los rótulos. Newsreader
+   pesa ópticamente más que una grotesca al mismo cuerpo, así que los tamaños
+   van un punto por debajo de lo que pediría una sans. */
+.kicker{font-family:var(--mono);font-size:10px;letter-spacing:.3em;color:var(--acc);
+  margin-bottom:16px;}
+h1{font-size:64px;font-weight:300;line-height:1.04;letter-spacing:-.02em;}
+h1 b{font-weight:600;}
+h2{font-size:38px;font-weight:300;line-height:1.12;letter-spacing:-.015em;margin-bottom:22px;}
+h2 b{font-weight:600;}
+h3{font-size:17px;font-weight:600;letter-spacing:-.005em;margin-bottom:8px;}
+p{font-size:15px;font-weight:300;line-height:1.62;color:var(--ink-2);}
+p + p{margin-top:11px;}
+p b,li b,td b{color:var(--ink);font-weight:500;}
+.lede{font-size:18px;line-height:1.55;color:var(--ink-2);max-width:78ch;}
+.lede b{color:var(--ink);font-weight:500;}
+
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:34px;}
+.cols-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+
+/* ── Tarjeta ── */
+.card{border:1px solid var(--edge);padding:20px 22px;background:rgb(var(--ink-rgb)/.028);}
+.card .k{font-family:var(--mono);font-size:8.5px;letter-spacing:.22em;color:var(--acc);margin-bottom:10px;}
+.card ul{list-style:none;}
+.card li{font-size:13px;font-weight:300;line-height:1.5;color:var(--ink-2);
+  padding-left:14px;position:relative;margin-bottom:6px;}
+.card li::before{content:'';position:absolute;left:0;top:8px;width:4px;height:4px;
+  background:var(--acc);opacity:.75;}
+
+/* ── Cifras ─────────────────────────────────────────────────────────────
+   Rejilla de un píxel hecha con box-shadow y no con border: los bordes
+   contiguos de celdas vecinas se suman y quedan al doble de grosor. */
+.cifras{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;margin-top:26px;}
+.cifra{background:var(--bg);box-shadow:0 0 0 1px var(--edge);padding:18px 18px 20px;}
+.cifra .n{font-size:34px;font-weight:500;letter-spacing:-.02em;line-height:1;}
+.cifra .n small{font-size:.4em;color:var(--ink-3);font-weight:400;}
+.cifra .u{font-family:var(--mono);font-size:8px;letter-spacing:.2em;color:var(--ink-3);margin-top:10px;}
+
+/* ── Tabla ── */
+table{width:100%;border-collapse:collapse;}
+th{font-family:var(--mono);font-size:8.5px;letter-spacing:.2em;color:var(--ink-3);
+  text-align:left;font-weight:500;padding:0 0 10px;border-bottom:1px solid var(--edge-2);}
+td{font-size:14px;font-weight:300;color:var(--ink-2);padding:11px 0;border-bottom:1px solid var(--edge);}
+td.val{text-align:right;color:var(--ink);font-family:var(--mono);font-size:12px;letter-spacing:.06em;}
+tr.no td{color:var(--ink-dim);}
+tr.no td.val{color:var(--acc);}
+tr.suma td{border-bottom:0;padding-top:16px;}
+tr.suma td.val{color:var(--acc);font-size:15px;}
+
+/* ── Nota destacada ── */
+.nota{border-left:2px solid var(--acc);padding:2px 0 2px 18px;font-size:14px;
+  line-height:1.6;color:var(--ink-2);}
+.nota b{color:var(--ink);font-weight:500;}
+
+/* ── Portada y divisores ── */
+.full canvas{position:absolute;inset:0;width:100%;height:100%;z-index:0;}
+.full .velo{position:absolute;inset:0;z-index:1;}
+.esq{position:absolute;width:26px;height:26px;z-index:5;}
+.esq.tl{top:34px;left:34px;border-top:1px solid var(--edge-2);border-left:1px solid var(--edge-2);}
+.esq.tr{top:34px;right:34px;border-top:1px solid var(--edge-2);border-right:1px solid var(--edge-2);}
+.esq.bl{bottom:34px;left:34px;border-bottom:1px solid var(--edge-2);border-left:1px solid var(--edge-2);}
+.esq.br{bottom:34px;right:34px;border-bottom:1px solid var(--edge-2);border-right:1px solid var(--edge-2);}
+
+.div-num{font-size:180px;font-weight:600;line-height:.8;letter-spacing:-.04em;color:var(--acc);}
+.div-tit{font-size:42px;font-weight:300;letter-spacing:-.015em;margin-top:14px;}
+.div-tit b{font-weight:600;}
+/* `text-wrap:balance`: el subtítulo del divisor son tres o cuatro sintagmas
+   separados por puntos medios, y partido donde caiga deja huérfana la última
+   palabra —"ACEPTA" sola en su línea— que se lee como un error de maqueta.
+   Equilibrando, las líneas quedan parejas sin tener que meter <br> a mano en
+   cada divisor y volver a ajustarlos cada vez que cambia el texto. */
+.div-sub{font-family:var(--mono);font-size:10px;letter-spacing:.24em;color:var(--ink-3);
+  margin-top:20px;max-width:46ch;line-height:2;text-wrap:balance;}
+
+/* ── Índice ── */
+.idx{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:8px;}
+.idx .it{position:relative;border:1px solid var(--edge);padding:22px 20px 20px;
+  min-height:150px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;}
+.idx .n{font-size:40px;font-weight:600;color:var(--acc);line-height:1;letter-spacing:-.03em;}
+.idx h3{margin:0;font-size:16px;}
+.idx p{font-size:12.5px;line-height:1.5;margin-top:6px;color:var(--ink-3);}
+
+/* ── Carta ── */
+.carta{display:grid;grid-template-columns:1fr 268px;gap:0;height:100%;}
+.carta .hoja{padding-right:38px;}
+.carta .rail{border-left:1px solid var(--edge);padding-left:26px;}
+.carta .rail dt{font-family:var(--mono);font-size:8px;letter-spacing:.2em;color:var(--ink-3);margin-top:18px;}
+.carta .rail dd{font-size:13px;color:var(--ink-2);margin-top:5px;line-height:1.5;}
+.carta p{font-size:13.5px;}
+
+/* ── Hitos ── */
+.hito{display:grid;grid-template-columns:150px 1fr;gap:18px;align-items:baseline;
+  padding:11px 0;border-bottom:1px solid var(--edge);}
+.hito .w{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;color:var(--acc);}
+.hito .q{font-size:14px;font-weight:300;color:var(--ink-2);}
+
+/* ── Calendario ── */
+.gantt{margin-top:20px;position:relative;}
+.gfila{display:grid;grid-template-columns:250px 1fr;gap:16px;align-items:center;padding:8px 0;}
+.gfila span{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;color:var(--ink-2);}
+.gtrack{position:relative;height:12px;background:rgb(var(--ink-rgb)/.08);}
+.gbar{position:absolute;top:0;bottom:0;background:var(--acc);opacity:.85;}
+.gmes{display:grid;grid-template-columns:250px repeat(5,1fr);gap:16px;
+  font-family:var(--mono);font-size:8.5px;letter-spacing:.16em;color:var(--ink-3);
+  padding-bottom:10px;border-bottom:1px solid var(--edge);margin-bottom:6px;}
+
+/* El velo y los adornos de esquina se pintan ENCIMA del canvas para apagarlo
+   bajo el titular. Son decoración: si además capturan el puntero, la
+   simulación que está debajo nunca recibe el cursor. */
+.slide .velo,.slide .esq{pointer-events:none;}
+
+/* Guías del calendario: dos verticales que unen la barra con la cabecera, y
+   el rango dicho con palabras. Se inyectan por JS. */
+.gguia{position:absolute;top:0;bottom:6px;pointer-events:none;opacity:0;
+  transition:opacity .28s ease;z-index:2;}
+.gantt.mirando .gguia{opacity:1;}
+.gguia i{position:absolute;top:26px;bottom:0;width:1px;
+  background:linear-gradient(180deg,rgb(var(--acc-rgb)/.5),rgb(var(--acc-rgb)/.12));}
+.gguia b{position:absolute;white-space:nowrap;
+  font-family:var(--mono);font-size:8.5px;letter-spacing:.16em;font-weight:400;
+  color:var(--acc);background:var(--bg);padding:0 6px;}
+
+/* ══ Cursor de la casa ════════════════════════════════════════════════
+   Un punto que va exacto donde está el dedo del ratón y un anillo que lo
+   persigue amortiguado. Sobre algo que responde —un enlace, un botón, una
+   simulación— el anillo se abre en retícula de puntería.
+
+   Van en mix-blend-mode:difference y en blanco puro: el resultado es el
+   inverso exacto de lo que haya debajo, así que se leen igual sobre el papel
+   de la lámina, sobre el fondo o sobre una simulación en bronce, sin una
+   regla por caso. */
+@media(hover:hover) and (pointer:fine){ *,*::before,*::after{ cursor:none!important; } }
+.cur-dot,.cur-ring{position:fixed;top:0;left:0;pointer-events:none;z-index:9999;
+  border-radius:50%;transform:translate(-50%,-50%);opacity:0;}
+.cur-dot{width:5px;height:5px;background:#fff;mix-blend-mode:difference;
+  transition:width .22s ease,height .22s ease;}
+.cur-dot.fijo{width:3px;height:3px;}
+.cur-ring{width:30px;height:30px;border:1px solid rgba(255,255,255,.45);
+  mix-blend-mode:difference;
+  transition:width .25s ease,height .25s ease,border-color .25s ease,opacity .25s ease;}
+.cur-ring.on{width:42px;height:42px;border-color:transparent;}
+.cur-ring.sim{width:58px;height:58px;border-color:transparent;}
+.cur-ring::before{content:'';position:absolute;inset:0;opacity:0;
+  --c:rgba(255,255,255,.92); --l:11px; --g:1.5px;
+  background:
+    linear-gradient(var(--c),var(--c)) left top/var(--l) var(--g) no-repeat,
+    linear-gradient(var(--c),var(--c)) left top/var(--g) var(--l) no-repeat,
+    linear-gradient(var(--c),var(--c)) right top/var(--l) var(--g) no-repeat,
+    linear-gradient(var(--c),var(--c)) right top/var(--g) var(--l) no-repeat,
+    linear-gradient(var(--c),var(--c)) left bottom/var(--l) var(--g) no-repeat,
+    linear-gradient(var(--c),var(--c)) left bottom/var(--g) var(--l) no-repeat,
+    linear-gradient(var(--c),var(--c)) right bottom/var(--l) var(--g) no-repeat,
+    linear-gradient(var(--c),var(--c)) right bottom/var(--g) var(--l) no-repeat;
+  transform:scale(1.55) rotate(45deg);
+  transition:opacity .22s ease,transform .46s cubic-bezier(.16,1.1,.3,1);}
+.cur-ring.on::before,.cur-ring.sim::before{opacity:1;transform:scale(1) rotate(0deg);}
+@media(hover:none),(pointer:coarse){ .cur-dot,.cur-ring{display:none;} body{cursor:auto;} }
+
+/* ── Las piezas acusan el paso del cursor ─────────────────────────────
+   Realce mínimo y del mismo vocabulario que el documento impreso: el filete
+   toma el bronce y el fondo se aclara un punto. No hay sombras ni
+   levantamientos — esto sigue siendo una lámina, no una tarjeta de app. */
+@media(hover:hover) and (pointer:fine){
+  .slide.activa .card,.slide.activa .hito{transition:background .3s ease,border-color .3s ease;}
+  .slide.activa .card:hover{background:rgb(var(--acc-rgb)/.05);border-color:rgb(var(--acc-rgb)/.34);}
+  .slide.activa .hito:hover{background:rgb(var(--acc-rgb)/.045);}
+  .slide.activa table tr{transition:background .25s ease;}
+  .slide.activa table tr:hover{background:rgb(var(--acc-rgb)/.05);}
+  /* ── El calendario, al pasar el cursor ──────────────────────────────
+     Atenuar todo en bloque no explica nada: sólo apaga la lámina. Lo que un
+     calendario tiene que contestar cuando lo miras es "este hito, ¿de cuándo
+     a cuándo va?", y eso no se lee bien porque la barra flota lejos de la
+     cabecera. Así que al posarse sobre una fila: su barra toma color pleno y
+     crece, las demás bajan a un tono de fondo, se encienden en la cabecera
+     los tramos que cubre, y dos guías verticales bajan hasta la barra. */
+  .slide.activa .gfila{transition:opacity .25s ease;}
+  .slide.activa .gfila span{transition:color .25s ease;}
+  .slide.activa .gbar{transition:opacity .25s ease,transform .25s ease;transform-origin:center;}
+  .slide.activa .gantt.mirando .gfila{opacity:.34;}
+  .slide.activa .gantt.mirando .gfila.viendo{opacity:1;}
+  .slide.activa .gfila.viendo span{color:var(--ink);}
+  .slide.activa .gfila.viendo .gbar{opacity:1;transform:scaleY(1.55);}
+  .slide.activa .gmes span{transition:color .25s ease;}
+  .slide.activa .gmes span.dentro{color:var(--acc);}
+}
+
+/* ══ Chasis de presentación ═══════════════════════════════════════════
+   Las láminas miden 1280×720 fijos —son páginas— así que en pantalla no se
+   remaquetan: se ESCALAN en bloque con transform. Un documento no se
+   reflowea, se acerca o se aleja.
+
+   Sólo hay UNA lámina a la vista: las demás esperan apagadas y sin repintar.
+   Eso es lo que permite que las simulaciones corran de verdad — una docena de
+   canvas animándose a la vez serían una docena de bucles compitiendo por el
+   mismo hilo. */
+html,body{height:100%;overflow:hidden;overscroll-behavior:none;}
+body{background:var(--marco);}
+
+#escena{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;}
+#pista{position:relative;width:1280px;height:720px;flex:0 0 auto;transform-origin:center center;}
+
+/* ── Una lámina montada a la vez ──────────────────────────────────────
+   `display:none`, y no el par opacity/visibility que pediría un fundido
+   cruzado. Con `visibility:hidden` el DOM dice que la lámina está oculta y
+   Chrome la pinta igual, débilmente: las veinticinco que esperan se
+   transparentan sobre la que se está mirando, como un papel de calco. Se
+   midió sobre un mismo recorte —129 KB con el fantasma contra 107 KB sin él—
+   y se descartó una a una: no es el backdrop-filter de la barra, es la
+   TRANSICIÓN, que mantiene vivas las capas mientras corre. Pasar a
+   `content-visibility` no alcanza si se transiciona con `allow-discrete`,
+   porque vuelve a dejar la propiedad en curso.
+
+   Así que se renuncia al fundido cruzado, que era el que obligaba a mantener
+   pintada la lámina saliente. La que entra se anima; la que sale desaparece.
+   En un documento —donde se salta de página, no se disuelve— esa es además la
+   lectura correcta. Y de paso no hay veinticinco subárboles maquetados. */
+.slide{position:absolute;inset:0;margin:0;display:none;
+  box-shadow:0 30px 90px -50px rgb(var(--ink-rgb)/.5);}
+.slide.activa{display:block;animation:entraLamina .5s cubic-bezier(.16,1,.3,1) both;}
+@keyframes entraLamina{
+  from{opacity:0;transform:scale(.985);}
+  to{opacity:1;transform:none;}
+}
+@media(prefers-reduced-motion:reduce){ .slide.activa{animation:none;} }
+
+/* ── Barra superior: marca, índice y contador ─────────────────────────
+   El índice no es decorativo: en un documento de veinticinco láminas hay que
+   poder saltar. Cada punto es una lámina y los divisores de sección van
+   marcados con una barra, no con un punto, para que se lea la estructura. */
+#barra{position:fixed;top:0;left:0;right:0;height:52px;z-index:20;
+  display:flex;align-items:center;gap:clamp(14px,3vw,34px);
+  padding:0 clamp(14px,3vw,30px);
+  background:rgb(var(--bg-rgb)/.9);backdrop-filter:blur(10px);
+  border-bottom:1px solid rgb(var(--ink-rgb)/.1);}
+#barra .marca{display:flex;align-items:center;gap:9px;flex-shrink:0;
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.24em;color:var(--ink);}
+#barra .marca i{width:5px;height:5px;border-radius:50%;background:var(--acc);display:block;}
+#barra .tit{font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;
+  color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+#indice{display:flex;align-items:center;gap:5px;margin-left:auto;flex-shrink:0;}
+#indice button{width:9px;height:9px;padding:0;border:0;background:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;}
+#indice button::before{content:'';width:5px;height:5px;border-radius:50%;
+  background:rgb(var(--ink-rgb)/.2);transition:background .25s ease,transform .25s ease;}
+#indice button.div::before{width:2px;height:12px;border-radius:0;}
+#indice button:hover::before{background:rgb(var(--ink-rgb)/.5);}
+#indice button.on::before{background:var(--acc);transform:scale(1.35);}
+#indice button.vista::before{background:rgb(var(--acc-rgb)/.35);}
+
+#cuenta{font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:var(--ink-2);
+  flex-shrink:0;font-variant-numeric:tabular-nums;}
+#cuenta b{color:var(--ink);font-weight:500;}
+
+.acc{display:inline-flex;align-items:center;gap:8px;flex-shrink:0;
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;text-decoration:none;
+  border:1px solid rgb(var(--ink-rgb)/.22);padding:9px 13px;color:var(--ink-2);
+  transition:color .25s ease,border-color .25s ease,background .25s ease;cursor:pointer;background:none;}
+.acc:hover{color:var(--ink);border-color:rgb(var(--ink-rgb)/.5);}
+.acc.lleno{background:var(--acc);border-color:var(--acc);color:#fff;}
+.acc.lleno:hover{background:var(--acc-hover);border-color:var(--acc-hover);color:#fff;}
+.acc svg{width:12px;height:12px;}
+
+/* ── Pie: flechas y ayuda ── */
+#pie{position:fixed;left:0;right:0;bottom:0;height:54px;z-index:20;
+  display:flex;align-items:center;justify-content:center;gap:16px;
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;color:var(--ink-dim);
+  pointer-events:none;}
+#pie .nav{display:flex;gap:8px;pointer-events:auto;position:static;height:auto;
+  padding:0;border:0;background:none;}
+#pie .nav button{width:34px;height:34px;border:1px solid rgb(var(--ink-rgb)/.18);background:rgb(var(--bg-rgb)/.7);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink-2);
+  transition:color .25s ease,border-color .25s ease,background .25s ease;}
+#pie .nav button:hover{color:var(--ink);border-color:rgb(var(--ink-rgb)/.45);background:var(--bg);}
+#pie .nav button[disabled]{opacity:.3;cursor:default;}
+#pie .nav svg{width:14px;height:14px;}
+#pie .pista{width:min(240px,20vw);height:2px;background:rgb(var(--ink-rgb)/.1);position:relative;}
+#pie .pista i{position:absolute;inset:0 auto 0 0;background:var(--acc);
+  transition:width .5s cubic-bezier(.16,1,.3,1);}
+
+@media(max-width:820px){
+  #barra{gap:12px;padding:0 14px;}
+  #barra .tit{display:none;}
+  #indice{display:none;}
+  .acc span{display:none;}
+  .acc{padding:9px 11px;}
+  #pie .pista{display:none;}
+  /* Flechas a la izquierda y rótulo a la derecha: centrado, el texto pasaba
+     por debajo de los botones. */
+  #pie{font-size:8px;letter-spacing:.1em;justify-content:flex-start;gap:0;padding:0 14px;}
+  #pie #ayuda{margin-left:auto;text-align:right;}
+}
+
+/* La lámina activa recibe el puntero para las simulaciones interactivas. El
+   resto del chasis no debe robárselo. */
+.slide canvas{touch-action:none;}
+
+/* Hasta que el chasis marca `listo`, nada se ve: si no, se alcanza a ver el
+   documento entero apilado antes de que la primera lámina tome el mando. */
+html:not([data-listo]) #escena{opacity:0;}
+#escena{transition:opacity .3s ease;}
+
+
+/* ══════════════════════════════════════════════════════════════════════
+   MODO PÁGINA — teléfonos y pantallas angostas
+   ══════════════════════════════════════════════════════════════════════
+   Una lámina apaisada de 1280×720 en un teléfono vertical se ve a un tercio
+   de su tamaño: el cuerpo de texto queda a 5 px y no hay escala que lo
+   arregle, porque el problema es la proporción, no el zoom. Así que en
+   pantalla angosta el documento deja de ser una presentación y pasa a ser lo
+   que corresponde: una página que se baja.
+
+   No hay un segundo HTML. Las mismas láminas sueltan su tamaño fijo y su
+   posicionamiento absoluto, y el contenido —que ya venía en bloques
+   semánticos— cae en flujo vertical.
+
+   `screen and` y no sólo el ancho: al imprimir, Chrome evalúa las consultas
+   contra la caja de página, y una lámina de 1280×720 cae del lado angosto.
+   Sin acotar el tipo de medio, el PDF salía en modo teléfono —una columna,
+   sin barra de sección y sin pie— que es justo lo contrario de lo que se
+   quiere en el impreso.
+   ══════════════════════════════════════════════════════════════════════ */
+@media screen and (max-width:900px){
+
+  html,body{height:auto;overflow:visible;overscroll-behavior:auto;}
+  body{background:var(--bg);}
+
+  #escena{position:static;display:block;opacity:1;}
+  #pista{width:100%;height:auto;transform:none!important;}
+  #pie{display:none;}
+
+  #barra{height:48px;gap:12px;padding:0 16px;}
+  #barra .tit,#indice{display:none;}
+  #cuenta{margin-left:auto;}
+
+  /* Progreso de lectura: en una propuesta larga, en el teléfono, es la única
+     señal de cuánto falta. */
+  #lectura{position:fixed;top:48px;left:0;height:2px;width:0;
+    background:var(--acc);z-index:21;transition:width .1s linear;}
+
+  .slide{position:relative;width:100%;height:auto;min-height:0;
+    margin:0;overflow:visible;box-shadow:none;
+    display:block!important;animation:none!important;opacity:1!important;
+    transform:none!important;transition:none!important;
+    border-bottom:1px solid var(--edge);
+    padding:clamp(38px,9vw,60px) 0;}
+  .slide:last-child{border-bottom:0;}
+
+  /* La barra de sección y el pie de cada lámina son cosa del documento
+     impreso: acá arriba ya hay una barra y el pie se repetiría 25 veces. */
+  .slide .nav,.slide .pie,.slide .esq{display:none;}
+
+  .cuerpo{position:static;inset:auto;display:block;padding:0 clamp(18px,5vw,28px);}
+
+  /* Los bloques absolutos con contenido los suelta el chasis por JS. */
+  .fluye{position:static!important;left:auto!important;right:auto!important;
+    top:auto!important;bottom:auto!important;transform:none!important;
+    max-width:none!important;width:auto!important;
+    padding:0 clamp(18px,5vw,28px);
+    /* En la lámina apaisada estos bloques están CLAVADOS en su esquina, y
+       varios llevan `text-align:right` para pegarse al margen derecho. Al
+       soltarlos en columna, esa alineación los deja flotando contra el borde
+       sin nada que la justifique. Vuelven todos a la izquierda; el divisor
+       recupera su centrado más abajo, que va después y también con !important. */
+    text-align:left!important;}
+  /* Separación entre bloques que en el impreso no se tocaban porque cada uno
+     vivía en su esquina. */
+  .fluye + .fluye{margin-top:22px;}
+
+  /* ── Tipografía a escala de teléfono ── */
+  .kicker{font-size:9px;letter-spacing:.2em;margin-bottom:12px;}
+  h1{font-size:clamp(30px,8.4vw,44px);line-height:1.06;}
+  h2{font-size:clamp(23px,6.6vw,34px);line-height:1.14;margin-bottom:14px;}
+  h3{font-size:16px;}
+  p,li,.nota{font-size:15px;line-height:1.62;}
+  .lede{font-size:clamp(16px,4.2vw,19px);}
+  .nota{padding-left:14px;}
+
+  /* ── Todo lo que era rejilla, pasa a columna ── */
+  .cols,.cols-3,.idx,.cifras,.carta{grid-template-columns:1fr!important;}
+  .cols,.cols-3,.idx{gap:14px;}
+  .cifras{gap:1px;}
+  .carta{display:block;height:auto;}
+  .carta .hoja{padding-right:0;}
+  .carta .rail{border-left:0;border-top:1px solid var(--edge);
+    padding-left:0;padding-top:22px;margin-top:26px;}
+  /* La ficha de datos en dos columnas: son pares rótulo–valor cortos y en una
+     sola columna dejaban media pantalla vacía. */
+  .carta .rail dl{display:grid;grid-template-columns:1fr 1fr;gap:16px 18px;}
+  .carta .rail dt{margin-top:0;}
+
+  .card,.it{padding:18px 16px;}
+  .it{min-height:0;}
+
+  /* ── Hitos: la semana encima del hecho ── */
+  .hito{grid-template-columns:1fr;gap:5px;padding:14px 0;}
+
+  /* ── Tablas: la de honorarios se lee como fichas ── */
+  table,tbody,tr,td,th{display:block;width:100%;}
+  table tr{border-bottom:1px solid var(--edge);padding:13px 0;}
+  table tr:first-child{display:none;}          /* la cabecera no aporta acá */
+  /* Las celdas traen su propio filete del documento impreso; apiladas, dos
+     filetes seguidos por fila se leen como una rejilla rota. */
+  table td{padding:0;font-size:14px;border:0!important;}
+  table td.val{text-align:left;margin-top:6px;color:var(--acc);font-size:13px;}
+  table tr.no td.val{color:var(--ink-dim);}
+
+  /* ── Calendario: se desliza, y lo dice ── */
+  .gantt{overflow-x:auto;-webkit-overflow-scrolling:touch;
+    margin-left:calc(-1 * clamp(18px,5vw,28px));margin-right:calc(-1 * clamp(18px,5vw,28px));
+    padding:0 clamp(18px,5vw,28px);
+    -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 5%,#000 92%,transparent 100%);
+    mask-image:linear-gradient(90deg,transparent 0,#000 5%,#000 92%,transparent 100%);}
+  .gmes,.gfila{grid-template-columns:150px repeat(5,1fr);min-width:600px;}
+  .gfila{grid-template-columns:150px 1fr;}
+  .gfila span{font-size:9px;}
+  .gguia{display:none;}                        /* el hover no existe en táctil */
+  .gantt-pin{position:relative;}
+  .gantt-fijo{position:sticky;top:60px;}
+  .gantt-hint{display:flex;align-items:center;gap:10px;margin-top:12px;
+    font-family:var(--mono);font-size:8px;letter-spacing:.18em;color:var(--ink-dim);}
+  .gantt-hint i{flex:1;height:1px;background:var(--edge);display:block;position:relative;}
+  .gantt-hint b{position:absolute;left:0;top:0;height:1px;background:var(--acc);display:block;width:0;}
+
+  .salir{top:12px;right:12px;}
+
+  /* ── Los dos paneles se apilan ──────────────────────────────────────
+     Y el de la simulación toma alto propio: en una columna de 390 px, media
+     rejilla son 195 px y el rótulo del sistema se parte letra a letra. */
+  .par{position:static;display:block;}
+  .par.bajo-nav{inset:auto;}
+  .par .panel-txt{padding:0 clamp(18px,5vw,28px)!important;display:block;}
+  .par .panel-sim{border-left:0;border-top:1px solid var(--edge);
+    position:relative;height:clamp(230px,58vw,320px);margin-top:24px;}
+  .par .panel-sim canvas{position:absolute;inset:0;width:100%;height:100%;}
+  /* El velo del panel sólo estorba acá: la simulación ya no tiene texto encima. */
+  .par .panel-sim > div{display:none;}
+  .par .panel-sim > div:last-child{display:block;}   /* salvo el rótulo del sistema */
+
+  /* ── Portadillas de sección ────────────────────────────────────────────
+     El divisor deja de ser una lámina a sangre con el texto a un costado: la
+     simulación pasa a una banda propia —el chasis la mueve— y debajo van el
+     número y el título, centrados. Un degradado que apaga sólo la izquierda
+     no tiene ningún sentido en vertical. */
+  .slide.full{padding:clamp(38px,9vw,60px) 0 clamp(48px,12vw,72px);position:relative;}
+  .cajacanvas{position:relative;height:clamp(250px,62vw,360px);margin:0 0 26px;}
+  .cajacanvas canvas{position:absolute;inset:0;width:100%;height:100%;}
+  /* Remate inferior de la banda: la simulación se disuelve en el papel en vez
+     de cortarse con un filo recto. */
+  .cajacanvas .velo{position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(180deg,
+      rgb(var(--bg-rgb)/0) 80%,rgb(var(--bg-rgb)/.55) 92%,rgb(var(--bg-rgb)/1) 100%)!important;}
+  /* Sólo el bloque del divisor —el que lleva el número de sección— se centra.
+     La portada y el cierre son .full también, y ahí el texto va alineado como
+     en el documento. */
+  .fluye.centrado{text-align:center!important;}
+  .div-num{font-size:clamp(64px,19vw,96px);}
+  /* Con el ancho completo el subtítulo se parte donde cae y la segunda línea
+     queda corta y descolgada: se lee como desalineado aunque esté centrado.
+     Limitando la medida, las dos líneas quedan parejas. */
+  .div-tit{font-size:clamp(26px,7vw,36px);margin-top:8px;max-width:18ch;margin-left:auto;margin-right:auto;}
+  .div-sub{font-size:9px;letter-spacing:.18em;margin-top:12px;
+    max-width:24ch;margin-left:auto;margin-right:auto;line-height:1.9;}
+
+  /* ── Entrada al hacer scroll ── */
+  .ap{opacity:0;transform:translateY(14px);
+    transition:opacity .6s cubic-bezier(.16,1,.3,1) var(--apd,0ms),
+               transform .6s cubic-bezier(.16,1,.3,1) var(--apd,0ms);}
+  .ap.on{opacity:1;transform:none;}
+  @media(prefers-reduced-motion:reduce){ .ap{opacity:1;transform:none;transition:none;} }
+
+  /* ── Tarjetas que se apilan ─────────────────────────────────────────
+     Sólo en grupos de piezas altas: se montan unas sobre otras y ahorran
+     pantallas de scroll muerto. El chasis decide cuáles midiendo. */
+  .apila{display:block;}
+  .apila > *{position:sticky;top:64px;background:var(--bg);margin-bottom:14px;}
+}

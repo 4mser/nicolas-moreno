@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Base tecnológica para una proptech de arriendos — Propuesta de Nicolás Moreno para el seed</title>
+<meta name="description" content="Propuesta por hitos para levantar el esquema, la autenticación y el aislamiento por fila en Supabase, el portal del propietario en Next.js, los workflows en n8n y las integraciones.">
+<!-- Documento de cliente: se comparte por enlace, no se indexa. -->
+<meta name="robots" content="noindex, nofollow">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_CL">
+<meta property="og:title" content="Base tecnológica para una proptech de arriendos — Propuesta para el seed">
+<meta property="og:description" content="Cuatro hitos revisables. El primero decide los otros tres.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#ffffff">
+<link rel="stylesheet" href="/fonts/propuesta.css">
+<link rel="stylesheet" href="/propuesta/estilo.css">
+</head>
+<body>
+
+<div id="barra">
+  <span class="marca"><i></i>NICOLÁS MORENO</span>
+  <span class="tit" id="rotulo">Portada</span>
+  <nav id="indice" aria-label="Índice de láminas"></nav>
+  <span id="cuenta"><b>01</b> / 26</span>
+  <!-- El mismo documento, para llevarse. El chasis oculta la barra entera en
+       modo PDF, así que este botón no se imprime a sí mismo. -->
+  <a class="acc lleno" href="/elseed/Propuesta-el-seed-Nicolas-Moreno.pdf" download>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+    <span>PDF</span>
+  </a>
+</div>
+
+<div id="lectura"></div>
+<div id="escena"><div id="pista">
+
+<!-- ══ 01 · PORTADA ═══════════════════════════════════════════════════ -->
+<section class="slide full" data-rotulo="Portada">
+  <!-- Única lámina con la caja declarada: acá el lienzo va a sangre y el
+       titular se le pone encima, así que el mapa tiene que correrse por
+       dentro. En los divisores el chasis ya recorta el lienzo con data-off y
+       el sistema llena lo que le den. -->
+  <canvas data-sim="cartera" data-caja="0.53 0.10 0.44 0.48"></canvas>
+  <!-- El velo apaga el lado del titular y suelta el mapa: lineal y no radial,
+       porque lo que hay que proteger es una COLUMNA de texto, no un punto. -->
+  <div class="velo" style="background:linear-gradient(90deg,rgb(var(--bg-rgb)/.97) 0%,rgb(var(--bg-rgb)/.95) 32%,rgb(var(--bg-rgb)/.46) 46%,rgb(var(--bg-rgb)/0) 60%)"></div>
+  <span class="esq tl"></span><span class="esq tr"></span><span class="esq bl"></span><span class="esq br"></span>
+
+  <div style="position:absolute;left:88px;top:158px;z-index:4;max-width:560px">
+    <div class="kicker">PROPUESTA DE DESARROLLO POR HITOS</div>
+    <h1>La base<br>tecnológica de<br><b>una proptech</b></h1>
+    <div style="margin-top:34px;font-family:var(--mono);font-size:12px;letter-spacing:.2em;color:var(--ink-2)">
+      PREPARADA PARA <span style="color:var(--acc)">EL SEED</span>
+    </div>
+    <div style="margin-top:10px;font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:var(--ink-dim)">
+      GRAN CONCEPCIÓN · JULIO MMXXVI
+    </div>
+  </div>
+
+  <div style="position:absolute;left:88px;bottom:74px;z-index:4">
+    <div style="font-family:var(--mono);font-size:13px;letter-spacing:.22em;color:var(--ink)">NICOLÁS MORENO</div>
+    <div style="margin-top:10px;font-family:var(--mono);font-size:8.5px;letter-spacing:.26em;color:var(--ink-dim)">
+      DESARROLLADOR FULL-STACK · NEXT.JS · SUPABASE
+    </div>
+  </div>
+  <div style="position:absolute;left:0;right:0;bottom:0;height:132px;z-index:2;
+    background:linear-gradient(180deg,rgb(var(--bg-rgb)/0),rgb(var(--bg-rgb)/.94))"></div>
+  <div style="position:absolute;right:88px;bottom:74px;z-index:4;text-align:right;
+    font-family:var(--mono);font-size:8.5px;letter-spacing:.22em;color:var(--ink-dim);line-height:2.2">
+    ESQUEMA / AISLAMIENTO / INTEGRACIÓN<br>PP.SEED-2026-001
+  </div>
+</section>
+
+<!-- ══ 02 · ALCANCE DEL DOCUMENTO ═════════════════════════════════════ -->
+<section class="slide">
+  <div class="par">
+    <div class="panel-txt">
+      <div class="kicker">SOBRE ESTE DOCUMENTO</div>
+      <h2>Escrito para<br><b>un solo destinatario</b></h2>
+      <p>Este material se entrega a <b>el seed</b> con el fin exclusivo de evaluar mi propuesta para los hitos descritos en su convocatoria. No está indexado y no se ha compartido con nadie más.</p>
+      <p>Todo lo que sigue —el alcance, los plazos y los valores— sale de leer su aviso con atención. <b>No he tenido acceso a su operación</b>, y el documento es explícito cada vez que eso importa: lo que se puede afirmar está separado de lo que hay que preguntar.</p>
+      <div class="nota" style="margin-top:24px">
+        Un proveedor que llega con certezas sobre una operación que no ha visto está adivinando. Prefiero llegar con <b>las preguntas correctas</b>.
+      </div>
+    </div>
+    <div class="panel-sim">
+      <canvas data-sim="lorenz" style="position:absolute;inset:0;width:100%;height:100%"></canvas>
+      <div style="position:absolute;inset:0;background:radial-gradient(60% 60% at 50% 50%,rgb(var(--bg-rgb)/0),rgb(var(--bg-rgb)/.72) 100%)"></div>
+      <div style="position:absolute;left:34px;bottom:34px;font-family:var(--mono);font-size:8.5px;
+        letter-spacing:.22em;color:var(--ink-dim);line-height:2">
+        ATRACTOR DE LORENZ · σ 10 · ρ 28 · β 8/3<br>SISTEMA DETERMINISTA, TRAYECTORIA IRREPETIBLE
+      </div>
+    </div>
+  </div>
+  <div class="pie"><span>PROPUESTA DE DESARROLLO POR HITOS</span><span>02</span></div>
+</section>
+
+<!-- ══ 03 · POR QUÉ YO ════════════════════════════════════════════════ -->
+<section class="slide">
+  <div class="cuerpo">
+    <div class="kicker">POR QUÉ YO</div>
+    <h2>Ya construí esto,<br>en <b>este mismo stack</b>, para un rubro<br>con la misma forma</h2>
+    <div class="cols">
+      <div>
+        <p>Su convocatoria pide Next.js con App Router, Supabase con RLS y Storage, automatizaciones por webhook e integraciones con WhatsApp, firma y pasarelas locales.</p>
+        <p>Esa es, línea por línea, la plataforma que construí y mantuve para <b>GoAuto</b>: un sistema multi-cliente sobre Supabase, con cobros por MercadoPago y avisos por WhatsApp.</p>
+        <p>Cambia el activo —un vehículo por un inmueble— y cambian las palabras. La arquitectura es la misma: <b>activos, mandantes, publicaciones, contratos y plata que entra a fecha</b>.</p>
+      </div>
+      <div>
+        <div class="card">
+          <div class="k">LO QUE ESO SIGNIFICA PARA EL HITO 1</div>
+          <p style="font-size:14px">No voy a aprender RLS con su base de datos. Las <b>391 políticas</b> que hoy sostienen la separación entre automotoras se escribieron y se depuraron una por una, incluyendo la parte que nadie cuenta: migrar el aislamiento de un sistema vivo <b>sin quitarle acceso a nadie que ya lo tenía</b>.</p>
+        </div>
+        <div class="nota" style="margin-top:20px">
+          Un esquema mal puesto no se nota en el hito 1. Se nota en el hito 4, cuando hay que integrar la pasarela y resulta que <b>el pago no sabe a qué mandato pertenece</b>.
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pie"><span>PROPUESTA DE DESARROLLO POR HITOS · EL SEED</span><span>03</span></div>
+</section>
+
+<!-- ══ 04 · CARTA ═════════════════════════════════════════════════════ -->
+<section class="slide" data-rotulo="Carta de presentación">
+  <div class="cuerpo">
+    <div class="carta">
+      <div class="hoja">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px">
+          <div style="font-family:var(--mono);font-size:12px;letter-spacing:.22em;color:var(--ink)">NICOLÁS MORENO</div>
+          <div style="text-align:right;font-family:var(--mono);font-size:9px;letter-spacing:.18em;color:var(--ink-3);line-height:2">
+            JULIO 2026<br>PP.SEED-2026-001
+          </div>
+        </div>
+        <div style="font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:var(--ink-2);line-height:2;margin-bottom:16px">
+          SEÑORES<br>EL SEED<br>PRESENTE
+        </div>
+        <p style="color:var(--ink);font-weight:500;margin-bottom:12px">
+          Ref.: Base tecnológica — esquema, portal, automatización e integraciones
+        </p>
+        <p>De mi consideración:</p>
+        <p>Presento mi propuesta para levantar la base tecnológica de el seed, estructurada en los cuatro hitos que ustedes mismos definieron y en el mismo orden en que los enumeraron.</p>
+        <p>Trabajo solo, por hitos, con entregables revisables en su propia infraestructura. No hay equipo que coordinar ni retainer que justificar: <b>cada hito se acepta o se rechaza mirando algo que funciona</b>, en su Supabase y en su repositorio, no en una demo mía.</p>
+        <p>Sobre el primer hito quiero ser directo: el esquema y las políticas de aislamiento son la única parte de este proyecto que <b>se paga cara si se hace rápido</b>. Los otros tres se pueden rehacer. Ese no.</p>
+        <p style="margin-top:14px">Quedo atento a sus comentarios.</p>
+        <div style="margin-top:20px;font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;color:var(--ink-2);line-height:2.1">
+          NICOLÁS MORENO<br>
+          <span style="color:var(--ink-dim)">DESARROLLADOR FULL-STACK</span>
+        </div>
+      </div>
+      <div class="rail">
+        <div style="font-family:var(--mono);font-size:9px;letter-spacing:.24em;color:var(--acc)">FICHA</div>
+        <dl>
+          <dt>GITHUB</dt><dd><a class="dato" href="https://github.com/4mser" target="_blank" rel="noopener">github.com/4mser</a></dd>
+          <dt>PORTAFOLIO</dt><dd><a class="dato" href="https://nicolas-moreno.vercel.app" target="_blank" rel="noopener">nicolas-moreno.vercel.app</a></dd>
+          <dt>UBICACIÓN</dt><dd>Santiago de Chile<br>Remoto · huso de Chile</dd>
+          <dt>DISPONIBILIDAD</dt><dd>20 horas semanales<br>Inicio inmediato</dd>
+          <dt>VIGENCIA</dt><dd>30 días corridos<br>desde la emisión</dd>
+          <dt>CONTACTO</dt><dd style="color:var(--ink-3)">Por la plataforma,<br>mientras dure el proceso</dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+  <div class="pie"><span>PROPUESTA DE DESARROLLO POR HITOS · EL SEED</span><span>04</span></div>
+</section>
+
+<!-- ══ 05 · ÍNDICE ════════════════════════════════════════════════════ -->
+<section class="slide">
+  <div class="cuerpo">
+    <div class="kicker">ÍNDICE DE CONTENIDOS</div>
+    <h2 style="margin-bottom:26px">Cinco secciones.<br><b>Del esquema a la disponibilidad.</b></h2>
+    <div class="idx">
+      <div class="it"><div class="n">01</div><div><h3>Entendimiento</h3><p>Lo que el aviso permite afirmar, y lo que hay que preguntar antes del primer commit.</p></div></div>
+      <div class="it"><div class="n">02</div><div><h3>Los cuatro hitos</h3><p>Qué se construye en cada uno y con qué se acepta.</p></div></div>
+      <div class="it"><div class="n">03</div><div><h3>Método</h3><p>Cómo se entrega un hito y en qué semana cae cada cosa.</p></div></div>
+      <div class="it"><div class="n">04</div><div><h3>Credenciales</h3><p>Sistemas en producción, en este mismo stack, con sus cifras.</p></div></div>
+      <div class="it"><div class="n">05</div><div><h3>Honorarios</h3><p>Valor por hito, forma de pago y disponibilidad semanal.</p></div></div>
+      <div class="it" style="border-style:dashed"><div class="n" style="color:var(--ink-dim)">·</div><div><h3 style="color:var(--ink-3)">Lo que no incluye</h3><p>Declarado adentro, en la sección 02. Una propuesta sin exclusiones es una propuesta incompleta.</p></div></div>
+    </div>
+  </div>
+  <div class="pie"><span>PROPUESTA DE DESARROLLO POR HITOS · EL SEED</span><span>05</span></div>
+</section>
+
+<!-- ══ 06 · DIVISOR 01 ════════════════════════════════════════════════ -->
+<section class="slide full" data-rotulo="01 · Entendimiento">
+  <canvas data-sim="cartera" data-off=".40"></canvas>
+  <div class="velo" style="background:linear-gradient(90deg,rgb(var(--bg-rgb)/.96) 0%,rgb(var(--bg-rgb)/.88) 42%,rgb(var(--bg-rgb)/.35) 74%,rgb(var(--bg-rgb)/0) 100%)"></div>
+  <span class="esq tl"></span><span class="esq br"></span>
+  <div style="position:absolute;left:88px;top:50%;transform:translateY(-50%);z-index:4;max-width:520px">
+    <div class="div-num">01</div>
+    <div class="div-tit">Entendimiento</div>
+    <div class="div-sub">LO QUE SE AFIRMA · LO QUE SE PREGUNTA</div>
+  </div>
+</section>
+
+<!-- ══ 07 · QUÉ ES ESTE SISTEMA ═══════════════════════════════════════ -->
+<section class="slide">
+  <div class="nav">
+    <span class="marca"><i></i>NICOLÁS MORENO</span>
+    <ul><li class="on">Entendimiento</li><li>Los cuatro hitos</li><li>Método</li><li>Credenciales</li><li>Honorarios</li></ul>
+  </div>
+  <div class="cuerpo">
+    <div class="kicker">01 · ENTENDIMIENTO</div>
+    <h2>el seed no administra propiedades.<br><b>Administra plata y responsabilidad ajenas.</b></h2>
+    <div class="cols" style="margin-top:4px">
+      <div>
+        <p>Un sistema de arriendos parece un catálogo con fotos. No lo es. Debajo hay un contrato entre dos personas que no se conocen, y una tercera —ustedes— que responde por que el dinero llegue, el inmueble se conserve y los plazos se cumplan.</p>
+        <p>Eso tiene una consecuencia técnica directa: <b>casi ningún dato de este sistema es público para todos los que lo usan</b>. El propietario no puede ver el informe comercial del arrendatario. El arrendatario no puede ver la comisión que ustedes cobran. El corredor de una cartera no puede ver la de otro.</p>
+      </div>
+      <div>
+        <p>Por eso el aviso pone <b>RLS en el primer hito y no en el tercero</b>, y por eso me parece la decisión correcta.</p>
+        <div class="nota" style="margin-top:14px">Las tres verticales que nombran —administración, corretaje y gestión de activos— no son tres productos. Son <b>tres roles mirando el mismo inmueble</b> con permisos distintos. Esa es la abstracción que el esquema tiene que capturar.</div>
+      </div>
+    </div>
+    <div class="cifras">
+      <div class="cifra"><div class="n">3</div><div class="u">VERTICALES EN UN MISMO MODELO</div></div>
+      <div class="cifra"><div class="n">4</div><div class="u">HITOS DEFINIDOS EN LA CONVOCATORIA</div></div>
+      <div class="cifra"><div class="n">1</div><div class="u">DE ELLOS ES IRREVERSIBLE</div></div>
+      <div class="cifra"><div class="n">20 <small>h/sem</small></div><div class="u">DEDICACIÓN QUE OFREZCO</div></div>
+    </div>
+  </div>
+  <div class="pie"><span>PROPUESTA DE DESARROLLO POR HITOS · EL SEED</span><span>06</span></div>
+</section>
+
+<!-- ══ 08 · LAS PREGUNTAS ═════════════════════════════════════════════ -->
+<section class="slide">
+  <div class="nav">
+    <span class="marca"><i></i>NICOLÁS MORENO</span>
+    <ul><li class="on">Entendimiento</li><li>Los cuatro hitos</li><li>Método</li><li>Credenciales</li><li>Honorarios</li></ul>
+  </div>
+  <div class="cuerpo">
+    <div class="kicker">01 · ENTENDIMIENTO</div>
+    <h2>Las seis preguntas<br>que hay que cerrar <b>antes del primer commit</b></h2>
+    <p class="lede" style="margin-bottom:18px">Ninguna es de gusto. Cada una cambia una tabla o una política, y todas son más baratas de contestar ahora que en el hito 4.</p>
+    <div class="cols-3" style="gap:16px">
+      <div class="card">
+        <div class="k">01 · EL MANDATO</div>
+        <p style="font-size:13.5px">¿Un mandato cubre una unidad o varias? ¿Una unidad puede tener mandatos sucesivos con distintos corredores? Define si el mandato es una columna o <b>una tabla con vigencia</b>.</p>
+      </div>
+      <div class="card">
+        <div class="k">02 · EL REAJUSTE</div>
+        <p style="font-size:13.5px">¿El arriendo se pacta en pesos, en UF o con reajuste por IPC? Define si el monto es <b>un número o una fórmula con historia</b>, y eso no se cambia después sin migrar todos los contratos.</p>
+      </div>
+      <div class="card">
+        <div class="k">03 · LA RECAUDACIÓN</div>
+        <p style="font-size:13.5px">¿el seed recauda y luego liquida al propietario, o el arrendatario paga directo? Cambia la pasarela, la conciliación y <b>quién carga con el riesgo del no pago</b>.</p>
+      </div>
+      <div class="card">
+        <div class="k">04 · EL PROPIETARIO</div>
+        <p style="font-size:13.5px">¿Entra al portal él mismo, o el corredor opera en su nombre? Es la diferencia entre una política por <code style="font-family:var(--mono);font-size:11.5px;color:var(--acc)">owner_id</code> y <b>una por delegación</b>.</p>
+      </div>
+      <div class="card">
+        <div class="k">05 · LA FIRMA</div>
+        <p style="font-size:13.5px">¿Firma electrónica simple o avanzada? La avanzada obliga a un proveedor acreditado y a un flujo distinto. Cambia el costo del hito 4, <b>no su arquitectura</b>.</p>
+      </div>
+      <div class="card">
+        <div class="k">06 · EL DATO PERSONAL</div>
+        <p style="font-size:13.5px">Un arriendo guarda RUT, renta e informes comerciales. Con la nueva ley de datos entrando en vigencia, conviene que <b>el borrado y el consentimiento estén en el esquema</b> desde el día uno.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pie"><span>PROPUESTA DE DESARROLLO POR HITOS · EL SEED</span><span>07</span></div>
+</section>
+
+<!-- ══ 09 · EL RIESGO ═════════════════════════════════════════════════ -->
+<section class="slide">
+  <div class="nav">
+    <span class="marca"><i></i>NICOLÁS MORENO</span>
+    <ul><li class="on">Entendimiento</li><li>Los cuatro hitos</li><li>Método</li><li>Credenciales</li><li>Honorarios</li></ul>
+  </div>
+  <div class="par bajo-nav" style="--par-cols:1.02fr 1fr">
+    <div class="panel-txt" style="padding-top:34px">
+      <div class="kicker">01 · ENTENDIMIENTO</div>
+      <h2 style="font-size:34px">El aislamiento no es<br>una capa encima.<br><b>Es el esquema.</b></h2>
+      <p>Una fila que se filtra en este sistema no es un error de interfaz: es <b>el contrato de arriendo de otra persona</b>, con su renta y su RUT, entregado a quien no debía verlo.</p>
+      <p>La política se escribe una vez por tabla y se prueba rol por rol. Lo que se ve al costado es exactamente eso: la misma tabla, cuatro roles, y cuántas filas entrega la base a cada uno.</p>
+      <div class="nota" style="margin-top:18px">Se hace en el hito 1 o no se hace. Agregar RLS sobre un sistema que ya está en producción es un proyecto aparte — <b>lo he hecho, y por eso lo digo</b>.</div>
+    </div>
+    <div class="panel-sim">
+      <canvas data-sim="rls" style="position:absolute;inset:0;width:100%;height:100%"></canvas>
+    </div>
+  </div>
+  <div class="pie"><span>PROPUESTA DE DESARROLLO POR HITOS · EL SEED</span><span>08</span></div>
+</section>
+
+<!-- ══ 10 · DIVISOR 02 ════════════════════════════════════════════════ -->
+<section class="slide full" data-rotulo="02 · Los cuatro hitos">
+  <canvas data-sim="flujo" data-off=".40"></canvas>
+  <div class="velo" style="background:linear-gradient(90deg,rgb(var(--bg-rgb)/.96) 0%,rgb(var(--bg-rgb)/.88) 42%,rgb(var(--bg-rgb)/.35) 74%,rgb(var(--bg-rgb)/0) 100%)"></div>
+  <span class="esq tl"></span><span class="esq br"></span>
+  <div style="position:absolute;left:88px;top:50%;transform:translateY(-50%);z-index:4;max-width:520px">
+    <div class="div-num">02</div>
+    <div class="div-tit">Los cuatro <b>hitos</b></div>
+    <div class="div-sub">QUÉ SE CONSTRUYE · CON QUÉ SE ACEPTA</div>
+  </div>
+</section>
+
+<!-- ══ 11 · HITO 1 ════════════════════════════════════════════════════ -->
+<section class="slide">
+  <div class="nav">
+    <span class="marca"><i></i>NICOLÁS MORENO</span>
+    <ul><li>Entendimiento</li><li class="on">Los cuatro hitos</li><li>Método</li><li>Credenciales</li><li>Honorarios</li></ul>
+  </div>
+  <div class="cuerpo">
+    <div class="kicker">02 · HITO 1 — SEMANAS 1 A 2</div>
+    <h2>Esquema, autenticación<br>y <b>aislamiento por fila</b></h2>
+    <div class="cols">
+      <div>
+        <div class="card">
+          <div class="k">QUÉ SE ENTREGA</div>
+          <ul>
+            <li>Modelo de datos completo: propiedades, unidades, propietarios, mandatos, arrendatarios, contratos, pagos, gastos y documentos.</li>
+            <li>Migraciones versionadas en el repositorio — la base se reconstruye desde cero con un comando.</li>
+            <li>Auth con roles y perfil, sobre los proveedores que ustedes elijan.</li>
+            <li>Políticas de RLS por rol, y Storage con políticas propias por bucket.</li>
+            <li>Datos de siembra para poder probar los cuatro roles el mismo día.</li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <div class="card" style="border-color:rgb(var(--acc-rgb)/.34)">
+          <div class="k">CÓMO SE ACEPTA</div>
+          <p style="font-size:13.5px">Con una <b>matriz de pruebas de acceso</b>: por cada tabla y cada rol, qué filas devuelve la base. Se corre delante de ustedes contra su propio proyecto de Supabase.</p>
+          <p style="font-size:13.5px">Si una sola celda entrega de más, el hito no está terminado.</p>
+        </div>
+        <div class="nota" style="margin-top:18px">
+          Este hito no produce nada que se pueda mirar en una pantalla bonita, y esa es exactamente la razón por la que se subcontrata mal. <b>Es el único que compromete a los otros tres.</b>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pie"><span>PROPUESTA DE DESARROLLO POR HITOS · EL SEED</span><span>09</span></div>
+</section>
+
+<!-- ══ 12 · HITO 2 ════════════════════════════════════════════════════ -->
+<section class="slide">
+  <div class="nav">
+    <span class="marca"><i></i>NICOLÁS MORENO</span>
+    <ul><li>Entendimiento</li><li class="on">Los cuatro hitos</li><li>Método</li><li>Credenciales</li><li>Honorarios</li></ul>
+  </div>
+  <div class="cuerpo">
+    <div class="kicker">02 · HITO 2 — SEMANAS 3 A 5</div>
+    <h2>Estructura en Next.js<br>y <b>portal del propietario</b></h2>
+    <div class="cols">
+      <div>
+        <div class="card">
+          <div class="k">QUÉ SE ENTREGA</div>
+          <ul>
+            <li>Proyecto Next.js con App Router y Tailwind, desplegado y con vistas previas por rama.</li>
+            <li>Sesión de Supabase resuelta en el servidor, con middleware y rutas protegidas por rol.</li>
+            <li>Portal del propietario: sus unidades, estado de arriendo de cada una, pagos recibidos, documentos y liquidaciones.</li>
+            <li>Capa de datos tipada desde el esquema — si el esquema cambia, el build avisa.</li>
+            <li>Diseño responsivo: el propietario entra desde el teléfono.</li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <div class="card" style="border-color:rgb(var(--acc-rgb)/.34)">
+          <div class="k">CÓMO SE ACEPTA</div>
+          <p style="font-size:13.5px">Ustedes entran con una cuenta de propietario real de prueba y ven <b>sólo sus unidades</b>. Entran con otra y ven las suyas.</p>
+          <p style="font-size:13.5px">El aislamiento del hito 1 queda demostrado por la interfaz, no por mi palabra.</p>
+        </div>
+        <div class="nota" style="margin-top:18px">
+          El portal del propietario es el primer entregable que ustedes pueden <b>mostrarle a un cliente</b>. Por eso va segundo y no cuarto.
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pie"><span>PROPUESTA DE DESARROLLO POR HITOS · EL SEED</span><span>10</span></div>
+</section>
+
+<!-- ══ 13 · HITO 3 ════════════════════════════════════════════════════ -->
+<section class="slide">
+  <div class="nav">
+    <span class="marca"><i></i>NICOLÁS MORENO</span>
+    <ul><li>Entendimiento</li><li class="on">Los cuatro hitos</li><li>Método</li><li>Credenciales</li><li>Honorarios</li></ul>
+  </div>
+  <div class="cuerpo">
+    <div class="kicker">02 · HITO 3 — SEMANAS 6 A 7</div>
+    <h2>Workflows de alta, mandato<br>y <b>ciclo de arriendo</b></h2>
+    <div class="cols">
+      <div>
+        <div class="card">
+          <div class="k">QUÉ SE ENTREGA</div>
+          <ul>
+            <li>n8n desplegado con sus credenciales, en su infraestructura, con los flujos exportados y versionados en el repositorio.</li>
+            <li>Alta de propiedad: validación, carga de documentos y publicación.</li>
+            <li>Mandato: generación, envío a firma y activación al quedar firmado.</li>
+            <li>Ciclo de arriendo: cobro del período, recordatorios previos y posteriores, y aviso de vencimiento de contrato.</li>
+            <li>Webhooks entrantes y salientes, con reintento y registro de cada ejecución.</li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <div class="card" style="border-color:rgb(var(--acc-rgb)/.34)">
+          <div class="k">CÓMO SE ACEPTA</div>
+          <p style="font-size:13.5px">Se da de alta una propiedad de prueba y <b>el flujo corre entero delante de ustedes</b>, con el registro de cada paso a la vista.</p>
+        </div>
+        <div class="nota" style="margin-top:18px">
+          Los flujos quedan <b>exportados en el repositorio</b>, no sólo vivos en la instancia. Un n8n que sólo existe en su servidor es una dependencia con otro nombre.
+        </div>
+        <div class="nota" style="margin-top:14px">
+          Si prefieren no operar n8n, los mismos flujos se implementan como Edge Functions con cron. Lo conversamos en el hito 1, no acá.
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pie"><span>PROPUESTA DE DESARROLLO POR HITOS · EL SEED</span><span>11</span></div>
+</section>
+
+<!-- ══ 14 · HITO 4 ════════════════════════════════════════════════════ -->
+<section class="slide">
+  <div class="nav">
+    <span class="marca"><i></i>NICOLÁS MORENO</span>
+    <ul><li>Entendimiento</li><li class="on">Los cuatro hitos</li><li>Método</li><li>Credenciales</li><li>Honorarios</li></ul>
+  </div>
+  <div class="cuerpo">
+    <div class="kicker">02 · HITO 4 — SEMANAS 8 A 10</div>
+    <h2>Integraciones: <b>WhatsApp,<br>firma electrónica y pagos</b></h2>
+    <div class="cols-3" style="gap:16px">
+      <div class="card">
+        <div class="k">WHATSAPP BUSINESS</div>
+        <p style="font-size:13.5px">Plantillas aprobadas para aviso de cobro, recordatorio y vencimiento. Recepción de respuestas y registro contra el contrato que las originó.</p>
+        <p style="font-size:13px;color:var(--ink-3)">Ya integrado en producción en GoAuto, con notificaciones por cliente.</p>
+      </div>
+      <div class="card">
+        <div class="k">FIRMA ELECTRÓNICA</div>
+        <p style="font-size:13.5px">Envío del mandato y del contrato a firma, seguimiento del estado y archivo del documento firmado contra su registro, con su huella.</p>
+        <p style="font-size:13px;color:var(--ink-3)">El proveedor se elige según la respuesta a la pregunta 05.</p>
+      </div>
+      <div class="card">
+        <div class="k">PASARELA DE PAGOS</div>
+        <p style="font-size:13.5px">Cobro del arriendo, webhook de confirmación <b>idempotente</b> y conciliación diaria contra lo que el proveedor dice haber cobrado.</p>
+        <p style="font-size:13px;color:var(--ink-3)">Fintoc, Khipu o Webpay según lo que ya tengan contratado.</p>
+      </div>
+    </div>
+    <div class="nota" style="margin-top:24px;max-width:104ch">
+      Sobre la pasarela, una advertencia que sale de haberlo hecho: <b>el webhook de pago llega dos veces</b>. Llega repetido, llega fuera de orden y a veces llega antes que la respuesta de la propia llamada. Un cobro de arriendo que se registra dos veces es una liquidación mal hecha a un propietario. Por eso la idempotencia y la conciliación van dentro del hito y no se cotizan aparte.
+    </div>
+  </div>
+  <div class="pie"><span>PROPUESTA DE DESARROLLO POR HITOS · EL SEED</span><span>12</span></div>
+</section>
+
+<!-- ══ 15 · LO QUE NO INCLUYE ═════════════════════════════════════════ -->
+<section class="slide">
+  <div class="nav">
+    <span class="marca"><i></i>NICOLÁS MORENO</span>
+    <ul><li>Entendimiento</li><li class="on">Los cuatro hitos</li><li>Método</li><li>Credenciales</li><li>Honorarios</li></ul>
+  </div>
+  <div class="cuerpo">
+    <div class="kicker">02 · LÍMITES</div>
+    <h2>Lo que <b>no</b> está incluido</h2>
+    <p class="lede" style="margin-bottom:20px">Declarado acá para que no aparezca como discusión en la semana ocho.</p>
+    <div class="cols">
+      <div>
+        <table>
+          <tr><th>CONCEPTO</th><th style="text-align:right">ESTADO</th></tr>
+          <tr class="no"><td>Diseño de identidad visual y marca</td><td class="val">Fuera</td></tr>
+          <tr class="no"><td>Portal público de búsqueda con SEO</td><td class="val">Fuera</td></tr>
+          <tr class="no"><td>Aplicación móvil nativa</td><td class="val">Fuera</td></tr>
+          <tr class="no"><td>Migración de datos desde un sistema anterior</td><td class="val">Se cotiza aparte</td></tr>
+          <tr class="no"><td>Contratación de proveedores y sus costos</td><td class="val">A nombre de el seed</td></tr>
+        </table>
+      </div>
+      <div>
+        <div class="card">
+          <div class="k">SUPUESTOS DE LOS QUE PARTE ESTA PROPUESTA</div>
+          <ul>
+            <li>Las cuentas de Supabase, Vercel, n8n y de cada proveedor se abren a nombre de el seed. Yo trabajo dentro de ellas.</li>
+            <li>Hay una contraparte suya disponible para responder dudas dentro de un día hábil.</li>
+            <li>Las seis preguntas de la sección 01 se cierran en la reunión de arranque.</li>
+            <li>El diseño de interfaz parte de una biblioteca de componentes, no de maquetas a medida.</li>
+          </ul>
+        </div>
+        <div class="nota" style="margin-top:18px">
+          Todo queda a nombre de ustedes desde el primer día. <b>Si mañana siguen con otra persona, no hay nada que rescatar de mi lado.</b>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pie"><span>PROPUESTA DE DESARROLLO POR HITOS · EL SEED</span><span>13</span></div>
+</section>
+
+<!-- ══ 16 · DIVISOR 03 ════════════════════════════════════════════════ -->
+<section class="slide full" data-rotulo="03 · Método">
+  <canvas data-sim="gusano" data-off=".44"></canvas>
+  <div class="velo" style="background:linear-gradient(90deg,rgb(var(--bg-rgb)/.96) 0%,rgb(var(--bg-rgb)/.88) 42%,rgb(var(--bg-rgb)/.35) 74%,rgb(var(--bg-rgb)/0) 100%)"></div>
+  <span class="esq tl"></span><span class="esq br"></span>
+  <div style="position:absolute;left:88px;top:50%;transform:translateY(-50%);z-index:4;max-width:520px">
+    <div class="div-num">03</div>
+    <div class="div-tit"><b>Método</b></div>
+    <div class="div-sub">CÓMO SE ENTREGA · CUÁNDO CAE CADA COSA</div>
+  </div>
+</section>
+
+<!-- ══ 17 · CÓMO SE ENTREGA ═══════════════════════════════════════════ -->
+<section class="slide">
+  <div class="nav">
+    <span class="marca"><i></i>NICOLÁS MORENO</span>
+    <ul><li>Entendimiento</li><li>Los cuatro hitos</li><li class="on">Método</li><li>Credenciales</li><li>Honorarios</li></ul>
+  </div>
+  <div class="cuerpo">
+    <div class="kicker">03 · MÉTODO</div>
+    <h2>Un hito terminado es<br>algo que <b>ustedes pueden romper</b></h2>
+    <div class="hito"><div class="w">ANTES DE EMPEZAR</div><div class="q">Reunión de arranque de una hora. Se cierran las seis preguntas de la sección 01 y se levanta el acta. Sin eso, el hito 1 no parte.</div></div>
+    <div class="hito"><div class="w">TODOS LOS DÍAS</div><div class="q">Commits en <b>su</b> repositorio, en una rama por hito. No hay código viviendo en mi máquina esperando el día de la entrega.</div></div>
+    <div class="hito"><div class="w">CADA SEMANA</div><div class="q">Un mensaje escrito: qué se hizo, qué falta, qué me está bloqueando. Sin reunión si no hace falta una.</div></div>
+    <div class="hito"><div class="w">AL CERRAR UN HITO</div><div class="q">Demostración en vivo sobre <b>su</b> infraestructura, contra la lista de aceptación que este documento ya declaró. Ustedes la corren, no yo.</div></div>
+    <div class="hito"><div class="w">DESPUÉS DE ACEPTAR</div><div class="q">Diez días hábiles de corrección de defectos del hito, sin costo. Un defecto es algo que no cumple lo aceptado; no es un cambio de alcance.</div></div>
+    <div class="nota" style="margin-top:22px">Cada hito se factura al aceptarse. <b>Si un hito no se acepta, no se paga</b> — y si deciden parar ahí, se llevan igual todo lo que ya está en su repositorio y en su base de datos.</div>
+  </div>
+  <div class="pie"><span>PROPUESTA DE DESARROLLO POR HITOS · EL SEED</span><span>14</span></div>
+</section>
+
+<!-- ══ 18 · CALENDARIO ════════════════════════════════════════════════ -->
+<section class="slide">
+  <div class="nav">
+    <span class="marca"><i></i>NICOLÁS MORENO</span>
+    <ul><li>Entendimiento</li><li>Los cuatro hitos</li><li class="on">Método</li><li>Credenciales</li><li>Honorarios</li></ul>
+  </div>
+  <div class="cuerpo">
+    <div class="kicker">03 · CALENDARIO</div>
+    <h2>Diez semanas, <b>unas 165 horas</b></h2>
+    <div class="gantt">
+      <div class="gmes"><span>HITO</span><span>SEM 1–2</span><span>SEM 3–4</span><span>SEM 5–6</span><span>SEM 7–8</span><span>SEM 9–10</span></div>
+      <div class="gfila"><span>Arranque y decisiones</span><div class="gtrack"><i class="gbar" style="left:0%;width:8%"></i></div></div>
+      <div class="gfila"><span>H1 · Esquema, Auth y RLS</span><div class="gtrack"><i class="gbar" style="left:2%;width:18%"></i></div></div>
+      <div class="gfila"><span>H2 · Next.js y portal</span><div class="gtrack"><i class="gbar" style="left:20%;width:30%"></i></div></div>
+      <div class="gfila"><span>H3 · Workflows en n8n</span><div class="gtrack"><i class="gbar" style="left:50%;width:20%"></i></div></div>
+      <div class="gfila"><span>H4 · Integraciones</span><div class="gtrack"><i class="gbar" style="left:70%;width:30%"></i></div></div>
+      <div class="gfila"><span>Revisión y aceptación</span><div class="gtrack"><i class="gbar" style="left:18%;width:2%"></i><i class="gbar" style="left:48%;width:2%"></i><i class="gbar" style="left:68%;width:2%"></i><i class="gbar" style="left:98%;width:2%"></i></div></div>
+    </div>
+    <div class="cols" style="margin-top:24px">
+      <div class="nota">Las semanas corren desde el arranque, no desde la firma. <b>Puedo empezar dentro de la semana siguiente a su confirmación.</b></div>
+      <div class="nota">Si el ritmo les acomoda más rápido, subo a treinta horas semanales y el calendario baja a seis semanas. El valor por hito no cambia.</div>
+    </div>
+  </div>
+  <div class="pie"><span>PROPUESTA DE DESARROLLO POR HITOS · EL SEED</span><span>15</span></div>
+</section>
+
+<!-- ══ 19 · DIVISOR 04 ════════════════════════════════════════════════ -->
+<section class="slide full" data-rotulo="04 · Credenciales">
+  <canvas data-sim="corriente" data-off=".38"></canvas>
+  <div class="velo" style="background:linear-gradient(90deg,rgb(var(--bg-rgb)/.96) 0%,rgb(var(--bg-rgb)/.88) 42%,rgb(var(--bg-rgb)/.35) 74%,rgb(var(--bg-rgb)/0) 100%)"></div>
+  <span class="esq tl"></span><span class="esq br"></span>
+  <div style="position:absolute;left:88px;top:50%;transform:translateY(-50%);z-index:4;max-width:520px">
+    <div class="div-num">04</div>
+    <div class="div-tit"><b>Credenciales</b></div>
+    <div class="div-sub">EN PRODUCCIÓN · EN ESTE MISMO STACK</div>
+  </div>
+</section>
+
+<!-- ══ 20 · GOAUTO ════════════════════════════════════════════════════ -->
+<section class="slide">
+  <div class="nav">
+    <span class="marca"><i></i>NICOLÁS MORENO</span>
+    <ul><li>Entendimiento</li><li>Los cuatro hitos</li><li>Método</li><li class="on">Credenciales</li><li>Honorarios</li></ul>
+  </div>
+  <div class="cuerpo">
+    <div class="kicker">04 · PROYECTO RELEVANTE 1 DE 2</div>
+    <h2>GoAuto — <b>Next.js y Supabase</b>,<br>multi-cliente, en producción</h2>
+    <div class="cols">
+      <div>
+        <p>Plataforma de gestión para automotoras. Cada automotora ve su inventario, sus leads y su facturación, y ninguna ve la de otra: exactamente el problema de aislamiento que el hito 1 de el seed plantea.</p>
+        <p>Sitio público en <b>Next.js con App Router</b> sobre Supabase; portal de gestión con dashboards y sesión por rol; y detrás, la parte que no se ve.</p>
+        <div class="nota" style="margin-top:16px">
+          Incluye lo que el hito 4 pide: <b>MercadoPago</b> con webhooks idempotentes y conciliación por cron, <b>notificaciones por WhatsApp</b> configurables por cliente, y sincronización con Mercado Libre, ChileAutos y Meta.
+        </div>
+      </div>
+      <div>
+        <div class="cifras" style="grid-template-columns:1fr 1fr;margin-top:0">
+          <div class="cifra"><div class="n">391</div><div class="u">POLÍTICAS DE RLS ESCRITAS</div></div>
+          <div class="cifra"><div class="n">75</div><div class="u">TABLAS CON AISLAMIENTO ACTIVO</div></div>
+          <div class="cifra"><div class="n">241</div><div class="u">MIGRACIONES VERSIONADAS</div></div>
+          <div class="cifra"><div class="n">79</div><div class="u">EDGE FUNCTIONS EN SUPABASE</div></div>
+        </div>
+        <a class="card" style="margin-top:18px;display:block" href="https://goauto.cl" target="_blank" rel="noopener">
+          <span class="salir" aria-hidden="true"><svg class="entra" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9 9 3"/><path d="M4.4 3H9v4.6"/></svg><svg class="sale" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9 9 3"/><path d="M4.4 3H9v4.6"/></svg></span>
+          <div class="k">EN LÍNEA</div>
+          <h3 style="font-size:15px">goauto.cl</h3>
+          <p style="font-size:13px">El sitio público. El portal de gestión está tras login, en <b>portal.goauto.cl</b>.</p>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="pie"><span>PROPUESTA DE DESARROLLO POR HITOS · EL SEED</span><span>16</span></div>
+</section>
+
+<!-- ══ 21 · PORTALES CON LOGIN ════════════════════════════════════════ -->
+<section class="slide">
+  <div class="nav">
+    <span class="marca"><i></i>NICOLÁS MORENO</span>
+    <ul><li>Entendimiento</li><li>Los cuatro hitos</li><li>Método</li><li class="on">Credenciales</li><li>Honorarios</li></ul>
+  </div>
+  <div class="cuerpo">
+    <div class="kicker">04 · PORTALES CON LOGIN Y DASHBOARDS</div>
+    <h2 style="margin-bottom:16px">Portales con login,<br><b>uno por tipo de usuario</b></h2>
+    <div class="cols" style="align-items:stretch">
+      <a class="card" style="display:flex;flex-direction:column" href="https://fidelya.cl" target="_blank" rel="noopener">
+        <span class="salir" aria-hidden="true"><svg class="entra" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9 9 3"/><path d="M4.4 3H9v4.6"/></svg><svg class="sale" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9 9 3"/><path d="M4.4 3H9v4.6"/></svg></span>
+        <div class="k">PLATAFORMA MULTI-CLIENTE · NEXT.JS</div>
+        <h3 style="font-size:15px">FIDELYA</h3>
+        <p style="font-size:13.5px">Producto propio, del que soy fundador. Frontend en Next.js sobre una base aislada por cliente, con <b>tres portales distintos</b> —administración, comercio y cliente final— sobre el mismo modelo de datos. Más de 3.500 usuarios registrados.</p>
+        <div class="nota" style="margin-top:auto;padding-top:12px;font-size:12.5px;border-left-width:2px">
+          <b>Por qué importa acá:</b> es el mismo ejercicio que el portal del propietario. Un usuario, un rol, y una interfaz que sólo muestra lo que ese rol puede ver.</div>
+      </a>
+      <a class="card" style="display:flex;flex-direction:column" href="https://portal.goauto.cl" target="_blank" rel="noopener"><span class="salir" aria-hidden="true"><svg class="entra" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9 9 3"/><path d="M4.4 3H9v4.6"/></svg><svg class="sale" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9 9 3"/><path d="M4.4 3H9v4.6"/></svg></span>
+        <div class="k">PORTAL DE GESTIÓN · TRAS LOGIN</div>
+        <h3 style="font-size:15px">PORTAL.GOAUTO.CL</h3>
+        <p style="font-size:13.5px">El portal donde cada automotora entra con su cuenta y administra su inventario, sus leads, sus publicaciones y su facturación. Dashboards por rol sobre Supabase, con el aislamiento resuelto en la base.</p>
+        <div class="nota" style="margin-top:auto;padding-top:12px;font-size:12.5px;border-left-width:2px">
+          <b>Por qué importa acá:</b> es el portal del propietario con otro nombre. Un mandante entra, ve sólo sus activos y opera desde ahí — que es exactamente el hito 2.</div>
+      </a>
+    </div>
+  </div>
+  <div class="pie"><span>PROPUESTA DE DESARROLLO POR HITOS · EL SEED</span><span>17</span></div>
+</section>
+
+<!-- ══ 22 · GITHUB ════════════════════════════════════════════════════ -->
+<section class="slide">
+  <div class="nav">
+    <span class="marca"><i></i>NICOLÁS MORENO</span>
+    <ul><li>Entendimiento</li><li>Los cuatro hitos</li><li>Método</li><li class="on">Credenciales</li><li>Honorarios</li></ul>
+  </div>
+  <div class="cuerpo">
+    <div class="kicker">04 · SOBRE EL GITHUB</div>
+    <h2>Una advertencia honesta<br>sobre <b>lo que van a encontrar</b></h2>
+    <div class="cols">
+      <div>
+        <p>Mi perfil es <a class="dato" href="https://github.com/4mser" target="_blank" rel="noopener">github.com/4mser</a>. Si entran ahora van a ver proyectos personales, varios de hace dos o tres años, y ninguno de los sistemas de los que habla la sección anterior.</p>
+        <p>La razón es simple y probablemente les pase con todos los candidatos serios: <b>el trabajo que importa vive en repositorios privados</b>. Los de cliente no son míos para abrirlos, y los propios —FIDELYA entre ellos— tampoco: es producto en operación, con clientes pagando.</p>
+        <p>Prefiero decirlo yo antes de que lo descubran haciendo clic.</p>
+      </div>
+      <div>
+        <div class="card" style="border-color:rgb(var(--acc-rgb)/.34)">
+          <div class="k">CÓMO SE VERIFICA, ENTONCES</div>
+          <ul>
+            <li><b>Pantalla compartida, sin preparación.</b> Abro el código de GoAuto en vivo y navegamos donde ustedes quieran: migraciones, políticas de RLS, Edge Functions e historial de commits.</li>
+            <li><b>Una prueba pagada.</b> Encárguenme el hito 1 y evalúen sobre eso. Es el hito más corto y el más revelador de los cuatro.</li>
+            <li><b>Los productos en línea.</b> goauto.cl y fidelya.cl están arriba y se pueden recorrer ahora mismo; el portal de gestión, tras login, se los muestro cuando quieran.</li>
+          </ul>
+        </div>
+        <div class="nota" style="margin-top:18px">Las cifras de la lámina anterior —391 políticas, 241 migraciones, 79 funciones— <b>salen de contar los archivos del repositorio</b>, y se pueden contar de nuevo delante de ustedes.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pie"><span>PROPUESTA DE DESARROLLO POR HITOS · EL SEED</span><span>18</span></div>
+</section>
+
+<!-- ══ 23 · DIVISOR 05 ════════════════════════════════════════════════ -->
+<section class="slide full" data-rotulo="05 · Honorarios">
+  <canvas data-sim="cobranza" data-off=".40"></canvas>
+  <div class="velo" style="background:linear-gradient(90deg,rgb(var(--bg-rgb)/.96) 0%,rgb(var(--bg-rgb)/.88) 42%,rgb(var(--bg-rgb)/.35) 74%,rgb(var(--bg-rgb)/0) 100%)"></div>
+  <span class="esq tl"></span><span class="esq br"></span>
+  <div style="position:absolute;left:88px;top:50%;transform:translateY(-50%);z-index:4;max-width:520px">
+    <div class="div-num">05</div>
+    <div class="div-tit"><b>Honorarios</b></div>
+    <div class="div-sub">VALOR POR HITO · FORMA DE PAGO · DISPONIBILIDAD</div>
+  </div>
+</section>
+
+<!-- ══ 24 · HONORARIOS ════════════════════════════════════════════════ -->
+<section class="slide">
+  <div class="nav">
+    <span class="marca"><i></i>NICOLÁS MORENO</span>
+    <ul><li>Entendimiento</li><li>Los cuatro hitos</li><li>Método</li><li>Credenciales</li><li class="on">Honorarios</li></ul>
+  </div>
+  <div class="cuerpo">
+    <div class="kicker">05 · HONORARIOS</div>
+    <h2>Valor <b>por hito</b></h2>
+    <table>
+      <tr><th>HITO</th><th style="text-align:right">VALOR</th></tr>
+      <tr><td><b>H1</b> · Esquema, Auth y RLS en Supabase — semanas 1 a 2</td><td class="val">$ 620.000</td></tr>
+      <tr><td><b>H2</b> · Estructura Next.js y portal del propietario — semanas 3 a 5</td><td class="val">$ 1.240.000</td></tr>
+      <tr><td><b>H3</b> · Workflows de alta, mandato y arriendo — semanas 6 a 7</td><td class="val">$ 825.000</td></tr>
+      <tr><td><b>H4</b> · WhatsApp, firma electrónica y pasarela — semanas 8 a 10</td><td class="val">$ 1.440.000</td></tr>
+      <tr class="suma"><td><b>Total de los cuatro hitos</b></td><td class="val">$ 4.125.000</td></tr>
+      <tr class="no"><td>Retainer mensual</td><td class="val">No aplica</td></tr>
+      <tr class="no"><td>Infraestructura y proveedores</td><td class="val">A nombre de el seed</td></tr>
+    </table>
+    <div class="cols-3" style="margin-top:22px;gap:16px">
+      <div class="card">
+        <div class="k">FORMA DE PAGO</div>
+        <p style="font-size:13px">Cada hito se factura <b>contra aceptación</b>. Sin anticipo y sin pago por adelantado en ninguno de los cuatro.</p>
+      </div>
+      <div class="card">
+        <div class="k">FUERA DE ALCANCE</div>
+        <p style="font-size:13px">Trabajo adicional a <b>$30.000 por hora</b>, acordado por escrito antes de ejecutarlo. Nunca a posteriori.</p>
+      </div>
+      <div class="card">
+        <div class="k">VALORES FIRMES</div>
+        <p style="font-size:13px">En pesos, sin reajuste durante los treinta días de vigencia. El total son <b>unas 165 horas</b> de trabajo a <b>$25.000 la hora</b>.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pie"><span>PROPUESTA DE DESARROLLO POR HITOS · EL SEED</span><span>19</span></div>
+</section>
+
+<!-- ══ 25 · DISPONIBILIDAD ════════════════════════════════════════════ -->
+<section class="slide">
+  <div class="nav">
+    <span class="marca"><i></i>NICOLÁS MORENO</span>
+    <ul><li>Entendimiento</li><li>Los cuatro hitos</li><li>Método</li><li>Credenciales</li><li class="on">Honorarios</li></ul>
+  </div>
+  <div class="cuerpo">
+    <div class="kicker">05 · DISPONIBILIDAD</div>
+    <h2>Veinte horas a la semana,<br>en <b>su mismo huso horario</b></h2>
+    <div class="cols">
+      <div>
+        <div class="hito"><div class="w">DEDICACIÓN</div><div class="q"><b>20 horas semanales</b> comprometidas. Puedo subir a 30 si el calendario les urge; el valor por hito no cambia, sólo la fecha.</div></div>
+        <div class="hito"><div class="w">HORARIO</div><div class="q">Santiago de Chile. Solapamiento completo con el Gran Concepción — <b>no hay diferencia horaria que administrar</b>.</div></div>
+        <div class="hito"><div class="w">RESPUESTA</div><div class="q">Dentro del día hábil por el canal que definan. Reuniones acotadas y agendadas, no llamadas sorpresa.</div></div>
+        <div class="hito"><div class="w">INICIO</div><div class="q">Dentro de la semana siguiente a su confirmación.</div></div>
+      </div>
+      <div>
+        <div class="card">
+          <div class="k">POR QUÉ VEINTE Y NO CUARENTA</div>
+          <p style="font-size:13.5px">Porque veinte las cumplo todas las semanas, incluida la semana en que algo se caiga en otro proyecto. Cuarenta serían un número para ganar la propuesta y una conversación incómoda en la semana tres.</p>
+          <p style="font-size:13.5px">Su aviso dice que buscan a alguien <b>pragmático, ordenado y orientado a entregables revisables</b>. Ofrecer una dedicación que no puedo sostener sería fallar en las tres cosas antes de empezar.</p>
+        </div>
+        <div class="nota" style="margin-top:18px">Y por lo mismo: si en algún momento veo que un hito no llega en su fecha, <b>lo digo cuando lo veo</b>, no en la fecha.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pie"><span>PROPUESTA DE DESARROLLO POR HITOS · EL SEED</span><span>20</span></div>
+</section>
+
+<!-- ══ 26 · CIERRE ════════════════════════════════════════════════════ -->
+<section class="slide full" data-rotulo="Cierre">
+  <canvas data-sim="onda"></canvas>
+  <div class="velo" style="background:radial-gradient(62% 58% at 50% 46%,rgb(var(--bg-rgb)/.95) 0%,rgb(var(--bg-rgb)/.88) 44%,rgb(var(--bg-rgb)/.45) 76%,rgb(var(--bg-rgb)/0) 100%)"></div>
+  <span class="esq tl"></span><span class="esq tr"></span><span class="esq bl"></span><span class="esq br"></span>
+  <div style="position:absolute;inset:0;z-index:4;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+    <p style="font-family:var(--mono);font-size:10px;letter-spacing:.28em;color:var(--ink-dim)">EL ESQUEMA ES LA ÚNICA PARTE QUE NO SE PUEDE REHACER BARATO</p>
+    <div style="margin-top:34px;font-family:var(--mono);font-size:15px;letter-spacing:.24em;color:var(--ink)">NICOLÁS MORENO</div>
+    <div style="margin-top:14px;font-family:var(--mono);font-size:9px;letter-spacing:.28em;color:var(--ink-3)">DESARROLLADOR FULL-STACK · NEXT.JS · SUPABASE</div>
+    <div style="margin-top:42px;font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;color:var(--ink-2);line-height:2.2">
+      <a class="dato" href="https://github.com/4mser" target="_blank" rel="noopener">github.com/4mser</a> &nbsp;·&nbsp; <a class="dato" href="https://nicolas-moreno.vercel.app" target="_blank" rel="noopener">nicolas-moreno.vercel.app</a><br>
+      <span style="color:var(--ink-dim)">SANTIAGO · CHILE — JULIO 2026</span>
+    </div>
+  </div>
+</section>
+
+</div></div>
+
+<div id="pie">
+  <div class="nav">
+    <button id="ant" type="button" aria-label="Lámina anterior">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+    </button>
+    <button id="sig" type="button" aria-label="Lámina siguiente">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+    </button>
+  </div>
+  <span class="pista"><i id="avance"></i></span>
+  <span id="ayuda">FLECHAS · RUEDA · DESLIZAR</span>
+</div>
+
+<script src="/propuesta/sims-base.js"></script>
+<script src="/elseed/sims.js"></script>
+<script src="/propuesta/chasis.js"></script>
+</body>
+</html>

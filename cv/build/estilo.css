@@ -1,0 +1,223 @@
+/* ══════════════════════════════════════════════════════════════════════
+   CV de Nicolás Moreno — versión de PRESENTACIÓN.
+
+   ⚠️ Esta NO es la versión para filtros automáticos de postulación. Lleva
+   retículas, iconos y color, que es exactamente lo que un lector ATS no
+   sabe leer. La versión endurecida —una columna, sin iconos, fuentes
+   web-safe, una hoja— sigue viva en `cv-nicolas-moreno-ats.html`. Ésta es
+   la que se manda a una persona.
+
+   Carta = 816 × 1056 px exactos (8,5 × 11 pulgadas a 96 dpi). Una .hoja es
+   una página del PDF.
+
+   ⚠️ NADA de `box-shadow` fuera de `@media screen`: Quartz —el motor con el
+   que Preview.app dibuja el PDF en macOS— las pinta como bloques grises.
+   ══════════════════════════════════════════════════════════════════════ */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+
+:root{
+  --tinta:#14151c;  --t2:#3f4350;  --t3:#666c7c;  --t4:#9299a8;
+  --papel:#ffffff;  --papel2:#f7f7fb;  --papel3:#eeeef6;
+  --borde:rgba(20,21,28,.11);  --borde2:rgba(20,21,28,.20);
+
+  /* Azul tirado a violeta. */
+  --acc:#5b45e0;  --acc-rgb:91 69 224;
+  --acc-d:#3a2bb0;  --acc-l:#7c68f0;
+  --acc-s:#efecfd;  --acc-line:rgba(91,69,224,.24);
+
+  --serif:'Newsreader',Georgia,serif;
+  --sans:'Inter',system-ui,-apple-system,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+
+  --c-typescript:#3178C6; --c-python:#3776AB;   --c-nestjs:#E0234E;
+  --c-nodedotjs:#5FA04E;  --c-mongodb:#47A248;  --c-postgresql:#4169E1;
+  --c-redis:#D93227;      --c-nextdotjs:#14151c;--c-react:#0e9dc9;
+  --c-tailwindcss:#0d9bb8;--c-expo:#14151c;     --c-apple:#14151c;
+  --c-googleplay:#2e9350; --c-threedotjs:#14151c;--c-greensock:#0e9c4a;
+  --c-webgl:#a03225;      --c-pytorch:#EE4C2C;  --c-opencv:#2b7fd6;
+  --c-scikitlearn:#c8701a;--c-numpy:#4d77CF;    --c-pandas:#150458;
+  --c-docker:#2496ED;     --c-amazonwebservices:#c07b1c; --c-vercel:#14151c;
+  --c-flydotio:#7b3fe4;   --c-railway:#14151c;  --c-github:#181717;
+  --c-javascript:#c9a800;  --c-database:#5b45e0;
+  --c-figma:#c4451f;      --c-socketdotio:#14151c; --c-openai:#14151c;
+  --c-googlegemini:#2a72d4; --c-mercadopago:#009ed1;
+  --c-claudecode:#D97757; --c-cursor:#14151c;
+}
+
+html{-webkit-text-size-adjust:100%}
+body{background:#e9eaef;color:var(--t2);font-family:var(--sans);
+  font-size:9px;line-height:1.5;-webkit-font-smoothing:antialiased}
+img,svg{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+
+.hoja{position:relative;width:816px;height:1056px;background:var(--papel);
+  margin:0 auto 24px;overflow:hidden;padding:46px 54px 34px;
+  display:flex;flex-direction:column}
+
+/* ══ Encabezado de la primera hoja ═════════════════════════════════════ */
+.top{display:flex;align-items:flex-end;gap:22px;padding-bottom:15px;
+  border-bottom:2px solid var(--tinta)}
+.nombre{font-family:var(--serif);font-size:37px;line-height:.98;font-weight:600;
+  letter-spacing:-.022em;color:var(--tinta)}
+.rol{font-family:var(--mono);font-size:9px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--acc);margin-top:8px;font-weight:500}
+.contacto{margin-left:auto;text-align:right;display:grid;gap:2px;flex:0 0 auto}
+.contacto span{font-size:9px;color:var(--t3);white-space:nowrap}
+.contacto b{color:var(--tinta);font-weight:600}
+/* ⚠️ El espaciado entre letras va BAJO a propósito. Con .12em, `pdftotext`
+   —que es como lee un ATS— mete un espacio entre cada letra y «MAIL» sale como
+   «M A I L». En una etiqueta da lo mismo, pero la regla vale para cualquier
+   palabra que sí sea una keyword: sobre ~.05em se rompe. */
+.contacto .et{font-family:var(--mono);font-size:7.5px;letter-spacing:.04em;
+  text-transform:uppercase;color:var(--t4);margin-right:6px}
+
+/* Encabezado de las hojas siguientes: más chico, para no repetir la portada. */
+.top2{display:flex;align-items:baseline;gap:11px;padding-bottom:9px;
+  border-bottom:1px solid var(--borde);margin-bottom:18px}
+.top2 .n{font-family:var(--serif);font-size:13px;font-weight:600;color:var(--tinta);letter-spacing:-.01em}
+.top2 .r{font-family:var(--mono);font-size:7.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--t4)}
+.top2 .p{margin-left:auto;font-family:var(--mono);font-size:7.5px;letter-spacing:.12em;color:var(--t4)}
+
+.pie{flex:0 0 auto;margin-top:auto;padding-top:11px;border-top:1px solid var(--borde);
+  display:flex;justify-content:space-between;align-items:baseline;
+  font-family:var(--mono);font-size:7.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--t4)}
+.pie b{color:var(--t3);font-weight:500}
+.cuerpo{flex:1 1 auto;min-height:0;display:flex;flex-direction:column}
+
+/* ══ Secciones ═════════════════════════════════════════════════════════ */
+h2.sec{font-family:var(--mono);font-size:8px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--acc);font-weight:500;display:flex;align-items:center;gap:10px;
+  margin:13px 0 8px}
+h2.sec::after{content:'';flex:1 1 auto;height:1px;background:var(--acc-line)}
+h2.sec:first-child{margin-top:0}
+
+p{font-size:9px;line-height:1.55}
+p b,li b{color:var(--tinta);font-weight:600}
+.lead{font-size:9.9px;line-height:1.55;color:var(--t2)}
+/* El perfil son tres párrafos: con `<br><br>` quedaba una línea entera en
+   blanco entre cada uno y la hoja se pasaba. */
+.lead + .lead{margin-top:6px}
+.lead b{color:var(--tinta);font-weight:600}
+.chico{font-size:8px;line-height:1.5;color:var(--t3)}
+
+/* ══ Cifras ════════════════════════════════════════════════════════════ */
+/* ⚠️ `flex:0 0 auto` NO es decorativo. `.cuerpo` es un flex column y, cuando la
+   hoja va justa, encoge a sus hijos: esta caja quedaba en 44 px con 59 px de
+   contenido y el `overflow:hidden` se comía la segunda mitad de las etiquetas.
+   Se veía como un problema de padding y era el flex. */
+.cifras{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--borde);
+  border:1px solid var(--borde);border-radius:8px;overflow:hidden;margin-top:9px;
+  flex:0 0 auto}
+.cifras div{background:var(--papel);padding:11px 13px 12px;display:flex;
+  flex-direction:column;justify-content:flex-start}
+.cifras b{display:block;font-family:var(--serif);font-size:20px;font-weight:600;
+  color:var(--tinta);letter-spacing:-.02em;line-height:1}
+/* La etiqueta va en UNA línea. Con 5 columnas quedan ~115 px de texto y
+   «endpoints en producción» entraba justo, pegada a las divisiones: por eso se
+   veía apretado. Se arregla bajando el espaciado entre letras —no partiéndola
+   en dos—: forzar el corte la hace desbordar la caja, que tiene overflow
+   oculto, y la segunda línea desaparece. */
+.cifras span{display:block;font-family:var(--mono);font-size:6.9px;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--t4);margin-top:8px;line-height:1.3;white-space:nowrap}
+
+/* Variante de CAPACIDADES: la misma reja, pero arriba va el nombre y abajo una
+   línea que lo explica. Se invierte la jerarquía respecto de la de cifras —el
+   nombre no puede ir a 20 px como un número— y la bajada deja de ser mono en
+   versalitas, que sirve para una etiqueta de dos palabras y no para una frase. */
+.cifras.caps div{padding:12px 13px 13px}
+.cifras.caps b{font-family:var(--serif);font-size:11.5px;font-weight:600;line-height:1.2;
+  letter-spacing:-.01em}
+.cifras.caps span{font-family:var(--texto);font-size:8.1px;letter-spacing:0;
+  text-transform:none;white-space:normal;line-height:1.45;margin-top:6px;color:var(--t3)}
+
+/* ══ Experiencia ═══════════════════════════════════════════════════════ */
+.exp{padding-left:13px;border-left:2px solid var(--acc-line);margin-top:8px}
+.exp:first-of-type{margin-top:0}
+.exp .cargo{font-family:var(--serif);font-size:13px;font-weight:600;color:var(--tinta);
+  letter-spacing:-.012em;line-height:1.2}
+.exp .cargo em{font-style:normal;color:var(--acc-d)}
+.exp .meta{font-family:var(--mono);font-size:7.5px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--t4);margin-top:3px}
+.exp ul{list-style:none;margin-top:4px;display:grid;gap:2.5px}
+.exp li{font-size:9px;line-height:1.5;padding-left:11px;position:relative}
+.exp li::before{content:'';position:absolute;left:0;top:6px;width:5px;height:1.5px;
+  background:var(--acc);opacity:.75}
+
+/* ══ Trabajo seleccionado ══════════════════════════════════════════════ */
+/* ══ Obra seleccionada ════════════════════════════════════════════════
+   Lista editorial, NO tarjetas. Doce cajitas con borde en una reja se leían
+   como portafolio de startup; un CV se hojea buscando una línea concreta, y
+   para eso sirve una tabla con filete: título a la izquierda, qué es en el
+   medio y con qué está hecho a la derecha, siempre en la misma columna. */
+.obras{margin-top:2px}
+.gobra{margin-top:17px}
+.gobra:first-child{margin-top:0}
+.gobra > .et{font-family:var(--mono);font-size:7.2px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--acc);font-weight:500;
+  padding-bottom:5px;border-bottom:1px solid var(--acc-line)}
+.fila{display:grid;grid-template-columns:minmax(0,170px) minmax(0,1fr) minmax(0,124px);
+  gap:16px;padding:10.5px 0 11px;border-bottom:1px solid var(--borde);align-items:baseline}
+.fila:last-child{border-bottom:0}
+.fila h3{font-family:var(--serif);font-size:11px;font-weight:600;color:var(--tinta);
+  letter-spacing:-.012em;line-height:1.25}
+.fila p{font-size:8.6px;line-height:1.52;color:var(--t3)}
+.fila p b{color:var(--t2);font-weight:600}
+.fila .tt{font-family:var(--mono);font-size:6.6px;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--t4);line-height:1.55;text-align:right}
+
+/* ══ Stack con iconos ══════════════════════════════════════════════════ */
+.grupo{margin-top:11px}
+.grupo:first-child{margin-top:0}
+.grupo .et{font-family:var(--mono);font-size:7.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--t4);margin-bottom:6px}
+.tec{display:flex;flex-wrap:wrap;gap:5px}
+.tec .t{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--borde);
+  border-radius:6px;padding:4px 9px 4px 6px;background:var(--papel)}
+.tec .t svg{width:12px;height:12px;flex:0 0 auto}
+.tec .t span{font-size:8.6px;font-weight:600;color:var(--tinta);letter-spacing:-.008em;white-space:nowrap}
+.tec .t.sin{padding-left:9px}
+
+/* ══ Bloques varios ════════════════════════════════════════════════════ */
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.cols-3{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}
+.card{border:1px solid var(--borde);border-radius:8px;padding:11px 12px;background:var(--papel)}
+.card.gris{background:var(--papel2);border-color:transparent}
+.card .k{font-family:var(--mono);font-size:7.5px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--acc);font-weight:500}
+.card.gris .k{color:var(--t3)}
+.card p{font-size:8.6px;line-height:1.52;margin-top:5px}
+.card h4{font-family:var(--serif);font-size:11.5px;font-weight:600;color:var(--tinta);margin-top:3px}
+
+.linea{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:9px;line-height:1.5}
+.linea dt{font-family:var(--mono);font-size:7.5px;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--t4);padding-top:2px;white-space:nowrap}
+.linea dd b{color:var(--tinta);font-weight:600}
+
+.cita{border-left:2px solid var(--acc);padding:2px 0 2px 13px;font-size:9px;line-height:1.55;color:var(--t2)}
+.cita b{color:var(--tinta);font-weight:600}
+
+.abajo{margin-top:auto}
+
+/* ══ Pantalla ══════════════════════════════════════════════════════════
+   ⚠️ `@media screen and (...)`, nunca `@media (...)` a secas: al imprimir,
+   Chrome evalúa las consultas contra la caja de PÁGINA, y una carta de 816 px
+   cae del lado angosto — el PDF saldría con la maqueta del teléfono. */
+@media screen{
+  body{padding:30px 0}
+  .hoja{box-shadow:0 1px 3px rgba(20,21,28,.10),0 12px 34px rgba(20,21,28,.10)}
+}
+@media screen and (max-width:880px){
+  body{padding:14px 0;overflow-x:hidden}
+  #pila{transform-origin:top left}
+}
+
+@page{size:816px 1056px;margin:0}
+@media print{
+  body{background:#fff;padding:0}
+  .hoja{margin:0;box-shadow:none;break-after:page;page-break-after:always;break-inside:avoid}
+  .hoja:last-child{break-after:auto;page-break-after:auto}
+}
+html[data-pdf] body{background:#fff;padding:0}
+html[data-pdf] .hoja{margin:0;box-shadow:none;break-after:page;page-break-after:always}
+html[data-pdf] .hoja:last-child{break-after:auto;page-break-after:auto}
+html[data-pdf] #pila{transform:none!important}

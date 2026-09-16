@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cristian Avendaño Alvarado — CV</title>
+<style>
+  /* CV monocromo, formato "línea de tiempo" (columna de fechas a la izquierda),
+     ATS-safe: columna única de lectura, texto real, fuentes web-safe, sin tablas/imágenes. */
+  :root{
+    --ink:#161616;
+    --body:#34373c;
+    --muted:#6b7075;
+    --faint:#979ca1;
+    --rule:#d9dbde;
+    --rule-strong:#161616;
+    --sans:"Helvetica Neue", Helvetica, Arial, sans-serif;
+    --rail:92px;
+    --gap:26px;
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html{ -webkit-text-size-adjust:100%; }
+  body{
+    font-family:var(--sans);
+    color:var(--body);
+    background:#fff;
+    font-size:9.5pt;
+    line-height:1.4;
+    font-weight:400;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  @media screen{
+    body{ background:#ececee; padding:28px 0; }
+    .page{
+      width:8.5in; min-height:11in; margin:0 auto;
+      background:#fff; padding:0.55in 0.6in;
+      box-shadow:0 8px 40px rgba(0,0,0,0.14);
+    }
+  }
+  @media print{
+    @page{ size:Letter; margin:0.36in 0.45in; }
+    body{ background:#fff; }
+    .page{ width:auto; padding:0; box-shadow:none; }
+  }
+  *{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+
+  /* ── Encabezado ── */
+  .name{
+    font-size:25pt; font-weight:700;
+    letter-spacing:-0.015em; line-height:1.04; color:var(--ink);
+  }
+  .tagline{
+    margin-top:7px; font-size:8.7pt; font-weight:600;
+    letter-spacing:0.2em; text-transform:uppercase; color:var(--muted);
+  }
+  .contact{
+    margin-top:10px; padding-top:9px;
+    border-top:1px solid var(--rule);
+    font-size:9pt; color:var(--muted); line-height:1.65;
+  }
+  .contact a{ color:var(--body); text-decoration:none; }
+  .contact .v{ color:var(--body); }
+  .contact .sep{ color:var(--faint); margin:0 7px; }
+
+  /* ── Secciones ── */
+  section{ margin-top:11px; }
+  h2.sec{
+    font-size:8.8pt; font-weight:700;
+    letter-spacing:0.2em; text-transform:uppercase; color:var(--ink);
+    padding-bottom:4px; margin-bottom:9px;
+    border-bottom:1.3px solid var(--rule-strong);
+  }
+
+  /* ── Resumen ── */
+  p.summary{ color:var(--body); line-height:1.5; }
+  p.summary strong{ color:var(--ink); font-weight:600; }
+
+  /* ── Filas en grilla (fecha/etiqueta a la izquierda) ── */
+  .row{ display:grid; grid-template-columns:var(--rail) 1fr; column-gap:var(--gap); }
+
+  /* ── Experiencia (línea de tiempo) ── */
+  .timeline{ position:relative; }
+  .timeline::before{
+    content:""; position:absolute; left:105px; top:9px; bottom:9px;
+    width:1px; background:#c7cace;
+  }
+  .job{ position:relative; margin-bottom:9px; }
+  .job:last-child{ margin-bottom:0; }
+  .job::before{
+    content:""; position:absolute; left:102.5px; top:5px;
+    width:6px; height:6px; border-radius:50%;
+    background:var(--ink); box-shadow:0 0 0 2.5px #fff;
+  }
+  .job .when{
+    font-size:8.9pt; font-weight:600; color:var(--muted); text-align:right;
+    white-space:nowrap; letter-spacing:0.01em; padding-top:1.5px;
+  }
+  .job .role{ font-size:10.5pt; font-weight:700; color:var(--ink); line-height:1.2; }
+  .job .role .org{ font-weight:400; color:var(--muted); }
+  .job .loc{ font-size:8.6pt; color:var(--muted); margin-top:2px; }
+  ul.bullets{ list-style:none; margin-top:3.5px; }
+  ul.bullets li{
+    position:relative; padding-left:15px; margin-bottom:2px;
+    color:var(--body); line-height:1.42;
+  }
+  ul.bullets li::before{
+    content:""; position:absolute; left:0; top:0.62em;
+    width:7px; height:1px; background:var(--muted);
+  }
+  li strong{ color:var(--ink); font-weight:600; }
+
+  /* ── Habilidades ── */
+  .skill{ margin-bottom:6px; align-items:baseline; }
+  .skill:last-child{ margin-bottom:0; }
+  .skill .k{
+    color:var(--ink); font-weight:700; text-align:right;
+    font-size:8.4pt; letter-spacing:0.08em; text-transform:uppercase; line-height:1.42;
+  }
+  .skill .v{ color:var(--body); line-height:1.42; }
+
+  /* ── Formación / Certificaciones ── */
+  .edu{ margin-bottom:5px; align-items:baseline; }
+  .edu:last-child{ margin-bottom:0; }
+  .edu .tag{
+    color:var(--ink); font-weight:700; text-align:right;
+    font-size:8.2pt; letter-spacing:0.06em; text-transform:uppercase; line-height:1.42;
+  }
+  .edu .det{ color:var(--body); line-height:1.42; }
+  .edu .det b{ color:var(--ink); font-weight:600; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ═══ ENCABEZADO ═══ -->
+  <header>
+    <div class="name">Cristian Avendaño Alvarado</div>
+    <div class="tagline">Administración de Empresas &nbsp;·&nbsp; Contabilidad &nbsp;·&nbsp; Seguridad y Operador CCTV</div>
+    <div class="contact">
+      La Florida, Región Metropolitana
+      <span class="sep">·</span> <span class="v">+56 9 4460 7035</span>
+      <span class="sep">·</span> <a href="mailto:cristianavendanoalvarado@gmail.com">cristianavendanoalvarado@gmail.com</a><br>
+      09/05/1994
+      <span class="sep">·</span> Chileno
+      <span class="sep">·</span> Disponibilidad inmediata (jornada completa y turnos)
+    </div>
+  </header>
+
+  <!-- ═══ PERFIL ═══ -->
+  <section>
+    <h2 class="sec">Perfil Profesional</h2>
+    <p class="summary">
+      Trabajador con <strong>11 años de experiencia en administración de empresas</strong>, desempeñándome en contabilidad y recursos humanos, y actualmente como <strong>guardia de seguridad y operador de CCTV</strong>. Manejo de <strong>Excel y sistema Softland</strong>, además de plataformas SII, Previred y Tesorería General de la República. Me distingo por mi responsabilidad, proactividad y capacidad para trabajar en equipo.
+    </p>
+  </section>
+
+  <!-- ═══ EXPERIENCIA ═══ -->
+  <section>
+    <h2 class="sec">Experiencia Laboral</h2>
+
+    <div class="timeline">
+    <div class="job row">
+      <div class="when">2024 – Actual</div>
+      <div class="what">
+        <div class="role">Guardia de Seguridad — Operador de CCTV, <span class="org">Instituto ISEG Chile SpA</span></div>
+        <div class="loc">Santiago, Región Metropolitana</div>
+        <ul class="bullets">
+          <li><strong>Monitoreo de cámaras de seguridad (CCTV)</strong> para prevenir robos, hurtos y situaciones de riesgo dentro de la tienda.</li>
+          <li>Control de accesos de clientes, proveedores y personal interno.</li>
+          <li>Apoyo en la implementación de <strong>protocolos de prevención de pérdidas</strong> y seguridad en sala de ventas.</li>
+          <li>Supervisión y verificación de salidas de mercadería para evitar pérdidas desconocidas.</li>
+          <li>Coordinación con jefatura de seguridad y personal de apoyo en casos de incidentes.</li>
+          <li>Registro y elaboración de <strong>informes de novedades</strong> y eventos diarios.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="job row">
+      <div class="when">2014 – 2023</div>
+      <div class="what">
+        <div class="role">Contabilidad y Administración, <span class="org">Farmacéutica Quellón Ltda.</span></div>
+        <div class="loc">Santiago, Región Metropolitana</div>
+        <ul class="bullets">
+          <li><strong>Facturación electrónica</strong> y manejo del <strong>sistema Softland</strong>.</li>
+          <li>Elaboración de <strong>contratos de trabajo</strong> y gestión en plataformas <strong>SII, Previred y Tesorería General de la República</strong>.</li>
+          <li>Revisión de balances de ingresos y egresos de dinero.</li>
+          <li>Atención al cliente y soporte administrativo transversal.</li>
+        </ul>
+      </div>
+    </div>
+    </div>
+  </section>
+
+  <!-- ═══ HABILIDADES ═══ -->
+  <section>
+    <h2 class="sec">Habilidades y Competencias</h2>
+    <div class="skill row"><div class="k">Seguridad</div><div class="v">Monitoreo CCTV · Control de accesos · Prevención de pérdidas · Informes de novedades</div></div>
+    <div class="skill row"><div class="k">Administración</div><div class="v">Softland · Excel · Facturación electrónica · SII, Previred y Tesorería General · Contratos de trabajo · Balances de ingresos y egresos</div></div>
+    <div class="skill row"><div class="k">Personales</div><div class="v">Seguimiento preciso de instrucciones · Proactivo y ordenado · Responsable · Resolución de problemas · Atención al cliente · Trabajo en equipo</div></div>
+  </section>
+
+  <!-- ═══ FORMACIÓN Y CERTIFICACIONES ═══ -->
+  <section>
+    <h2 class="sec">Formación y Certificaciones</h2>
+    <div class="edu row"><div class="tag">2025</div><div class="det"><b>OS-10 — Formación de guardias de seguridad</b> — Instituto ISEG.</div></div>
+    <div class="edu row"><div class="tag">2025</div><div class="det"><b>CCTV — Televisión de circuito cerrado</b> — Instituto ISEG.</div></div>
+    <div class="edu row"><div class="tag">2024</div><div class="det"><b>Fundamentos profesionales de asistencia administrativa</b> — Microsoft y LinkedIn · <b>Certificado por SENCE</b>.</div></div>
+    <div class="edu row"><div class="tag">2024</div><div class="det"><b>LinkedIn Learning</b> — Microsoft 365: colaboración y productividad · Etiqueta empresarial · Toma de notas · Gestión de proyectos: equipos · Comunicación · Gestión del tiempo · Liderazgo con inteligencia emocional.</div></div>
+    <div class="edu row"><div class="tag">2010 – 2012</div><div class="det"><b>Técnico en Administración de Empresas</b> — Liceo Técnico Profesional San José.</div></div>
+  </section>
+
+</div>
+</body>
+</html>

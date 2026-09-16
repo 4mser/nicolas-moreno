@@ -1,0 +1,15 @@
+# Lo que NO se publica.
+#
+# Todo lo que hay en esta carpeta se sirve como estático, así que un .md
+# suelto queda accesible por URL. `postulacion.md` lleva notas internas
+# —valores por confirmar, qué arreglar del perfil de GitHub— y no puede
+# terminar leyéndose desde fuera. La guía del formato y los scripts de
+# construcción tampoco tienen por qué servirse.
+*.md
+elseed/postulacion.md
+propuesta/GUIA.md
+propuesta/pdf.js
+build-lab.js
+cv/build/render.js
+cv/build/construir.py
+cv/build/iconos.svg
